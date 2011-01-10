@@ -1,0 +1,222 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		23CDE6F612CCEC4000872307 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 23CDE6E612CCEC4000872307 /* images */; };
+		23D074F112CB86BE00554A46 /* Scope.icns in Resources */ = {isa = PBXBuildFile; fileRef = 23D074F012CB86BE00554A46 /* Scope.icns */; };
+		23DCDC6412C6994E0019F29A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23DCDC4912C6987C0019F29A /* Accelerate.framework */; };
+		23DCDC6512C6994F0019F29A /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23DCDC4D12C698900019F29A /* AudioUnit.framework */; };
+		23DCDC6612C6994F0019F29A /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23DCDC5012C6989D0019F29A /* Carbon.framework */; };
+		23DCDC6712C699510019F29A /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23DCDC5412C698AC0019F29A /* CoreAudio.framework */; };
+		23DCDC6812C699530019F29A /* Scope.plist in Resources */ = {isa = PBXBuildFile; fileRef = 23DCDC5F12C6990F0019F29A /* Scope.plist */; };
+		23DCDC6912C699570019F29A /* Scope.c in Sources */ = {isa = PBXBuildFile; fileRef = 23DCDC5712C698CA0019F29A /* Scope.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		23CDE6CA12CCEAD400872307 /* Scope.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scope.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		23CDE6E612CCEC4000872307 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; sourceTree = "<group>"; };
+		23D074F012CB86BE00554A46 /* Scope.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Scope.icns; sourceTree = "<group>"; };
+		23DCDC4912C6987C0019F29A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		23DCDC4D12C698900019F29A /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		23DCDC5012C6989D0019F29A /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		23DCDC5412C698AC0019F29A /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		23DCDC5712C698CA0019F29A /* Scope.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Scope.c; sourceTree = "<group>"; };
+		23DCDC5F12C6990F0019F29A /* Scope.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Scope.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		23DCDC5A12C6990F0019F29A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23DCDC6412C6994E0019F29A /* Accelerate.framework in Frameworks */,
+				23DCDC6512C6994F0019F29A /* AudioUnit.framework in Frameworks */,
+				23DCDC6612C6994F0019F29A /* Carbon.framework in Frameworks */,
+				23DCDC6712C699510019F29A /* CoreAudio.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		23D252C412CCA21200630768 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				23CDE6E612CCEC4000872307 /* images */,
+			);
+			path = images;
+			sourceTree = "<group>";
+		};
+		23DCDC3812C6984C0019F29A = {
+			isa = PBXGroup;
+			children = (
+				23DCDC5712C698CA0019F29A /* Scope.c */,
+				23DCDC4912C6987C0019F29A /* Accelerate.framework */,
+				23DCDC4D12C698900019F29A /* AudioUnit.framework */,
+				23DCDC5012C6989D0019F29A /* Carbon.framework */,
+				23DCDC5412C698AC0019F29A /* CoreAudio.framework */,
+				23DCDC5F12C6990F0019F29A /* Scope.plist */,
+				23D252C412CCA21200630768 /* images */,
+				23D074F012CB86BE00554A46 /* Scope.icns */,
+				23CDE6CA12CCEAD400872307 /* Scope.app */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		23DCDC5B12C6990F0019F29A /* Scope */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23DCDC6012C6990F0019F29A /* Build configuration list for PBXNativeTarget "Scope" */;
+			buildPhases = (
+				23DCDC5812C6990F0019F29A /* Resources */,
+				23DCDC5912C6990F0019F29A /* Sources */,
+				23DCDC5A12C6990F0019F29A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Scope;
+			productName = Scope;
+			productReference = 23CDE6CA12CCEAD400872307 /* Scope.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		23DCDC3A12C6984C0019F29A /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 23DCDC3B12C6984C0019F29A /* Build configuration list for PBXProject "Scope" */;
+			hasScannedForEncodings = 0;
+			mainGroup = 23DCDC3812C6984C0019F29A;
+			productRefGroup = 23DCDC3812C6984C0019F29A;
+			projectDirPath = "";
+			targets = (
+				23DCDC5B12C6990F0019F29A /* Scope */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		23DCDC5812C6990F0019F29A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23DCDC6812C699530019F29A /* Scope.plist in Resources */,
+				23D074F112CB86BE00554A46 /* Scope.icns in Resources */,
+				23CDE6F612CCEC4000872307 /* images in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		23DCDC5912C6990F0019F29A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23DCDC6912C699570019F29A /* Scope.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		23DCDC3C12C6984C0019F29A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+			};
+			name = Debug;
+		};
+		23DCDC3D12C6984C0019F29A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+		23DCDC6112C6990F0019F29A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = Scope.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Scope;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		23DCDC6212C6990F0019F29A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = Scope.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = Scope;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		23DCDC3B12C6984C0019F29A /* Build configuration list for PBXProject "Scope" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23DCDC3C12C6984C0019F29A /* Debug */,
+				23DCDC3D12C6984C0019F29A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		23DCDC6012C6990F0019F29A /* Build configuration list for PBXNativeTarget "Scope" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23DCDC6112C6990F0019F29A /* Debug */,
+				23DCDC6212C6990F0019F29A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 23DCDC3A12C6984C0019F29A /* Project object */;
+}
