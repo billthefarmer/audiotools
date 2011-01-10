@@ -1,0 +1,37 @@
+
+#include <windows.h>
+
+Scope   ICON   "Scope.ico"
+Toolbar BITMAP "Toolbar.bmp"
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Scope.manifest"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    	1,0,0,0
+PRODUCTVERSION 	1,0,0,0
+FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
+FILEFLAGS      	0x0L
+FILEOS         	VOS__WINDOWS32
+FILETYPE       	VFT_APP
+FILESUBTYPE    	VFT2_UNKNOWN
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904B0"
+        BEGIN
+            VALUE "CompanyName",      "Bill Farmer"
+            VALUE "FileDescription",  "Audio Oscilloscope"
+            VALUE "FileVersion",      "1.0"
+            VALUE "InternalName",     "Scope"
+            VALUE "LegalCopyright",   "Copyright (C) 2010 Bill Farmer"
+            VALUE "OriginalFilename", "Scope.exe"
+            VALUE "ProductName",      "Scope"
+            VALUE "ProductVersion",   "1.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 0x4B0
+    END
+END
