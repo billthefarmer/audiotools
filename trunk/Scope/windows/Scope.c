@@ -135,6 +135,7 @@ TOOLTIP tooltip;
 typedef struct
 {
     HWND hwnd;
+    int index;
     int length;
     short *data;
     float scale;
@@ -218,6 +219,7 @@ BOOL CALLBACK EnumChildProc(HWND, LPARAM);
 BOOL FocusLost(HWND, WPARAM, LPARAM);
 BOOL ChangeVolume(WPARAM, LPARAM);
 BOOL VolumeChange(WPARAM, LPARAM);
+BOOL ScopeClicked(WPARAM, LPARAM);
 BOOL DrawItem(WPARAM, LPARAM);
 BOOL DrawXScale(HDC, RECT);
 BOOL DrawYScale(HDC, RECT);
@@ -228,6 +230,7 @@ BOOL AddToolbarButtons(HWND);
 BOOL WindowResizing(HWND, WPARAM, LPARAM);
 DWORD WINAPI AudioThread(LPVOID);
 VOID WaveInData(WPARAM, LPARAM);
+VOID KeyDown(WPARAM, LPARAM);
 BOOL UpdateStatus(VOID);
 
 // Application entry point.
@@ -259,7 +262,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // Create the main window.
 
     window.hwnd =
-	CreateWindow(WCLASS, "Scope",
+	CreateWindow(WCLASS, "Audio Oscilloscope",
 		     WS_OVERLAPPED | WS_MINIMIZEBOX |
 		     WS_SIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU,
 		     CW_USEDEFAULT, CW_USEDEFAULT,
@@ -557,7 +560,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	case RIGHT_ID:
 	    scope.start += xscale.step;
 	    if (scope.start >= scope.length)
-		scope.start -= scope.length / 4;
+		scope.start -= xscale.step;
 	    xscale.start = scope.start;
 	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
 	    break;
@@ -566,6 +569,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
 	case START_ID:
 	    scope.start = 0;
+	    scope.index = 0;
 	    xscale.start = 0;
 	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
 	    break;
@@ -573,7 +577,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    // End
 
 	case END_ID:
-	    scope.start = scope.length - scope.length / 4;
+	    while (scope.start < scope.length)
+		scope.start += xscale.step;
+	    scope.start -= xscale.step;
 	    xscale.start = scope.start;
 	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
 	    break;
@@ -581,6 +587,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    // Reset
 
 	case RESET_ID:
+	    scope.index = 0;
 	    scope.bright = FALSE;
 	    scope.single = FALSE;
 	    scope.polarity = FALSE;
@@ -590,6 +597,12 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, SINGLE_ID, FALSE);
 	    SendMessage(toolbar.hwnd, TB_CHANGEBITMAP, SYNC_ID, POSITIVE_BM);
 	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, STORAGE_ID, FALSE);
+	    break;
+
+	    // Scope
+
+	case SCOPE_ID:
+	    ScopeClicked(wParam, lParam);
 	    break;
 	}
 
@@ -640,6 +653,12 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
     case WM_SIZING:
 	return WindowResizing(hWnd, wParam, lParam);
 	break;
+
+	// Key pressed
+
+    case WM_KEYDOWN:
+    	KeyDown(wParam, lParam);
+    	break;
 
 	// Mixer control change
 
@@ -952,6 +971,7 @@ LRESULT CALLBACK PopupProc(HWND hWnd, UINT uMsg,
 				    mixer.pmxc->Bounds.dwMinimum));
 
 	    SendMessage(volume.hwnd, TBM_SETPOS, TRUE, value);
+	    UpdateStatus();
 	}
 
 	else
@@ -1077,6 +1097,7 @@ BOOL ChangeVolume(WPARAM wParam, LPARAM lParam)
     mixerSetControlDetails((HMIXEROBJ)mixer.hmx, mixer.pmxcd,
 			   MIXER_SETCONTROLDETAILSF_VALUE);
 
+    UpdateStatus();
     return TRUE;
 }
 
@@ -1098,6 +1119,7 @@ BOOL VolumeChange(WPARAM wParam, LPARAM lParam)
 				mixer.pmxc->Bounds.dwMinimum));
 
 	SendMessage(volume.hwnd, TBM_SETPOS, TRUE, value);
+	UpdateStatus();
     }
 
     return TRUE;
@@ -1135,6 +1157,47 @@ BOOL DisplayTimebaseMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
     TrackPopupMenu(menu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
 		   rect.left, rect.bottom,
 		   0, hWnd, NULL);
+}
+
+// Scope clicked
+
+BOOL ScopeClicked(WPARAM wParam, LPARAM lParam)
+{
+    POINT point;
+
+    GetCursorPos(&point);
+    MapWindowPoints(HWND_DESKTOP, (HWND)lParam, &point, 1);
+
+    scope.index = point.x;
+}
+
+// Key pressed
+
+void KeyDown(WPARAM wParam, LPARAM lParam)
+{
+    RECT rect;
+
+    GetClientRect(scope.hwnd, &rect);
+
+    switch(wParam)
+    {
+	// Left
+
+    case VK_LEFT:
+	if (--scope.index < 0)
+	    scope.index = 0;
+	break;
+
+	// Right
+
+    case VK_RIGHT:
+	if (++scope.index >= rect.right)
+	    scope.index = 0;
+	break;
+
+    default:
+	return;
+    }
 }
 
 // Draw item
@@ -1235,7 +1298,7 @@ BOOL DrawXScale(HDC hdc, RECT rect)
 
 	for (int x = 100; x < width - SCALE_WIDTH; x += 100)
 	{
-	    sprintf(s, "%0.1f", ((xscale.start + x) * xscale.scale) / 100.0);
+	    sprintf(s, "%0.1f", (xscale.start + (x * xscale.scale)) / 100.0);
 	    TextOut(hdc, x, height, s, strlen(s));
 	}
     }
@@ -1248,7 +1311,7 @@ BOOL DrawXScale(HDC hdc, RECT rect)
 
 	for (int x = 100; x < width - SCALE_WIDTH; x += 100)
 	{
-	    sprintf(s, "%0.1f", ((xscale.start + x) * xscale.scale) / 100000.0);
+	    sprintf(s, "%0.1f", (xscale.start + (x * xscale.scale)) / 100000.0);
 	    TextOut(hdc, x, height, s, strlen(s));
 	}
     }
@@ -1292,10 +1355,43 @@ BOOL DrawYScale(HDC hdc, RECT rect)
 
 BOOL DrawScope(HDC hdc, RECT rect)
 {
+    // Font height
+
+    enum
+    {FONT_HEIGHT = 12};
+
     static SIZE size;
 
     static HDC hbdc;
+    static HDC hgdc;
+
     static HBITMAP bitmap;
+    static HBITMAP graticule;
+
+    static HFONT font;
+
+    // Plain vanilla font
+
+    static LOGFONT lf =
+	{0, 0, 0, 0,
+	 FW_BOLD,
+	 FALSE, FALSE, FALSE,
+	 DEFAULT_CHARSET,
+	 OUT_DEFAULT_PRECIS,
+	 CLIP_DEFAULT_PRECIS,
+	 DEFAULT_QUALITY,
+	 DEFAULT_PITCH | FF_DONTCARE,
+	 ""};
+
+    static char s[16];
+
+    // Create font
+
+    if (font == NULL)
+    {
+	lf.lfHeight = FONT_HEIGHT;
+	font = CreateFontIndirect(&lf);
+    }
 
     // Calculate bitmap dimensions
 
@@ -1307,42 +1403,54 @@ BOOL DrawScope(HDC hdc, RECT rect)
     if (hbdc == NULL)
     {
 	hbdc = CreateCompatibleDC(hdc);
+	hgdc = CreateCompatibleDC(hdc);
+
 	SelectObject(hbdc, GetStockObject(DC_PEN));
+	SelectObject(hgdc, GetStockObject(DC_PEN));
+
+	SelectObject(hbdc, font);
     }
 
     if (width != size.cx || height != size.cy)
     {
 	if (bitmap != NULL)
+	{
 	    DeleteObject(bitmap);
+	    DeleteObject(graticule);
+	}
 
 	bitmap = CreateCompatibleBitmap(hdc, width, height);
+	graticule = CreateCompatibleBitmap(hdc, width, height);
 	SelectObject(hbdc, bitmap);
+	SelectObject(hgdc, graticule);
 
 	size.cx = width;
 	size.cy = height;
 
-	FillRect(hbdc, &rect, GetStockObject(BLACK_BRUSH));
+	FillRect(hgdc, &rect, GetStockObject(BLACK_BRUSH));
 
 	// Dark green graticule
 
-	SetDCPenColor(hbdc, RGB(0, 128, 0));
+	SetDCPenColor(hgdc, RGB(0, 128, 0));
 
 	// Draw graticule
 
 	for (int i = 0; i < width; i += 10)
 	{
-	    MoveToEx(hbdc, i, 0, NULL);
-	    LineTo(hbdc, i, height);
+	    MoveToEx(hgdc, i, 0, NULL);
+	    LineTo(hgdc, i, height);
 	}
 
 	for (int i = 0; i < height / 2; i += 10)
 	{
-	    MoveToEx(hbdc, 0, height / 2 + i, NULL);
-	    LineTo(hbdc, width, height / 2 + i);
+	    MoveToEx(hgdc, 0, height / 2 + i, NULL);
+	    LineTo(hgdc, width, height / 2 + i);
 
-	    MoveToEx(hbdc, 0, height / 2 - i, NULL);
-	    LineTo(hbdc, width, height / 2 - i);
+	    MoveToEx(hgdc, 0, height / 2 - i, NULL);
+	    LineTo(hgdc, width, height / 2 - i);
 	}
+
+	scope.clear = TRUE;
     }
 
     // Don't attempt the trace until there's a buffer
@@ -1352,7 +1460,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	// Copy the bitmap
 
 	BitBlt(hdc, rect.left, rect.top, width, height,
-	       hbdc, 0, 0, SRCCOPY);
+	       hgdc, 0, 0, SRCCOPY);
 
 	return TRUE;
     }
@@ -1363,24 +1471,21 @@ BOOL DrawScope(HDC hdc, RECT rect)
     {
 	// Copy the graticule
 
-	BitBlt(hdc, rect.left, rect.top, width, height,
-	       hbdc, 0, 0, SRCCOPY);
+	BitBlt(hbdc, rect.left, rect.top, width, height,
+	       hgdc, 0, 0, SRCCOPY);
 
 	scope.clear = FALSE;
     }
 
     float xscale = 1.0 / (((float)SAMPLE_RATE / 100000.0) * scope.scale);
-    int xstart = scope.start;
+    int xstart = round(scope.start);
     int xstep = round(1.0 / xscale);
     int xstop = round(xstart + ((float)width / xscale));
 
     if (xstop > scope.length)
 	xstop = scope.length;
 
-    // Green pen for scope trace
-
-    SelectObject(hdc, GetStockObject(DC_PEN));
-    SetDCPenColor(hdc, RGB(0, 255, 0));
+    // Calculate scale
 
     static int max;
 
@@ -1393,11 +1498,17 @@ BOOL DrawScope(HDC hdc, RECT rect)
 
     // Move the origin
 
-    SetViewportOrgEx(hdc, 0, height / 2, NULL);
+    SetViewportOrgEx(hbdc, 0, height / 2, NULL);
+
+    // Green pen for scope trace
+
+    SelectObject(hbdc, GetStockObject(DC_PEN));
+    SelectObject(hbdc, GetStockObject(NULL_BRUSH));
+    SetDCPenColor(hbdc, RGB(0, 255, 0));
 
     // Draw the trace
 
-    MoveToEx(hdc, 0, 0, NULL);
+    MoveToEx(hbdc, 0, 0, NULL);
 
     if (xscale < 1.0)
     {
@@ -1408,7 +1519,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 
 	    int x = round((float)i * xscale);
 	    int y = -round((float)scope.data[i + xstart] / yscale);
-	    LineTo(hdc, x, y);
+	    LineTo(hbdc, x, y);
 	}
     }
 
@@ -1421,9 +1532,55 @@ BOOL DrawScope(HDC hdc, RECT rect)
 
 	    int x = round((float)i * xscale);
 	    int y = -round((float)scope.data[i + xstart] / yscale);
-	    LineTo(hdc, x, y);
+	    LineTo(hbdc, x, y);
+
+	    if (timebase.index == 0)
+		Rectangle(hbdc, x - 2, y - 2, x + 2, y + 2);
 	}
     }
+
+    SetTextColor(hbdc, RGB(0, 255, 0));
+    SetBkMode(hbdc, TRANSPARENT);
+
+    if (scope.index != 0 && !scope.storage)
+    {
+	MoveToEx(hbdc, scope.index, height / 2, NULL);
+	LineTo(hbdc, scope.index, -height / 2);
+
+	int i = round((float)scope.index / xscale);
+	int y = -round((float)scope.data[i + xstart] / yscale);
+
+	SetTextAlign(hbdc, TA_LEFT | (y > 0)? TA_TOP: TA_BOTTOM);
+
+	sprintf(s, "%0.3f", (float)scope.data[i + xstart] / 32768.0);
+	TextOut(hbdc, scope.index, y, s, strlen(s));
+
+	SetTextAlign(hbdc, TA_CENTER | TA_BOTTOM);
+
+	if (scope.scale < 100.0)
+	{
+	    sprintf(s, (scope.scale < 1.0)? "%0.3f": 
+		    (scope.scale < 10.0)? "%0.2f": "%0.1f",
+		    (scope.start + (scope.index * scope.scale)) / 100.0);
+	    TextOut(hbdc, scope.index, height / 2, s, strlen(s));
+	}
+
+	else
+	{
+	    sprintf(s,  "%0.3f", (scope.start + (scope.index *
+						 scope.scale)) / 100000.0);
+	    TextOut(hbdc, scope.index, height / 2, s, strlen(s));
+	}
+    }
+
+    // Move the origin back
+
+    SetViewportOrgEx(hbdc, 0, 0, NULL);
+
+    // Copy the bitmap
+
+    BitBlt(hdc, rect.left, rect.top, width, height,
+	   hbdc, 0, 0, SRCCOPY);
 
     return TRUE;
 }
@@ -1655,25 +1812,22 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
 	    // Initialise sync
 
-	    int maxdx = 0;
 	    int dx = 0;
 
-	    if (!scope.polarity)
+	    if (scope.polarity)
 	    {
 		for (int i = 0; i < STEP; i++)
 		{
 		    dx = data[i] - last;
-		    last = data[i];
 
-		    if (maxdx > dx)
-			maxdx = dx;
-
-		    if (maxdx < 2 && dx > -2)
+		    if (dx < 0 && last > 0 && data[i] < 0)
 		    {
 			index = i;
 			state++;
 			break;
 		    }
+
+		    last = data[i];
 		}
 	    }
 
@@ -1682,17 +1836,15 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 		for (int i = 0; i < STEP; i++)
 		{
 		    dx = data[i] - last;
-		    last = data[i];
 
-		    if (maxdx < dx)
-			maxdx = dx;
-
-		    if (maxdx > -2 && dx < 2)
+		    if (dx > 0 && last < 0 && data[i] > 0)
 		    {
 			index = i;
 			state++;
 			break;
 		    }
+
+		    last = data[i];
 		}
 	    }
 	}
@@ -1706,6 +1858,7 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
     case 1:
 
 	count = timebase.counts[timebase.index];
+	scope.length = count;
 
 	// Copy data
 
@@ -1752,9 +1905,8 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
     if (scope.scale != timebase.values[timebase.index])
     {
 	scope.scale = timebase.values[timebase.index];
-	scope.length = timebase.counts[timebase.index];
 	xscale.scale = timebase.values[timebase.index];
-	xscale.step = ((float)SAMPLE_RATE / 50) * xscale.scale;
+	xscale.step = 500 * xscale.scale;
 
 	// Update display
 
@@ -1773,10 +1925,10 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 BOOL UpdateStatus()
 {
 
-    static char s[128];
+    static char s[128], v[32];
 
     sprintf(s, (timebase.values[timebase.index] < 100)?
-	    " Timebase: %0.1f ms": " Timebase: %0.1f sec",
+	    " Timebase %0.1f ms": " Timebase %0.1f sec",
 	    (timebase.values[timebase.index] < 100)?
 	    timebase.values[timebase.index]:
 	    timebase.values[timebase.index] / 1000.0);
@@ -1792,6 +1944,10 @@ BOOL UpdateStatus()
 
     if (scope.storage)
 	strcat(s, "  storage mode");
+
+    sprintf(v, "   Volume %d%%",
+	    100 - SendMessage(volume.hwnd, TBM_GETPOS, 0, 0));
+    strcat(s, v);
 
     SendMessage(status.hwnd, SB_SETTEXT, 0, (LPARAM)s);
 }
