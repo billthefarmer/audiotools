@@ -2,6 +2,7 @@
 #include "windows.h"
 
 SigGen ICON "SigGen.ico"
+Knob BITMAP "Knob.bmp"
 
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "SigGen.manifest"
 

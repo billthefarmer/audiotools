@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-//  Tuner - A Tuner written in C.
+//  Scope - An Audio Oscilloscope written in C.
 //
-//  Copyright (C) 2009  Bill Farmer
+//  Copyright (C) 2010  Bill Farmer
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ enum
      TOOLBAR_ID,
      STATUS_ID,
 
-     VOLUME_ID,
+     LEVEL_ID,
      BRIGHT_ID,
      SINGLE_ID,
      TRIGGER_ID,
@@ -64,7 +64,7 @@ enum
 // Bitmap ids
 
 enum
-    {VOLUME_BM,
+    {LEVEL_BM,
      BRIGHT_BM,
      SINGLE_BM,
      TRIGGER_BM,
@@ -80,8 +80,10 @@ enum
      RESET_BM};
 
 enum
-    {HEIGHT = 480,
-     WIDTH  = 640};
+    {HEIGHT     = 480,
+     WIDTH      = 640,
+     MAX_HEIGHT = 768,
+     MAX_WIDTH = 1024};
 
 enum
     {SCALE_HEIGHT = 24,
@@ -162,7 +164,7 @@ typedef struct
 XSCALE xscale;
 
 TOOL yscale;
-TOOL volume;
+TOOL level;
 
 typedef struct
 {
@@ -213,12 +215,12 @@ LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK PopupProc(HWND, UINT, WPARAM, LPARAM);
 BOOL RegisterMainClass(HINSTANCE);
 BOOL RegisterPopupClass(HINSTANCE);
-BOOL DisplayVolumeControl(HWND, WPARAM, LPARAM);
+BOOL DisplayLevelControl(HWND, WPARAM, LPARAM);
 BOOL DisplayTimebaseMenu(HWND, WPARAM, LPARAM);
 BOOL CALLBACK EnumChildProc(HWND, LPARAM);
 BOOL FocusLost(HWND, WPARAM, LPARAM);
-BOOL ChangeVolume(WPARAM, LPARAM);
-BOOL VolumeChange(WPARAM, LPARAM);
+BOOL ChangeLevel(WPARAM, LPARAM);
+BOOL LevelChange(WPARAM, LPARAM);
 BOOL ScopeClicked(WPARAM, LPARAM);
 BOOL DrawItem(WPARAM, LPARAM);
 BOOL DrawXScale(HDC, RECT);
@@ -461,16 +463,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Colour static text
 
     case WM_CTLCOLORSTATIC:
-	switch ((DWORD)GetMenu((HWND)lParam))
-	{
-	// case SCOPE_ID:
-	//     return (LRESULT)GetStockObject(BLACK_BRUSH);
-	//     break;
-
-	default:
-	    return (LRESULT)GetSysColorBrush(COLOR_WINDOW);
-	    break;
-	}
+	return (LRESULT)GetSysColorBrush(COLOR_WINDOW);
     	break;
 
 	// Draw item
@@ -495,10 +488,10 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
     case WM_COMMAND:
 	switch (LOWORD(wParam))
 	{
-	    // Volume
+	    // Level
 
-	case VOLUME_ID:
-	    DisplayVolumeControl(hWnd, wParam, lParam);
+	case LEVEL_ID:
+	    DisplayLevelControl(hWnd, wParam, lParam);
 	    break;
 
 	    // Bright line
@@ -629,8 +622,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	case TBN_DROPDOWN:
 	    switch (((LPNMTOOLBAR)lParam)->iItem)
 	    {
-	    case VOLUME_ID:
-		DisplayVolumeControl(hWnd, wParam, lParam);
+	    case LEVEL_ID:
+		DisplayLevelControl(hWnd, wParam, lParam);
 		break;
 
 	    case TIMEBASE_ID:
@@ -663,7 +656,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Mixer control change
 
     case MM_MIXM_CONTROL_CHANGE:
-	VolumeChange(wParam, lParam);
+	LevelChange(wParam, lParam);
 	break;
 
         // Process other messages.
@@ -683,9 +676,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
     return 0;
 }
 
-// Display volume control
+// Display level control
 
-BOOL DisplayVolumeControl(HWND hWnd, WPARAM wParam, LPARAM lParam)
+BOOL DisplayLevelControl(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
     RECT rect;
 
@@ -710,7 +703,7 @@ BOOL DisplayVolumeControl(HWND hWnd, WPARAM wParam, LPARAM lParam)
 			 hWnd, 0, hInst, NULL);
     }
 
-    // Show volume control
+    // Show level control
 
     else
     {
@@ -721,7 +714,8 @@ BOOL DisplayVolumeControl(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	    ShowWindow(popup.hwnd, FALSE);
     }
 
-    // Process messages
+    // Process messages, so the toolbar button stays down while the
+    // popup window is visible
 
     MSG msg;
     BOOL flag;
@@ -758,23 +752,33 @@ BOOL RegisterPopupClass(HINSTANCE hInst)
     return RegisterClass(&wc);
 }
 
-// Enum child proc
+// Enum child proc for window resizing
 
 BOOL CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam)
 {
+    // Switch by id to resize tool windows. This function to get the
+    // tool id doesn't work according to the documentation, but is the
+    // only way to do this that I have found
+
     switch ((DWORD)GetMenu(hWnd))
     {
+	// Toolbar, let it resize itself
+
     case TOOLBAR_ID:
 	SendMessage(hWnd, WM_SIZE, 0, lParam);
 	GetWindowRect(hWnd, &toolbar.rect);
 	MapWindowPoints(NULL, (HWND)lParam, (POINT *)&toolbar.rect, 2);
 	break;
 
+	// Status bar, let it resize itself
+
     case STATUS_ID:
 	SendMessage(hWnd, WM_SIZE, 0, lParam);
 	GetWindowRect(hWnd, &status.rect);
 	MapWindowPoints(NULL, (HWND)lParam, (POINT *)&status.rect, 2);
 	break;
+
+	// X scale, resize it
 
     case XSCALE_ID:
 	MoveWindow(hWnd, status.rect.left, status.rect.top - SCALE_HEIGHT,
@@ -784,6 +788,8 @@ BOOL CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam)
 	MapWindowPoints(NULL, (HWND)lParam, (POINT *)&xscale.rect, 2);
 	break;
 
+	// Y scale, resize it
+
     case YSCALE_ID:
 	MoveWindow(hWnd, toolbar.rect.left, toolbar.rect.bottom,
 		   SCALE_WIDTH, xscale.rect.top - toolbar.rect.bottom, FALSE);
@@ -791,6 +797,8 @@ BOOL CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam)
 	GetWindowRect(hWnd, &yscale.rect);
 	MapWindowPoints(NULL, (HWND)lParam, (POINT *)&yscale.rect, 2);
 	break;
+
+	// Scope, resize it
 
     case SCOPE_ID:
 	MoveWindow(hWnd, yscale.rect.right, toolbar.rect.bottom,
@@ -856,8 +864,8 @@ BOOL AddToolbarButtons(HWND control)
 
     TBBUTTON buttons[] =
 	{{0, 0, 0, BTNS_SEP},
-	 {VOLUME_BM, VOLUME_ID, TBSTATE_ENABLED, BTNS_WHOLEDROPDOWN,
-	  {0}, 0, (INT_PTR)"Volume, click to pop up volume control"},
+	 {LEVEL_BM, LEVEL_ID, TBSTATE_ENABLED, BTNS_WHOLEDROPDOWN,
+	  {0}, 0, (INT_PTR)"Input level, click to pop up level control"},
 	 {0, 0, 0, BTNS_SEP},
 	 {BRIGHT_BM, BRIGHT_ID, TBSTATE_ENABLED, BTNS_CHECK,
 	  {0}, 0, (INT_PTR)"Bright line, click to turn off sync"},
@@ -902,17 +910,22 @@ BOOL WindowResizing(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
     PRECT rectp = (PRECT)lParam;
 
+    // Minimum size
+
     if (rectp->right - rectp->left < WIDTH)
 	rectp->right = rectp->left + WIDTH;
 
     if (rectp->bottom - rectp->top < HEIGHT)
 	rectp->bottom = rectp->top + HEIGHT;
 
-    if (rectp->right - rectp->left > 1024)
-    	rectp->right = rectp->left + 1024;
+    // Maximum size, can be defeated by dragging bottom edge to
+    // desktop toolbar in Windows 7, probably Vista
 
-    if (rectp->bottom - rectp->top > 768)
-    	rectp->bottom = rectp->top + 768;
+    if (rectp->right - rectp->left > MAX_WIDTH)
+    	rectp->right = rectp->left + MAX_WIDTH;
+
+    if (rectp->bottom - rectp->top > MAX_HEIGHT)
+    	rectp->bottom = rectp->top + MAX_HEIGHT;
 
     return TRUE;
 }
@@ -933,26 +946,26 @@ LRESULT CALLBACK PopupProc(HWND hWnd, UINT uMsg,
 	int width = popup.rect.right - popup.rect.left;
 	int height = popup.rect.bottom - popup.rect.top;
 
-	// Create volume control
+	// Create level control
 
-	volume.hwnd =
+	level.hwnd =
 	    CreateWindow(TRACKBAR_CLASS, NULL,
 			 WS_VISIBLE | WS_CHILD |
 			 TBS_VERT | TBS_NOTICKS,
 			 0, 0,
 			 width, height, hWnd,
-			 (HMENU)VOLUME_ID, hInst, NULL);
+			 (HMENU)LEVEL_ID, hInst, NULL);
 
 	// Set the slider range
 
-	SendMessage(volume.hwnd, TBM_SETRANGE, TRUE,
+	SendMessage(level.hwnd, TBM_SETRANGE, TRUE,
 		    MAKELONG(MIN_VOL, MAX_VOL));
-	SendMessage(volume.hwnd, TBM_SETPAGESIZE, 0, STEP_VOL);
+	SendMessage(level.hwnd, TBM_SETPAGESIZE, 0, STEP_VOL);
 
-	// Add volume to tooltip
+	// Add level to tooltip
 
-	tooltip.info.uId = (UINT_PTR)volume.hwnd;
-	tooltip.info.lpszText = "Microphone volume";
+	tooltip.info.uId = (UINT_PTR)level.hwnd;
+	tooltip.info.lpszText = "Input level";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -970,19 +983,18 @@ LRESULT CALLBACK PopupProc(HWND hWnd, UINT uMsg,
 				   (mixer.pmxc->Bounds.dwMaximum -
 				    mixer.pmxc->Bounds.dwMinimum));
 
-	    SendMessage(volume.hwnd, TBM_SETPOS, TRUE, value);
-	    UpdateStatus();
+	    SendMessage(level.hwnd, TBM_SETPOS, TRUE, value);
 	}
 
 	else
-	    EnableWindow(volume.hwnd, FALSE);
+	    EnableWindow(level.hwnd, FALSE);
 
 	break;
 
-	// Volume control
+	// Level control
 
     case WM_VSCROLL:
-	ChangeVolume(wParam, lParam);
+	ChangeLevel(wParam, lParam);
 
 	// Set the focus back to the window
 
@@ -1025,7 +1037,7 @@ BOOL FocusLost(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     // Check for toolbar
 
-    switch ((int)GetMenu(window))
+    switch ((DWORD)GetMenu(window))
     {
     case TOOLBAR_ID:
 	break;
@@ -1049,11 +1061,11 @@ BOOL FocusLost(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	return FALSE;
     }
 
-    // Check for volume button
+    // Check for level button
 
     switch (button.idCommand)
     {
-    case VOLUME_ID:
+    case LEVEL_ID:
 	return FALSE;
 	break;
 
@@ -1065,9 +1077,9 @@ BOOL FocusLost(HWND hWnd, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 
-// Change Volume
+// Change Level
 
-BOOL ChangeVolume(WPARAM wParam, LPARAM lParam)
+BOOL ChangeLevel(WPARAM wParam, LPARAM lParam)
 {
     if (mixer.pmxcdu == NULL)
 	return FALSE;
@@ -1088,7 +1100,7 @@ BOOL ChangeVolume(WPARAM wParam, LPARAM lParam)
 	return FALSE;
     }
 
-    int value = SendMessage(volume.hwnd, TBM_GETPOS, 0, 0);
+    int value = SendMessage(level.hwnd, TBM_GETPOS, 0, 0);
 
     mixer.pmxcdu->dwValue = ((mixer.pmxc->Bounds.dwMaximum -
 			      mixer.pmxc->Bounds.dwMinimum) *
@@ -1097,13 +1109,12 @@ BOOL ChangeVolume(WPARAM wParam, LPARAM lParam)
     mixerSetControlDetails((HMIXEROBJ)mixer.hmx, mixer.pmxcd,
 			   MIXER_SETCONTROLDETAILSF_VALUE);
 
-    UpdateStatus();
     return TRUE;
 }
 
-// Volume change
+// Level change
 
-BOOL VolumeChange(WPARAM wParam, LPARAM lParam)
+BOOL LevelChange(WPARAM wParam, LPARAM lParam)
 {
     if (lParam == mixer.pmxcd->dwControlID)
     {
@@ -1118,8 +1129,7 @@ BOOL VolumeChange(WPARAM wParam, LPARAM lParam)
 			       (mixer.pmxc->Bounds.dwMaximum -
 				mixer.pmxc->Bounds.dwMinimum));
 
-	SendMessage(volume.hwnd, TBM_SETPOS, TRUE, value);
-	UpdateStatus();
+	SendMessage(level.hwnd, TBM_SETPOS, TRUE, value);
     }
 
     return TRUE;
@@ -1278,6 +1288,8 @@ BOOL DrawXScale(HDC hdc, RECT rect)
 
     SetViewportOrgEx(hdc, SCALE_WIDTH, 0, NULL);
 
+    // Draw scale
+
     for (int x = 0; x < width - SCALE_WIDTH; x += 50)
     {
 	MoveToEx(hdc, x, 0, NULL);
@@ -1331,6 +1343,8 @@ BOOL DrawYScale(HDC hdc, RECT rect)
     // Move the origin
 
     SetViewportOrgEx(hdc, width / 2, height / 2, NULL);
+
+    // Draw scale
 
     for (int y = 0; y < height / 2; y += 50)
     {
@@ -1411,13 +1425,19 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	SelectObject(hbdc, font);
     }
 
+    // Create new bitmaps if resized
+
     if (width != size.cx || height != size.cy)
     {
+	// Delete old bitmaps
+
 	if (bitmap != NULL)
 	{
 	    DeleteObject(bitmap);
 	    DeleteObject(graticule);
 	}
+
+	// Create new bitmaps
 
 	bitmap = CreateCompatibleBitmap(hdc, width, height);
 	graticule = CreateCompatibleBitmap(hdc, width, height);
@@ -1477,6 +1497,8 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	scope.clear = FALSE;
     }
 
+    // Calculate scale etc
+
     float xscale = 1.0 / (((float)SAMPLE_RATE / 100000.0) * scope.scale);
     int xstart = round(scope.start);
     int xstep = round(1.0 / xscale);
@@ -1534,6 +1556,8 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	    int y = -round((float)scope.data[i + xstart] / yscale);
 	    LineTo(hbdc, x, y);
 
+	    // Draw points at max resolution
+
 	    if (timebase.index == 0)
 		Rectangle(hbdc, x - 2, y - 2, x + 2, y + 2);
 	}
@@ -1541,6 +1565,8 @@ BOOL DrawScope(HDC hdc, RECT rect)
 
     SetTextColor(hbdc, RGB(0, 255, 0));
     SetBkMode(hbdc, TRANSPARENT);
+
+    // Draw index
 
     if (scope.index != 0 && !scope.storage)
     {
@@ -1773,6 +1799,8 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
     return msg.wParam;
 }
 
+// Wave in data
+
 void WaveInData(WPARAM wParam, LPARAM lParam)
 {
     static int index;
@@ -1780,7 +1808,7 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
     static short state;
     static short last;
 
-    // Create buffers for processing the audio data
+    // Create buffer for processing the audio data
 
     static short buffer[SAMPLES];
 
@@ -1796,8 +1824,12 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
     short *data = (short *)((WAVEHDR *)lParam)->lpData;
 
+    // State machine for sync and copying data to display buffer
+
     switch (state)
     {
+	// 0: waiting for sync
+
     case 0:
 
 	index = 0;
@@ -1813,6 +1845,8 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	    // Initialise sync
 
 	    int dx = 0;
+
+	    // Sync polarity
 
 	    if (scope.polarity)
 	    {
@@ -1849,13 +1883,21 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	    }
 	}
 
+	// No sync, try next time
+
 	if (state == 0)
 	    break;
+
+	// Reset trigger
 
 	if (scope.single && scope.trigger)
 	    scope.trigger = FALSE;
 
+	// 1: First chunk of data
+
     case 1:
+
+	// Update count
 
 	count = timebase.counts[timebase.index];
 	scope.length = count;
@@ -1865,12 +1907,18 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	memmove(buffer, data + index, (STEP - index) * sizeof(short));
 	index = STEP - index;
 
+	// If done, wait for sync again
+
 	if (index >= count)
 	    state = 0;
+
+	// Else get some more data next time
 
 	else
 	    state++;
 	break;
+
+	// 2: Subsequent chunks of data
 
     case 2:
 
@@ -1879,18 +1927,26 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	memmove(buffer + index, data, STEP * sizeof(short));
 	index += STEP;
 
+	// Done, wait for sync again
+
 	if (index >= count)
 	    state = 0;
+
+	// Else if last but one chunk, get last chunk next time
 
 	else if (index + STEP >= count)
 	    state++;
 	break;
+
+	// Last chunk of data
 
     case 3:
 
 	// Copy data
 
 	memmove(buffer + index, data, (count - index) * sizeof(short));
+
+	// Wait for sync next time
 
 	state = 0;
 	break;
@@ -1924,14 +1980,17 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
 BOOL UpdateStatus()
 {
+    static char s[128];
 
-    static char s[128], v[32];
+    // Timebase
 
     sprintf(s, (timebase.values[timebase.index] < 100)?
 	    " Timebase %0.1f ms": " Timebase %0.1f sec",
 	    (timebase.values[timebase.index] < 100)?
 	    timebase.values[timebase.index]:
 	    timebase.values[timebase.index] / 1000.0);
+
+    // Buttons
 
     if (scope.bright)
 	strcat(s, "  bright line");
@@ -1945,9 +2004,9 @@ BOOL UpdateStatus()
     if (scope.storage)
 	strcat(s, "  storage mode");
 
-    sprintf(v, "   Volume %d%%",
-	    100 - SendMessage(volume.hwnd, TBM_GETPOS, 0, 0));
-    strcat(s, v);
+    // Update statsu
 
     SendMessage(status.hwnd, SB_SETTEXT, 0, (LPARAM)s);
+
+    return TRUE;
 }

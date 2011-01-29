@@ -1,0 +1,38 @@
+			Audio Signal Generator
+			======================
+
+Audio signal generator. Coarse and fine frequency adjustment from 10Hz
+to 15KHz, relative level adjustment from -6dB to -80dB. Display shows
+frequency and relative level. Absolute level is not possible because
+of all the variables in the sound system.
+
+Using
+=====
+
+The frequency knob responds to mouse dragging. It is possible to twirl
+it using the mouse. The fine frequency and level sliders allow for
+fine adjustments of frequency and output level. The frequency knob is
+also adjustable using the left and right arrow keys. The fine
+frequency slider is adjustable using the up and down arrow heys, the
+level slider using the page up and down keys.
+
+Files
+=====
+
+Changes			- Change log
+COPYING			- Licence file
+Knob.bmp		- Bitmap image
+Makefile		- Build file
+SigGen.txt		- This file
+SigGen.c		- Source file
+SigGen.exe		- Application
+SigGen.ico		- Icon file
+SigGen.manifest		- Manifest file
+SigGen.nsi		- NSIS installer script
+SigGen.rc		- Resource file
+
+Building
+========
+
+Use the makefile with Mingw or Cygwin GCC, or use a Microsoft C
+compiler to build.
