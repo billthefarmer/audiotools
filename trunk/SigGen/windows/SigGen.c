@@ -22,7 +22,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#define _WIN32_IE 0x0501
+#define _WIN32_IE    0x0501
 #define _WIN32_WINNT 0x0500
 
 #include <math.h>
@@ -139,14 +139,16 @@ typedef struct
 DISPLAY display =
     {NULL, 1000.0, -20.0};
 
-struct
+typedef struct
 {
     TOOL sine;
     TOOL square;
     TOOL sawtooth;
     TOOL mute;
     TOOL quit;
-} button;
+} BUTTONS;
+
+BUTTONS buttons;
 
 typedef struct
 {
@@ -367,13 +369,13 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	knob.hwnd =
 	    CreateWindow(KNOBCLASS, NULL,
 			 WS_VISIBLE | WS_CHILD,
-			 8, 56, 160, 160, hWnd,
+			 4, 52, 168, 168, hWnd,
 			 (HMENU)KNOB_ID, hInst, NULL);
 
 	// Add knob to tooltip
 
 	tooltip.info.uId = (UINT_PTR)knob.hwnd;
-	tooltip.info.lpszText = "Frequency adjust";
+	tooltip.info.lpszText = "Frequency";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -395,7 +397,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Add slider to tooltip
 
 	tooltip.info.uId = (UINT_PTR)fine.hwnd;
-	tooltip.info.lpszText = "Frequency adjust";
+	tooltip.info.lpszText = "Fine frequency";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -417,25 +419,25 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Add slider to tooltip
 
 	tooltip.info.uId = (UINT_PTR)level.hwnd;
-	tooltip.info.lpszText = "Level adjust";
+	tooltip.info.lpszText = "Level";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
 
 	// Create sine button
 
-	button.sine.hwnd =
+	buttons.sine.hwnd =
 	    CreateWindow(WC_BUTTON, "Sine",
 			 WS_VISIBLE | WS_CHILD | WS_GROUP |
 			 BS_AUTORADIOBUTTON | BS_PUSHLIKE,
 			 240, 76, 72, 24, hWnd,
 			 (HMENU)SINE_ID, hInst, NULL);
 
-	SendMessage(button.sine.hwnd, BM_SETCHECK, BST_CHECKED, 0);
+	SendMessage(buttons.sine.hwnd, BM_SETCHECK, BST_CHECKED, 0);
 
 	// Create square button
 
-	button.square.hwnd =
+	buttons.square.hwnd =
 	    CreateWindow(WC_BUTTON, "Square",
 			 WS_VISIBLE | WS_CHILD |
 			 BS_AUTORADIOBUTTON | BS_PUSHLIKE,
@@ -444,7 +446,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
 	// Create sawtooth button
 
-	button.sawtooth.hwnd =
+	buttons.sawtooth.hwnd =
 	    CreateWindow(WC_BUTTON, "Sawtooth",
 			 WS_VISIBLE | WS_CHILD |
 			 BS_AUTORADIOBUTTON | BS_PUSHLIKE,
@@ -453,7 +455,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
 	// Create mute button
 
-	button.mute.hwnd =
+	buttons.mute.hwnd =
 	    CreateWindow(WC_BUTTON, "Mute",
 			 WS_VISIBLE | WS_CHILD |
 			 BS_AUTOCHECKBOX | BS_PUSHLIKE,
@@ -462,7 +464,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
 	// Create quit button
 
-	button.quit.hwnd =
+	buttons.quit.hwnd =
 	    CreateWindow(WC_BUTTON, "Quit",
 			 WS_VISIBLE | WS_CHILD,
 			 240, 192, 72, 24, hWnd,
@@ -471,7 +473,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Create status bar
 
 	status.hwnd =
-	    CreateWindow(STATUSCLASSNAME, "",
+	    CreateWindow(STATUSCLASSNAME,
+			 "\tKnob to change frequency,"
+			 " fine left, level right slider",
 			 WS_VISIBLE | WS_CHILD,
 			 0, 0, 0, 0, hWnd,
 			 (HMENU)STATUS_ID, hInst, NULL);
@@ -522,21 +526,30 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
     case WM_COMMAND:
 	switch (LOWORD(wParam))
 	{
+	    // Sine
 	case SINE_ID:
 	    audio.waveform = SINE;
 	    break;
+
+	    // Square
 
 	case SQUARE_ID:
 	    audio.waveform = SQUARE;
 	    break;
 
+	    // Sawtooth
+
 	case SAWTOOTH_ID:
 	    audio.waveform = SAWTOOTH;
 	    break;
 
+	    // Mute
+
 	case MUTE_ID:
 	    audio.mute = SendMessage((HWND)lParam, BM_GETCHECK, 0, 0);
 	    break;
+
+	    // Quit
 
 	case QUIT_ID:
 	    PostQuitMessage(0);
@@ -558,8 +571,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	SetFocus(hWnd);
 	break;
 
-	// Mouse move
-
 	// Set the focus back to the window by clicking
 
     case WM_LBUTTONDOWN:
@@ -568,12 +579,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	break;
 
     case WM_RBUTTONDOWN:
-	// DisplayContextMenu(hWnd, MAKEPOINTS(lParam));
+	// Not used
 	break;
-
-    case WM_MOUSEMOVE:
-    	MouseMove(hWnd, wParam, lParam);
-    	break;
 
         // Process other messages.
 
@@ -668,13 +675,19 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
 
     switch (wParam)
     {
+	// Scale
+
     case SCALE_ID:
 	DrawScale(hdc, rect, state);
 	break;
 
+	// Display
+
     case DISPLAY_ID:
 	DrawDisplay(hdc, rect, state);
 	break;
+
+	// Knob
 
     case KNOB_ID:
 	DrawKnob(hdc, rect, state);
@@ -686,6 +699,11 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
 
 BOOL DrawScale(HDC hdc, RECT rect, UINT state)
 {
+    // Font height
+
+    enum
+    {FONT_HEIGHT = 16};
+
     static HBITMAP bitmap;
     static HFONT font;
     static HDC hbdc;
@@ -724,7 +742,9 @@ BOOL DrawScale(HDC hdc, RECT rect, UINT state)
 	SelectObject(hbdc, bitmap);
 	SelectObject(hbdc, GetStockObject(DC_PEN));
 
-	lf.lfHeight = 16;
+	// Create font
+
+	lf.lfHeight = FONT_HEIGHT;
 	font = CreateFontIndirect(&lf);
 	SelectObject(hbdc, font);
 	SetTextAlign(hbdc, TA_CENTER | TA_BOTTOM);
@@ -789,7 +809,7 @@ BOOL DrawScale(HDC hdc, RECT rect, UINT state)
 
     SetViewportOrgEx(hbdc, 0, 0, NULL);
 
-    // Draw line
+    // Draw centre line
 
     MoveToEx(hbdc, width / 2, 0, NULL);
     LineTo(hbdc, width / 2, height);
@@ -827,6 +847,8 @@ BOOL DrawDisplay(HDC hdc, RECT rect, UINT state)
 	 DEFAULT_PITCH | FF_DONTCARE,
 	 ""};
 
+    // Create font
+
     if (font == NULL)
     {
 	lf.lfHeight = FONT_HEIGHT;
@@ -851,6 +873,8 @@ BOOL DrawDisplay(HDC hdc, RECT rect, UINT state)
 
     sprintf(text, "%+6.1lfdB  ", display.decibels);
     TextOut(hdc, x, y, text, strlen(text));
+
+    return TRUE;
 }
 
 // Draw Knob
@@ -862,15 +886,38 @@ BOOL DrawKnob(HDC hdc, RECT rect, UINT state)
     int width = rect.right - rect.left;
     int height = rect.bottom - rect.top;
 
-    SelectObject(hdc, GetStockObject(DC_PEN));
-    SelectObject(hdc, GetStockObject(DC_BRUSH));
+    // Load bitmap
 
-    // Draw knob
+    HBITMAP bitmap =
+	LoadImage(hInst, "Knob", IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR);
 
-    SetDCPenColor(hdc, GetSysColor(COLOR_3DSHADOW));
-    SetDCBrushColor(hdc, GetSysColor(COLOR_BTNFACE));
+    // Create DC
 
-    Ellipse(hdc, rect.left, rect.top, width, width);
+    HDC hbdc = CreateCompatibleDC(hdc);
+
+    // Select the bitmap
+
+    SelectObject(hbdc, bitmap);
+
+    // Select a brush
+
+    SelectObject(hbdc, GetSysColorBrush(COLOR_BTNFACE));
+
+    // Get the colour of the centre pixel
+
+    COLORREF colour = GetPixel(hbdc, width / 2, height / 2);
+
+    // Flood fill the bitmap
+
+    ExtFloodFill(hbdc, width / 2, height / 2, colour, FLOODFILLSURFACE);
+
+    // Copy the bitmap
+
+    BitBlt(hdc, rect.left, rect.top, width, height,
+    	   hbdc, 0, 0, SRCCOPY);
+
+    DeleteObject(bitmap);
+    DeleteObject(hbdc);
 
     return TRUE;
 }
@@ -894,24 +941,46 @@ void KeyDown(WPARAM wParam, LPARAM lParam)
 
     switch(wParam)
     {
+	// Right, increase frequency
+
     case VK_RIGHT:
 	if (++scale.value > FREQ_MAX)
 	    scale.value = FREQ_MAX;
 	break;
+
+	// Left, decrease frequency
 
     case VK_LEFT:
 	if (--scale.value < FREQ_MIN)
 	    scale.value = FREQ_MIN;
 	break;
 
+	// Up, increase fine frequency (sliders are backwards)
+
     case VK_UP:
 	value = SendMessage(fine.hwnd, TBM_GETPOS, 0, 0);
 	SendMessage(fine.hwnd, TBM_SETPOS, TRUE, --value);
 	break;
 
+	// Down, decrease fine frequency
+
     case VK_DOWN:
 	value = SendMessage(fine.hwnd, TBM_GETPOS, 0, 0);
 	SendMessage(fine.hwnd, TBM_SETPOS, TRUE, ++value);
+	break;
+
+	// Page up, increase level (sliders are backwards)
+
+    case VK_PRIOR:
+	value = SendMessage(level.hwnd, TBM_GETPOS, 0, 0);
+	SendMessage(level.hwnd, TBM_SETPOS, TRUE, --value);
+	break;
+
+	// Page down, decrease level
+
+    case VK_NEXT:
+	value = SendMessage(level.hwnd, TBM_GETPOS, 0, 0);
+	SendMessage(level.hwnd, TBM_SETPOS, TRUE, ++value);
 	break;
 
     default:
@@ -939,28 +1008,46 @@ void MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     static float last;
     static BOOL move;
 
+    // Get points
+
     POINTS points = MAKEPOINTS(lParam);
+
+    // Button down
 
     if (wParam & MK_LBUTTON)
     {
 	RECT rect;
+
+	// Get bounds
 
 	GetClientRect(hwnd, &rect);
 
 	int w2 = rect.right / 2;
 	int h2 = rect.bottom / 2;
 
+	// Calculate position relative to centre
+
 	int x = points.x - w2;
 	int y = points.y - h2;
 
+	// Calculate angle
+
 	float theta = atan2(x, -y);
+
+	// First point
 
 	if (!move)
 	    move = TRUE;
 
+	// More points
+
 	else
 	{
+	    // Difference
+
 	    float delta = theta - last;
+
+	    // Allow for crossing origin
 
 	    if (delta > M_PI)
 		delta -= 2.0 * M_PI;
@@ -968,7 +1055,11 @@ void MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	    if (delta < -M_PI)
 		delta += 2.0 * M_PI;
 
+	    // Calculate scale value
+
 	    scale.value += round(delta * 100.0 / M_PI);
+
+	    // Enforce limits
 
 	    if (scale.value < FREQ_MIN)
 		scale.value = FREQ_MIN;
@@ -976,11 +1067,17 @@ void MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	    if (scale.value > FREQ_MAX)
 		scale.value = FREQ_MAX;
 
+	    // Update frequency
+
 	    UpdateValues();
 	}
 
+	// Remember angle
+
 	last = theta;
     }
+
+    // Button not down
 
     else
 	if (move)
@@ -1006,6 +1103,8 @@ BOOL SliderChange(WPARAM wParam, LPARAM lParam)
     default:
 	return FALSE;
     }
+
+    // Update
 
     UpdateValues();
 }
@@ -1113,6 +1212,8 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 	    f = display.frequency;
 	    audio.level = MAX_LEVEL * 20 / 100;
 
+	    // Fill the buffers
+
 	    for (int i = 0; i < LENGTH(data); i++)
 	    {
 		for (int j = 0; j < SAMPLES; j++)
@@ -1125,7 +1226,10 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 		    data[i][j] = round(sin(q) * l);
 		}
 
+		// Write the current buffer
+
 		mmr = waveOutWrite(audio.hwo, &hdrs[i], sizeof(WAVEHDR));
+
 		if (mmr != MMSYSERR_NOERROR)
 		{
 		    static char s[64];
@@ -1144,6 +1248,8 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
 	    hdrp = (WAVEHDR *) msg.lParam;
 	    datap = (short *)hdrp->lpData;
+
+	    // Fill the current buffer
 
 	    for (int i = 0; i < SAMPLES; i++)
 	    {
@@ -1169,7 +1275,10 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 		}
 	    }
 
+	    // Write the buffer
+
 	    mmr =  waveOutWrite(audio.hwo, hdrp, sizeof(WAVEHDR));
+
 	    if (mmr != MMSYSERR_NOERROR)
 	    {
 		static char s[64];

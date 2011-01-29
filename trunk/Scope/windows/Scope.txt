@@ -1,0 +1,40 @@
+			Audio Oscilloscope
+			==================
+
+Audio oscilloscope. Timebase from 0.1 ms to 0.5 sec. Input level
+control, single shot, sync polarity control, storage mode and cursor.
+
+Using
+=====
+
+Use the toolbar buttons to access functionality. From left to right:
+Input level control, bright line turns off sync, single shot, trigger,
+sync polarity, timebase menu, storage mode, display clear, shift left,
+shift right, shift to start, shift to end, reset. Clicking on the
+scope display turns on the cursor line, which may be shifted left and
+right using the left and right arrow keys. The cursor line shows the
+time from the start of the trace in current timebase units, and the
+nominal trace value at that point. There is no calibration because of
+the various level controls in the audio system. The shift to start and
+reset toolbar buttons clear the cursor.
+
+Files
+=====
+
+Changes			- Change log
+COPYING			- Licence file
+Makefile		- Build file
+Scope.txt		- This file
+Scope.c			- Source file
+Scope.exe		- Application
+Scope.ico		- Icon file
+Scope.manifest		- Manifest file
+Scope.nsi		- NSIS installer script
+Scope.rc		- Resource file
+Toolbar.bmp		- Bitmap image
+
+Building
+========
+
+Use the makefile with Mingw or Cygwin GCC, or use a Microsoft C
+compiler to build.
