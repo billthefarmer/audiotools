@@ -13,4 +13,4 @@ http://audiotools.googlecode.com/files/ScopeMac.png
 
 = Details =
 === Differences from windows version ===
-None yet.
+Use the signal generator with caution if used as input to the audio system. It is easy to overload the audio input.
