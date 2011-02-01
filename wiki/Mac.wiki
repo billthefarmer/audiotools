@@ -3,9 +3,14 @@
 
 = Introduction =
 
-Mac versions of the audio tools will be released.
+Mac versions of the audio tools have been released.
 
+== Audio Signal Generator ==
+http://audiotools.googlecode.com/files/SigGenMac.png
+
+== Audio Oscilloscope ==
+http://audiotools.googlecode.com/files/ScopeMac.png
 
 = Details =
-
+=== Differences from windows version ===
 None yet.
