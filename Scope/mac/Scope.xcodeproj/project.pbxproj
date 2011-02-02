@@ -18,7 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		23CDE6CA12CCEAD400872307 /* Scope.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scope.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		23CDE6CA12CCEAD400872307 /* Audio Oscilloscope.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Audio Oscilloscope.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23CDE6E612CCEC4000872307 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; sourceTree = "<group>"; };
 		23D074F012CB86BE00554A46 /* Scope.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Scope.icns; sourceTree = "<group>"; };
 		23DCDC4912C6987C0019F29A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
@@ -63,16 +63,16 @@
 				23DCDC5F12C6990F0019F29A /* Scope.plist */,
 				23D252C412CCA21200630768 /* images */,
 				23D074F012CB86BE00554A46 /* Scope.icns */,
-				23CDE6CA12CCEAD400872307 /* Scope.app */,
+				23CDE6CA12CCEAD400872307 /* Audio Oscilloscope.app */,
 			);
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		23DCDC5B12C6990F0019F29A /* Scope */ = {
+		23DCDC5B12C6990F0019F29A /* Audio Oscilloscope */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23DCDC6012C6990F0019F29A /* Build configuration list for PBXNativeTarget "Scope" */;
+			buildConfigurationList = 23DCDC6012C6990F0019F29A /* Build configuration list for PBXNativeTarget "Audio Oscilloscope" */;
 			buildPhases = (
 				23DCDC5812C6990F0019F29A /* Resources */,
 				23DCDC5912C6990F0019F29A /* Sources */,
@@ -82,9 +82,9 @@
 			);
 			dependencies = (
 			);
-			name = Scope;
+			name = "Audio Oscilloscope";
 			productName = Scope;
-			productReference = 23CDE6CA12CCEAD400872307 /* Scope.app */;
+			productReference = 23CDE6CA12CCEAD400872307 /* Audio Oscilloscope.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -98,7 +98,7 @@
 			productRefGroup = 23DCDC3812C6984C0019F29A;
 			projectDirPath = "";
 			targets = (
-				23DCDC5B12C6990F0019F29A /* Scope */,
+				23DCDC5B12C6990F0019F29A /* Audio Oscilloscope */,
 			);
 		};
 /* End PBXProject section */
@@ -138,14 +138,29 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = "-fconstant-cfstrings";
 			};
 			name = Debug;
 		};
 		23DCDC3D12C6984C0019F29A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = "-fconstant-cfstrings";
 			};
 			name = Release;
 		};
@@ -162,12 +177,9 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				INFOPLIST_FILE = Scope.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-				);
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = Scope;
+				PRODUCT_NAME = "Audio Oscilloscope";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -184,12 +196,9 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				INFOPLIST_FILE = Scope.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-				);
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = Scope;
+				PRODUCT_NAME = "Audio Oscilloscope";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -207,7 +216,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23DCDC6012C6990F0019F29A /* Build configuration list for PBXNativeTarget "Scope" */ = {
+		23DCDC6012C6990F0019F29A /* Build configuration list for PBXNativeTarget "Audio Oscilloscope" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23DCDC6112C6990F0019F29A /* Debug */,

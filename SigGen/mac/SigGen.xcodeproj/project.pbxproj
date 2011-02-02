@@ -20,7 +20,7 @@
 		23D051371282D1FC00945C0B /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		23D0513B1282D21100945C0B /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
 		23D0513E1282D29900945C0B /* SigGen.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = SigGen.c; sourceTree = "<group>"; };
-		23D051561282D38400945C0B /* SigGen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SigGen.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		23D051561282D38400945C0B /* Audio Signal Generator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Audio Signal Generator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23D051591282D38400945C0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		23D20E701284A612000F9D98 /* SigGen.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SigGen.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -55,7 +55,7 @@
 		23D051571282D38400945C0B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				23D051561282D38400945C0B /* SigGen.app */,
+				23D051561282D38400945C0B /* Audio Signal Generator.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -63,9 +63,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		23D051551282D38400945C0B /* SigGen */ = {
+		23D051551282D38400945C0B /* Audio Signal Generator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23D0515A1282D38500945C0B /* Build configuration list for PBXNativeTarget "SigGen" */;
+			buildConfigurationList = 23D0515A1282D38500945C0B /* Build configuration list for PBXNativeTarget "Audio Signal Generator" */;
 			buildPhases = (
 				23D051521282D38400945C0B /* Resources */,
 				23D051531282D38400945C0B /* Sources */,
@@ -75,9 +75,9 @@
 			);
 			dependencies = (
 			);
-			name = SigGen;
+			name = "Audio Signal Generator";
 			productName = SigGen;
-			productReference = 23D051561282D38400945C0B /* SigGen.app */;
+			productReference = 23D051561282D38400945C0B /* Audio Signal Generator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -91,7 +91,7 @@
 			productRefGroup = 23D051571282D38400945C0B /* Products */;
 			projectDirPath = "";
 			targets = (
-				23D051551282D38400945C0B /* SigGen */,
+				23D051551282D38400945C0B /* Audio Signal Generator */,
 			);
 		};
 /* End PBXProject section */
@@ -177,12 +177,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-				);
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = SigGen;
+				PRODUCT_NAME = "Audio Signal Generator";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -199,12 +196,9 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Carbon,
-				);
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = SigGen;
+				PRODUCT_NAME = "Audio Signal Generator";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = NO;
 			};
@@ -222,7 +216,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23D0515A1282D38500945C0B /* Build configuration list for PBXNativeTarget "SigGen" */ = {
+		23D0515A1282D38500945C0B /* Build configuration list for PBXNativeTarget "Audio Signal Generator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23D0515B1282D38500945C0B /* Debug */,

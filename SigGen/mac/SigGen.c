@@ -25,11 +25,11 @@
 #include <Carbon/Carbon.h>
 #include <AudioUnit/AudioUnit.h>
 #include <CoreAudio/CoreAudio.h>
-#include <Accelerate/Accelerate.h>
+// #include <Accelerate/Accelerate.h>
 
 // Macros
 
-#define LENGTH(a) (sizeof(a) / sizeof(a[0]))
+#define Length(a) (sizeof(a) / sizeof(a[0]))
 
 // Audio out values
 
@@ -86,7 +86,9 @@ enum
     {kKeyboardUpKey    = 0x7e,
      kKeyboardDownKey  = 0x7d,
      kKeyboardLeftKey  = 0x7b,
-     kKeyboardRightKey = 0x7c};
+     kKeyboardRightKey = 0x7c,
+     kKeyboardPriorKey = 0x74,
+     kKeyboardNextKey  = 0x79};
 
 // Global data
 
@@ -137,7 +139,7 @@ typedef struct
 } Audio;
 
 Audio audio;
- 
+
 // Function prototypes.
 
 OSStatus ScaleDrawEventHandler(EventHandlerCallRef, EventRef, void *);
@@ -155,10 +157,13 @@ OSStatus InputProc(void *, AudioUnitRenderActionFlags *,
 		   AudioBufferList *);
 
 OSStatus ChangeFrequency(UInt32);
+OSStatus CentreTextAtPoint(CGContextRef, float, float, const char *, size_t);
 OSStatus ChangeLevel(UInt32);
 
 OSStatus UpdateFrequency(void);
+OSStatus UpdateLevel(void);
 
+OSStatus StrokeRoundRect(CGContextRef, CGRect, float);
 HIRect DrawEdge(CGContextRef, HIRect);
 
 void FineActionProc(HIViewRef, ControlPartCode);
@@ -175,8 +180,6 @@ int main(int argc, char *argv[])
     HIViewRef knob;
 
     MenuRef menu;
-
-    // GetPreferences();
 
     // Window bounds
 
@@ -300,7 +303,7 @@ int main(int argc, char *argv[])
     // Set help tag
 
     help.content[kHMMinimumContentIndex].u.tagCFString =
-	CFSTR("Frequency adjust");
+	CFSTR("Frequency");
     HMSetControlHelpContent(knob, &help);
 
     // Place in the window
@@ -334,7 +337,7 @@ int main(int argc, char *argv[])
     // Set help tag
 
     help.content[kHMMinimumContentIndex].u.tagCFString =
-	CFSTR("Frequency adjust");
+	CFSTR("Fine frequency");
     HMSetControlHelpContent(sliders.fine, &help);
 
     // Place in the window
@@ -364,7 +367,7 @@ int main(int argc, char *argv[])
     // Set help tag
 
     help.content[kHMMinimumContentIndex].u.tagCFString =
-	CFSTR("Level adjust");
+	CFSTR("Level");
     HMSetControlHelpContent(sliders.level, &help);
 
     // Place in the window
@@ -474,17 +477,16 @@ int main(int argc, char *argv[])
 
     InstallControlEventHandler(scale.view,
 			       NewEventHandlerUPP(ScaleDrawEventHandler),
-			       LENGTH(drawEvents), drawEvents,
+			       Length(drawEvents), drawEvents,
 			       scale.view, NULL);
 
     InstallControlEventHandler(display.view,
 			       NewEventHandlerUPP(DisplayDrawEventHandler),
-			       LENGTH(drawEvents), drawEvents,
+			       Length(drawEvents), drawEvents,
 			       display.view, NULL);
 
-    InstallControlEventHandler(knob,
-			       NewEventHandlerUPP(KnobDrawEventHandler),
-			       LENGTH(drawEvents), drawEvents,
+    InstallControlEventHandler(knob, NewEventHandlerUPP(KnobDrawEventHandler),
+			       Length(drawEvents), drawEvents,
 			       knob, NULL);
 
     // Window events type spec
@@ -495,7 +497,7 @@ int main(int argc, char *argv[])
     // Install event handler
 
     InstallWindowEventHandler(window, NewEventHandlerUPP(WindowEventHandler),
-                              LENGTH(windowEvents), windowEvents,
+                              Length(windowEvents), windowEvents,
                               NULL, NULL);
 
     // Command events type spec
@@ -506,7 +508,7 @@ int main(int argc, char *argv[])
     // Install event handler
 
     InstallApplicationEventHandler(NewEventHandlerUPP(CommandEventHandler),
-                                   LENGTH(commandEvents), commandEvents,
+                                   Length(commandEvents), commandEvents,
                                    window, NULL);
     // Mouse events type spec
 
@@ -516,7 +518,7 @@ int main(int argc, char *argv[])
     // Install event handler
 
     InstallWindowEventHandler(window, NewEventHandlerUPP(MouseEventHandler),
-			      LENGTH(mouseEvents), mouseEvents,
+			      Length(mouseEvents), mouseEvents,
 			      window, NULL);
 
     // Keyboard events type spec
@@ -528,7 +530,7 @@ int main(int argc, char *argv[])
     // Install event handler
 
     InstallApplicationEventHandler(NewEventHandlerUPP(KeyboardEventHandler),
-                                   LENGTH(keyboardEvents), keyboardEvents,
+                                   Length(keyboardEvents), keyboardEvents,
                                    window, NULL);
     // Set up audio
 
@@ -538,7 +540,7 @@ int main(int argc, char *argv[])
 
     RunApplicationEventLoop();
 
-    return 0;
+    return noErr;
 }
 
 OSStatus SetupAudio()
@@ -690,6 +692,8 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
     static float f;
     static float l;
 
+    // Initialise static variables
+
     if (K == 0)
     {
 	K = 2.0 * M_PI / audio.rate;
@@ -699,23 +703,37 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 
     float *buffer = ioData->mBuffers[0].mData;
 
+    // Fill buffer
+
     for (int i = 0; i < inNumberFrames; i++)
     {
+	// Track frequency and level adjustments
+
 	f += ((display.frequency - f) / (float)kSamples);
-	l +=  audio.mute? -l / (float)kSamples: 
+	l += audio.mute? -l / (float)kSamples: 
 	    (audio.level - l) / (float)kSamples;
+
+	// Advance phase
 
 	q += (q < M_PI)? f * K: (f * K) - (2.0 * M_PI);
 
+	// Waveform
+
 	switch (audio.waveform)
 	{
+	    // Sine
+
 	case kSine:
 	    buffer[i] = sin(q) * l;
 	    break;
 
+	    // Square
+
 	case kSquare:
 	    buffer[i] = (q > 0.0)? l: -l;
 	    break;
+
+	    // Sawtooth
 
 	case kSawtooth:
 	    buffer[i] = (q / M_PI) * l;
@@ -733,7 +751,8 @@ OSStatus DisplayAlert(CFStringRef error, CFStringRef explanation)
     DialogRef dialog;
 
     CreateStandardAlert(kAlertStopAlert, error, explanation, NULL, &dialog);
-    SetWindowTitleWithCFString(GetDialogWindow(dialog), CFSTR("Tuner"));
+    SetWindowTitleWithCFString(GetDialogWindow(dialog),
+			       CFSTR("Audio Signal Generator"));
     RunStandardAlert(dialog, NULL, NULL);
 
     return noErr;
@@ -743,49 +762,13 @@ OSStatus DisplayAlert(CFStringRef error, CFStringRef explanation)
 
 HIRect DrawEdge(CGContextRef context, HIRect bounds)
 {
-    int width = bounds.size.width;
-    int height = bounds.size.height;
-
     CGContextSetShouldAntialias(context, false);
-    CGContextSetLineWidth(context, 1);
+    CGContextSetLineWidth(context, 3);
+    CGContextSetGrayStrokeColor(context, 0.8, 1);
 
     // Draw edge
 
-    CGContextBeginPath(context);
-
-    CGContextMoveToPoint(context, 1, height);
-    CGContextAddLineToPoint(context, 1, 2);
-    CGContextAddLineToPoint(context, width, 2);
-
-    CGContextSetGrayStrokeColor(context, 0.4, 1);
-    CGContextStrokePath(context);
-
-    CGContextBeginPath(context);
-
-    CGContextMoveToPoint(context, 1, height - 1);
-    CGContextAddLineToPoint(context, width - 1, height - 1);
-    CGContextAddLineToPoint(context, width - 1, 2);
-
-    CGContextSetGrayStrokeColor(context, 0.9, 1);
-    CGContextStrokePath(context);
-
-    CGContextBeginPath(context);
-
-    CGContextMoveToPoint(context, 0, height);
-    CGContextAddLineToPoint(context, 0, 1);
-    CGContextAddLineToPoint(context, width, 1);
-
-    CGContextSetGrayStrokeColor(context, 0.6, 1);
-    CGContextStrokePath(context);
-
-    CGContextBeginPath(context);
-
-    CGContextMoveToPoint(context, 0, height);
-    CGContextAddLineToPoint(context, width, height);
-    CGContextAddLineToPoint(context, width, 1);
-
-    CGContextSetGrayStrokeColor(context, 1, 1);
-    CGContextStrokePath(context);
+    StrokeRoundRect(context, bounds, 7);
 
     // Create inset
 
@@ -795,12 +778,49 @@ HIRect DrawEdge(CGContextRef context, HIRect bounds)
     return inset;
 }
 
+// Stroke round rect
+
+OSStatus StrokeRoundRect(CGContextRef context, CGRect rect, float radius)
+{
+    CGPoint point = rect.origin;
+    CGSize size = rect.size;
+
+    CGContextBeginPath(context);
+
+    // Draw rect with rounded corners
+
+    CGContextMoveToPoint(context, point.x + radius, point.y);
+    CGContextAddLineToPoint(context, point.x + size.width - radius, point.y);
+    CGContextAddArcToPoint(context, point.x + size.width, point.y,
+			   point.x + size.width, point.y + radius, radius);
+    CGContextAddLineToPoint(context, point.x + size.width,
+			    point.y + size.height - radius);
+    CGContextAddArcToPoint(context, point.x + size.width,
+			   point.y + size.height,
+			   point.x + size.width - radius,
+			   point.y + size.height, radius);
+    CGContextAddLineToPoint(context, point.x + radius, point.y + size.height);
+    CGContextAddArcToPoint(context, point.x, point.y + size.height,
+			   point.x, point.y + size.height - radius, radius);
+    CGContextAddLineToPoint(context, point.x, point.y + radius);
+    CGContextAddArcToPoint(context, point.x, point.y, point.x + radius,
+			   point.x, radius);
+
+    CGContextStrokePath(context);
+
+    return noErr;
+}
+
+// Draw scale
+
 OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
 			       EventRef event, void *data)
 {
     CGContextRef context;
     HIRect bounds, inset;
     HIViewRef view;
+
+    // Text size
 
     enum
     {kTextSize = 12};
@@ -828,7 +848,7 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
 
     CGContextTranslateCTM(context, 2, 3);
 
-    // Move the origin
+    // Centre the origin
 
     CGContextTranslateCTM(context,  width / 2, height / 2);
 
@@ -863,6 +883,8 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
 	}
     }
 
+    // Add centre line
+
     CGContextMoveToPoint(context, 0, -height / 2);
     CGContextAddLineToPoint(context, 0, height / 2);
 
@@ -877,7 +899,7 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
     CGContextSetShouldAntialias(context, true);
 
     int a[] = {1, 2, 3, 4, 5, 6, 7, 8};
-    for (int i = 0; i < LENGTH(a); i++)
+    for (int i = 0; i < Length(a); i++)
     {
     	float x = (kFrequencyScale * log10(a[i])) - scale.value;
 
@@ -886,10 +908,10 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
 	    static char s[8];
 
 	    sprintf(s, "%d", a[i]);
-	    CGContextShowTextAtPoint(context, x - 2, -6, s, strlen(s));
+	    CentreTextAtPoint(context, x, -6, s, strlen(s));
 
 	    sprintf(s, "%d", a[i] * 10);
-	    CGContextShowTextAtPoint(context, x + kFrequencyScale - 6,
+	    CentreTextAtPoint(context, x + kFrequencyScale,
 				     -6, s, strlen(s));
 
     	    x += 2 * kFrequencyScale;
@@ -898,6 +920,35 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
 
     return noErr;
 }
+
+// Centre text at point
+
+OSStatus CentreTextAtPoint(CGContextRef context, float x, float y,
+                           const char * bytes, size_t length)
+{
+    // Draw invisible text
+
+    CGContextSetTextDrawingMode(context, kCGTextInvisible);
+    CGContextShowTextAtPoint(context, x, y, bytes, length);
+
+    // Get new text position
+
+    CGPoint point = CGContextGetTextPosition(context);
+
+    // Calculate differences
+
+    float dx = (point.x - x) / 2.0;
+    float dy = (point.y - y) / 2.0;
+
+    // Draw it again in the right place
+
+    CGContextSetTextDrawingMode(context, kCGTextFill);
+    CGContextShowTextAtPoint(context, x - dx, y - dy, bytes, length);
+
+    return noErr;
+}
+
+// Draw display
 
 OSStatus DisplayDrawEventHandler(EventHandlerCallRef next,
 				 EventRef event, void *data)
@@ -952,6 +1003,8 @@ OSStatus DisplayDrawEventHandler(EventHandlerCallRef next,
     return noErr;
 }
 
+// Draw knob
+
 OSStatus KnobDrawEventHandler(EventHandlerCallRef next,
 			      EventRef event, void *data)
 {
@@ -978,6 +1031,8 @@ OSStatus KnobDrawEventHandler(EventHandlerCallRef next,
     CGContextSetGrayFillColor(context, 0.9, 1);
     CGContextSetGrayStrokeColor(context, 0.6, 1);
 
+    // Draw filled circle with shadow
+
     CGSize offset =
 	{4, -4};
     CGContextSetShadow(context, offset, 4);
@@ -988,6 +1043,8 @@ OSStatus KnobDrawEventHandler(EventHandlerCallRef next,
 
     return noErr;
 }
+
+// Window event handler
 
 OSStatus WindowEventHandler(EventHandlerCallRef next,
 			    EventRef event, void *data)
@@ -1007,10 +1064,6 @@ OSStatus WindowEventHandler(EventHandlerCallRef next,
 	AudioOutputUnitStop(audio.output);
 	AudioUnitUninitialize(audio.output);
 
-	// Flush preferences
-
-	// CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
-
         // Quit the application
 
         QuitApplicationEventLoop();
@@ -1024,6 +1077,8 @@ OSStatus WindowEventHandler(EventHandlerCallRef next,
 
     return noErr;
 }
+
+// Command event handler
 
 OSStatus CommandEventHandler(EventHandlerCallRef next,
 			     EventRef event, void *data)
@@ -1094,10 +1149,6 @@ OSStatus CommandEventHandler(EventHandlerCallRef next,
 
 	AudioOutputUnitStop(audio.output);
 	AudioUnitUninitialize(audio.output);
-
-	// Flush preferences
-
-	// CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
 
 	// Let the default handler handle it
 
@@ -1251,22 +1302,24 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 
     // Get fine slider value
 
-    value = HIViewGetValue(sliders.fine);
-
     switch (code)
     {
 	// Up
 
     case kKeyboardUpKey:
+	value = HIViewGetValue(sliders.fine);
 	value++;
 	HIViewSetValue(sliders.fine, value);
+	UpdateFrequency();
 	break;
 
 	// Down
 
     case kKeyboardDownKey:
+	value = HIViewGetValue(sliders.fine);
 	value--;
 	HIViewSetValue(sliders.fine, value);
+	UpdateFrequency();
 	break;
 
 	// Left
@@ -1277,6 +1330,7 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	if (scale.value < kFrequencyMin)
 	    scale.value = kFrequencyMin;
 
+	UpdateFrequency();
 	HIViewSetNeedsDisplay(scale.view, true);
 	break;
 
@@ -1288,14 +1342,32 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	if (scale.value > kFrequencyMax)
 	    scale.value = kFrequencyMax;
 
+	UpdateFrequency();
 	HIViewSetNeedsDisplay(scale.view, true);
+	break;
+
+	// Prior
+
+    case kKeyboardPriorKey:
+	value = HIViewGetValue(sliders.level);
+	value++;
+	HIViewSetValue(sliders.level, value);
+	UpdateLevel();
+	break;
+
+	// Next
+
+    case kKeyboardNextKey:
+	value = HIViewGetValue(sliders.level);
+	value--;
+	HIViewSetValue(sliders.level, value);
+	UpdateLevel();
 	break;
 
     default:
 	return eventNotHandledErr;
     }
 
-    UpdateFrequency();
     return noErr;
 }
 
@@ -1352,12 +1424,26 @@ OSStatus ChangeLevel(UInt32 value)
     return noErr;
 }
 
+// Update frequency
+
 OSStatus UpdateFrequency()
 {
     // Get the slider value
 
     UInt32 value = HIViewGetValue(sliders.fine);
     ChangeFrequency(value);
+
+    return noErr;
+}
+
+// Update level
+
+OSStatus UpdateLevel()
+{
+    // Get the slider value
+
+    UInt32 value = HIViewGetValue(sliders.level);
+    ChangeLevel(value);
 
     return noErr;
 }
