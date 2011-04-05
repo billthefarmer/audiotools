@@ -11,6 +11,10 @@ http://audiotools.googlecode.com/files/SigGenMac.png
 == Audio Oscilloscope ==
 http://audiotools.googlecode.com/files/ScopeMac.png
 
-= Details =
+== Details ==
 === Differences from windows version ===
 Use the signal generator with caution if used as input to the audio system. It is easy to overload the audio input.
+
+== Downloads ==
+
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/downloads/gcDownloads.xml" up_projectName="audiotools" border="0"/>
