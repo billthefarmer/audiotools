@@ -188,7 +188,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     window.hwnd =
 	CreateWindow(WCLASS, "Level Measuring Set",
 		     WS_OVERLAPPED | WS_MINIMIZEBOX |
-		     WS_SIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU,
+		     WS_SYSMENU,
 		     CW_USEDEFAULT, CW_USEDEFAULT,
 		     WIDTH, HEIGHT,
 		     NULL, 0, hInst, NULL);
@@ -617,7 +617,7 @@ BOOL DrawDisplay(HDC hdc, RECT rect)
 
     // Display level
 
-    sprintf(s, "%5.1lfdB ", display.l);
+    sprintf(s, "%5.1lfdB  ", display.l);
     TextOut(hdc, width / 2 + 4, 8, s, strlen(s));
 
     return TRUE;

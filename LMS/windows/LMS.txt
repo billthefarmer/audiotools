@@ -1,0 +1,32 @@
+			Level Measuring Set
+			===================
+
+Audio level measuring set. Measures frequency and relative level with
+a spectrum display. Absolute level is not possible because of all the
+variables in the sound system.
+
+Using
+=====
+
+The measuring set displays frequency and relative level with a
+spectrum display. Input is from the currently selected audio input.
+
+Files
+=====
+
+Changes		- Change log
+COPYING		- Licence file
+Makefile	- Build file
+LMS.txt		- This file
+LMS.c		- Source file
+LMS.exe		- Application
+LMS.ico		- Icon file
+LMS.manifest	- Manifest file
+LMS.nsi		- NSIS installer script
+LMS.rc		- Resource file
+
+Building
+========
+
+Use the makefile with Mingw or Cygwin GCC, or use a Microsoft C
+compiler to build.
