@@ -18,7 +18,7 @@
 //  with this program; if not, write to the Free Software Foundation, Inc.,
 //  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-//  Bill Farmer  william j farmer [at] tiscali [dot] co [dot] uk.
+//  Bill Farmer  william j farmer [at] yahoo [dot] co [dot] uk.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +79,7 @@ enum
 enum
     {OVERSAMPLE = 4,
      SAMPLES = 4096,
-     RANGE = SAMPLES / 4,
+     RANGE = SAMPLES * 7 / 16,
      STEP = SAMPLES / OVERSAMPLE};
 
 // Global data
@@ -262,8 +262,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Create status bar
 
 	status.hwnd =
-	    CreateWindow(STATUSCLASSNAME, " LMS",
-			 WS_VISIBLE | WS_CHILD | SBARS_SIZEGRIP,
+	    CreateWindow(STATUSCLASSNAME, " Sample rate: 44100.0",
+			 WS_VISIBLE | WS_CHILD,
 			 0, 0, 0, 0,
 			 hWnd, (HMENU)STATUS_ID, hInst, NULL);
 
@@ -574,7 +574,7 @@ BOOL DrawDisplay(HDC hdc, RECT rect)
     static HFONT font;
 
     enum
-    {FONT_HEIGHT   = 32};
+    {FONT_HEIGHT = 32};
 
     // Bold font
 
@@ -606,13 +606,12 @@ BOOL DrawDisplay(HDC hdc, RECT rect)
     // Calculate dimensions
 
     int width = rect.right - rect.left;
-    int height = rect.bottom - rect.top;
 
     SelectObject(hdc, font);
 
     // Display frequency
 
-    sprintf(s, "%7.1lfHz  ", display.f);
+    sprintf(s, "%7.1lfHz    ", display.f);
     TextOut(hdc, 4, 8, s, strlen(s));
 
     // Display level
@@ -1008,7 +1007,6 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
     double max = 0.0;
     double f = 0.0;
-    int count = 0;
 
     // Find maximum value
 
@@ -1021,8 +1019,21 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	}
     }
 
+    static long n1;
+
     if (max > MIN)
+    {
 	display.f = f;
+	n1 = 0;
+    }
+
+    else
+    {
+	if (n1 == 64)
+	    display.f = 0.0;
+    }
+
+    n1++;
 
     double level = 0.0;
 
@@ -1041,15 +1052,17 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
     meter.l = level / pow(10.0, 0.15);
 
-    static long n;
+    static long n2;
 
     // Update display
 
-    if ((n % 4) == 0)
+    if ((n2 % 4) == 0)
 	InvalidateRgn(spectrum.hwnd, NULL, TRUE);
 
-    if ((n++ % 16) == 0)
+    if ((n2 % 16) == 0)
 	InvalidateRgn(display.hwnd, NULL, TRUE);
+
+    n2++;
 }
 
 // Real to complex FFT, ignores imaginary values in input array
