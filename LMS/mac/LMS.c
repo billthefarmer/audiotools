@@ -32,7 +32,7 @@
 #define LENGTH(a) (sizeof(a) / sizeof(a[0]))
 
 #define kMin        0.5
-#define kScale   2048.0
+#define kScale   1024.0
 #define kTimerDelay 0.1
 
 // Slider values
