@@ -5,7 +5,9 @@
 
 Mac versions of the audio tools have been released.
 
-|| == Audio Signal Generator == http://audiotools.googlecode.com/files/SigGenMac.png || == Audio Level Measuring Set == http://audiotools.googlecode.com/files/LMSMac.png ||
+<table border="0"><tr><td><h2>Audio Signal Generator</h2>
+http://audiotools.googlecode.com/files/SigGenMac.png</td><td><h2>Audio Level Measuring Set</h2>
+http://audiotools.googlecode.com/files/LMSMac.png</td></tr></table>
 
 == Audio Oscilloscope ==
 http://audiotools.googlecode.com/files/ScopeMac.png
