@@ -56,7 +56,7 @@ enum
 // Dimensions
 
 enum
-    {HEIGHT     = 240,
+    {HEIGHT     = 230,
      WIDTH      = 320};
 
 // Wave in values
@@ -155,6 +155,8 @@ BOOL DrawItem(WPARAM, LPARAM);
 BOOL DrawSpectrum(HDC, RECT);
 BOOL DrawDisplay(HDC, RECT);
 BOOL DrawMeter(HDC, RECT);
+VOID TooltipShow(WPARAM, LPARAM);
+VOID TooltipPop(WPARAM, LPARAM);
 DWORD WINAPI AudioThread(LPVOID);
 VOID WaveInData(WPARAM, LPARAM);
 VOID UpdateMeter(METERP);
@@ -262,7 +264,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Create status bar
 
 	status.hwnd =
-	    CreateWindow(STATUSCLASSNAME, " Sample rate: 44100.0",
+	    CreateWindow(STATUSCLASSNAME, " Level measuring set",
 			 WS_VISIBLE | WS_CHILD,
 			 0, 0, 0, 0,
 			 hWnd, (HMENU)STATUS_ID, hInst, NULL);
@@ -298,7 +300,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Add display to tooltip
 
 	tooltip.info.uId = (UINT_PTR)display.hwnd;
-	tooltip.info.lpszText = "Display";
+	tooltip.info.lpszText = "Frequency and level display";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -315,7 +317,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Add meter to tooltip
 
 	tooltip.info.uId = (UINT_PTR)meter.hwnd;
-	tooltip.info.lpszText = "Level";
+	tooltip.info.lpszText = "Level meter";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -336,7 +338,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Add slider to tooltip
 
 	tooltip.info.uId = (UINT_PTR)meter.slider.hwnd;
-	tooltip.info.lpszText = "Level";
+	tooltip.info.lpszText = "Level meter";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -353,7 +355,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Add spectrum to tooltip
 
 	tooltip.info.uId = (UINT_PTR)spectrum.hwnd;
-	tooltip.info.lpszText = "Spectrum";
+	tooltip.info.lpszText = "Frequency spectrum";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -391,6 +393,23 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// nonsense
 
     case WM_SYSCHAR:
+	break;
+
+	// Notify
+
+    case WM_NOTIFY:
+	switch (((LPNMHDR)lParam)->code)
+	{
+	    // Tooltip
+
+	case TTN_SHOW:
+	    TooltipShow(wParam, lParam);
+	    break;
+
+	case TTN_POP:
+	    TooltipPop(wParam, lParam);
+	    break;
+	}
 	break;
 
         // Process other messages.
@@ -771,6 +790,37 @@ VOID UpdateMeter(METERP meter)
     SendMessage(meter->slider.hwnd, TBM_SETPOS, TRUE, value);
 }
 
+// Tooltip show
+
+void TooltipShow(WPARAM wParam, LPARAM lParam)
+{
+    LPNMHDR pnmh = (LPNMHDR)lParam;
+
+    switch (GetDlgCtrlID((HWND)pnmh->idFrom))
+    {
+    case DISPLAY_ID:
+	SetWindowText(status.hwnd, " Frequency and level display");
+	break;
+
+    case METER_ID:
+	SetWindowText(status.hwnd, " Level meter");
+	break;
+
+    case SPECTRUM_ID:
+	SetWindowText(status.hwnd, " Frequency spectrum");
+	break;
+    }
+}
+
+// Tooltip pop
+
+void TooltipPop(WPARAM wParam, LPARAM lParam)
+{
+    LPNMHDR pnmh = (LPNMHDR)lParam;
+
+    SetWindowText(status.hwnd, " Level measuring set");
+}
+
 // Audio thread
 
 DWORD WINAPI AudioThread(LPVOID lpParameter)
@@ -898,8 +948,6 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
     static double xp[RANGE];
     static double xf[RANGE];
 
-    static double dxa[RANGE];
-
     static double fps = (double)SAMPLE_RATE / (double)SAMPLES;
     static double expect = 2.0 * M_PI * (double)STEP / (double)SAMPLES;
 
@@ -997,10 +1045,6 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	// frequency difference
 
 	xf[i] = (i * fps + df * fps);
-
-	// Calculate differences for finding maxima
-
-	dxa[i] = xa[i] - xa[i - 1];
     }
 
     // Maximum FFT output
