@@ -187,6 +187,8 @@ VOID KnobClicked(HWND, WPARAM, LPARAM);
 VOID MouseMove(HWND, WPARAM, LPARAM);
 BOOL SliderChange(WPARAM, LPARAM);
 VOID UpdateValues(VOID);
+VOID TooltipShow(WPARAM, LPARAM);
+VOID TooltipPop(WPARAM, LPARAM);
 DWORD WINAPI AudioThread(LPVOID);
 
 // Application entry point.
@@ -359,7 +361,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Add display to tooltip
 
 	tooltip.info.uId = (UINT_PTR)display.hwnd;
-	tooltip.info.lpszText = "Frequency display";
+	tooltip.info.lpszText = "Frequency and level display";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -375,7 +377,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Add knob to tooltip
 
 	tooltip.info.uId = (UINT_PTR)knob.hwnd;
-	tooltip.info.lpszText = "Frequency";
+	tooltip.info.lpszText = "Frequency adjustment knob";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -397,7 +399,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Add slider to tooltip
 
 	tooltip.info.uId = (UINT_PTR)fine.hwnd;
-	tooltip.info.lpszText = "Fine frequency";
+	tooltip.info.lpszText = "Fine frequency adjustment";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -419,7 +421,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Add slider to tooltip
 
 	tooltip.info.uId = (UINT_PTR)level.hwnd;
-	tooltip.info.lpszText = "Level";
+	tooltip.info.lpszText = "Level adjustment";
 
 	SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
 		    (LPARAM) &tooltip.info);
@@ -474,7 +476,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
 	status.hwnd =
 	    CreateWindow(STATUSCLASSNAME,
-			 "\tKnob to change frequency,"
+			 " Turn knob to adjust frequency,"
 			 " fine left, level right slider",
 			 WS_VISIBLE | WS_CHILD,
 			 0, 0, 0, 0, hWnd,
@@ -552,6 +554,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	    // Quit
 
 	case QUIT_ID:
+	    waveOutReset(audio.hwo);
+	    waveOutClose(audio.hwo);
 	    PostQuitMessage(0);
 	    break;
 	}
@@ -582,11 +586,30 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	// Not used
 	break;
 
+	// Notify
+
+    case WM_NOTIFY:
+	switch (((LPNMHDR)lParam)->code)
+	{
+	    // Tooltip
+
+	case TTN_SHOW:
+	    TooltipShow(wParam, lParam);
+	    break;
+
+	case TTN_POP:
+	    TooltipPop(wParam, lParam);
+	    break;
+	}
+	break;
+
         // Process other messages.
 
     case WM_DESTROY:
 
 	PostQuitMessage(0);
+	waveOutReset(audio.hwo);
+	waveOutClose(audio.hwo);
 	break;
 
 	// Everything else
@@ -1132,6 +1155,46 @@ void UpdateValues()
 
     InvalidateRgn(display.hwnd, NULL, TRUE);
     InvalidateRgn(scale.hwnd, NULL, TRUE);
+}
+
+// Tooltip show
+
+void TooltipShow(WPARAM wParam, LPARAM lParam)
+{
+    LPNMHDR pnmh = (LPNMHDR)lParam;
+
+    switch (GetDlgCtrlID((HWND)pnmh->idFrom))
+    {
+    case DISPLAY_ID:
+	SetWindowText(status.hwnd, " Frequency and level display");
+	break;
+
+    case SCALE_ID:
+	SetWindowText(status.hwnd, " Frequency scale");
+	break;
+
+    case KNOB_ID:
+	SetWindowText(status.hwnd, " Frequency adjustment knob");
+	break;
+
+    case FINE_ID:
+	SetWindowText(status.hwnd, " Fine frequency adjustment");
+	break;
+
+    case LEVEL_ID:
+	SetWindowText(status.hwnd, " Level adjustment");
+	break;
+    }
+}
+
+// Tooltip pop
+
+void TooltipPop(WPARAM wParam, LPARAM lParam)
+{
+    LPNMHDR pnmh = (LPNMHDR)lParam;
+
+    SetWindowText(status.hwnd, " Turn knob to adjust frequency,"
+		  " fine left, level right slider");
 }
 
 // Audio thread
