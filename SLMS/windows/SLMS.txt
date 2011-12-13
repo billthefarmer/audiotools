@@ -1,0 +1,33 @@
+		Selective Level Measuring Set
+		=============================
+
+Audio selective level measuring set. Measures relative level at
+selected frequency with a spectrum display. Absolute level is not
+possible because of all the variables in the sound system.
+
+Using
+=====
+
+The measuring set displays selected frequency and relative level with
+a spectrum display. Input is from the currently selected audio
+input. Use frequency adjustment knob to adjust selected frequency.
+
+Files
+=====
+
+Changes		- Change log
+COPYING		- Licence file
+Makefile	- Build file
+SLMS.txt	- This file
+SLMS.c		- Source file
+SLMS.exe	- Application
+SLMS.ico	- Icon file
+SLMS.manifest	- Manifest file
+SLMS.nsi	- NSIS installer script
+SLMS.rc		- Resource file
+
+Building
+========
+
+Use the makefile with Mingw or Cygwin GCC, or use a Microsoft C
+compiler to build.
