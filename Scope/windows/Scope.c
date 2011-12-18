@@ -110,6 +110,14 @@ enum
      MIN_VOL  = 0,
      STEP_VOL = 10};
 
+// State machine values
+
+enum
+    {INIT,
+     FIRST,
+     NEXT,
+     LAST};
+
 // Global data
 
 HINSTANCE hInst;
@@ -581,6 +589,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
 	case RESET_ID:
 	    scope.index = 0;
+	    scope.start = 0;
 	    scope.bright = FALSE;
 	    scope.single = FALSE;
 	    scope.polarity = FALSE;
@@ -1116,6 +1125,9 @@ BOOL ChangeLevel(WPARAM wParam, LPARAM lParam)
 
 BOOL LevelChange(WPARAM wParam, LPARAM lParam)
 {
+    if (mixer.pmxcd == NULL)
+	return FALSE;
+
     if (lParam == mixer.pmxcd->dwControlID)
     {
 	// Get the value
@@ -1664,17 +1676,53 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 	if (mmr != MMSYSERR_NOERROR)
 	    break;
 
+	// Mixer line types
+
+	DWORD types[] =
+	    {MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE,
+	     MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY,
+	     MIXERLINE_COMPONENTTYPE_SRC_PCSPEAKER,
+	     MIXERLINE_COMPONENTTYPE_SRC_TELEPHONE,
+	     MIXERLINE_COMPONENTTYPE_SRC_SYNTHESIZER,
+	     MIXERLINE_COMPONENTTYPE_SRC_COMPACTDISC,
+	     MIXERLINE_COMPONENTTYPE_SRC_UNDEFINED,
+	     MIXERLINE_COMPONENTTYPE_SRC_DIGITAL,
+	     MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT,
+	     MIXERLINE_COMPONENTTYPE_SRC_ANALOG,
+	     MIXERLINE_COMPONENTTYPE_SRC_LINE};
+
 	// Get mixer line info
 
-	mxl.dwComponentType = MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE;
+	for (int i = 0; i < LENGTH(types); i++)
+	{
+	    // Try a component type
 
-	mmr = mixerGetLineInfo((HMIXEROBJ)mixer.hmx, &mxl,
-			       MIXER_GETLINEINFOF_COMPONENTTYPE);
+	    mxl.dwComponentType = types[i];
 
-	if (mmr != MMSYSERR_NOERROR)
+	    // Get the info
+
+	    mmr = mixerGetLineInfo((HMIXEROBJ)mixer.hmx, &mxl,
+				   MIXER_GETLINEINFOF_COMPONENTTYPE);
+
+	    // Try again if error
+
+	    if (mmr != MMSYSERR_NOERROR)
+		continue;
+
+
+	    // Check if line is active
+
+	    if (mxl.fdwLine & MIXERLINE_LINEF_ACTIVE)
+	    {
+		mixer.pmxl = &mxl;
+		break;
+	    }
+	}
+
+	// No mixer line
+
+	if (mixer.pmxl == NULL)
 	    break;
-
-	mixer.pmxl = &mxl;
 
 	// Get a volume control
 
@@ -1828,9 +1876,9 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
     switch (state)
     {
-	// 0: waiting for sync
+	// INIT: waiting for sync
 
-    case 0:
+    case INIT:
 
 	index = 0;
 
@@ -1893,9 +1941,9 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	if (scope.single && scope.trigger)
 	    scope.trigger = FALSE;
 
-	// 1: First chunk of data
+	// FIRST: First chunk of data
 
-    case 1:
+    case FIRST:
 
 	// Update count
 
@@ -1910,7 +1958,7 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	// If done, wait for sync again
 
 	if (index >= count)
-	    state = 0;
+	    state = INIT;
 
 	// Else get some more data next time
 
@@ -1918,9 +1966,9 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	    state++;
 	break;
 
-	// 2: Subsequent chunks of data
+	// NEXT: Subsequent chunks of data
 
-    case 2:
+    case NEXT:
 
 	// Copy data
 
@@ -1930,7 +1978,7 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	// Done, wait for sync again
 
 	if (index >= count)
-	    state = 0;
+	    state = INIT;
 
 	// Else if last but one chunk, get last chunk next time
 
@@ -1938,9 +1986,9 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	    state++;
 	break;
 
-	// Last chunk of data
+	// LAST: Last chunk of data
 
-    case 3:
+    case LAST:
 
 	// Copy data
 
@@ -1948,7 +1996,7 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
 	// Wait for sync next time
 
-	state = 0;
+	state = INIT;
 	break;
     }
 
