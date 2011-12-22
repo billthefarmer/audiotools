@@ -5,7 +5,7 @@
 
 Mac versions of the audio tools have been released.
 
-<table border="0" cellspacing="20"><tr><td><h2>Audio Signal Generator</h2><br>http://audiotools.googlecode.com/files/SigGenMac.png</td><td>
+<table border="0" cellspacing="20"><tr><td><h2>Audio Signal Generator</h2></td><td>
 <h2>Audio Level Measuring Set</h2></td></tr><tr><td>
 http://audiotools.googlecode.com/files/SigGenMac.png</td><td valign="top">
 http://audiotools.googlecode.com/files/LMSMac.png</td></tr></table>
