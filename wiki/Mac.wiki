@@ -10,6 +10,9 @@ Mac versions of the audio tools have been released.
 http://audiotools.googlecode.com/files/SigGenMac.png</td><td valign="top">
 http://audiotools.googlecode.com/files/LMSMac.png</td></tr></table>
 
+== Audio Selective Level Measuring Set ==
+http://audiotools.googlecode.com/files/SLMSMac.png
+
 == Audio Oscilloscope ==
 http://audiotools.googlecode.com/files/ScopeMac.png
 
