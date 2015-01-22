@@ -60,7 +60,7 @@ enum
 // Dimensions
 
 enum
-    {WIDTH      = 480,
+    {WIDTH      = 488,
      HEIGHT     = 276};
 
 // Wave in values
@@ -90,7 +90,7 @@ enum
 enum
     {OVERSAMPLE = 4,
      SAMPLES = 4096,
-     RANGE = SAMPLES * 7 / 64,
+     RANGE = SAMPLES * 15 / 128,
      STEP = SAMPLES / OVERSAMPLE};
 
 // Global data
@@ -192,7 +192,7 @@ DWORD WINAPI AudioThread(LPVOID);
 VOID WaveInData(WPARAM, LPARAM);
 VOID UpdateMeter(METERP);
 VOID CALLBACK MeterCallback(PVOID, BOOL);
-VOID UpdateValues(VOID);
+VOID UpdateFrequency(VOID);
 VOID fftr(complex *, int);
 
 // Application entry point.
@@ -305,9 +305,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 			 WS_VISIBLE | WS_CHILD,
 			 0, 0, 0, 0,
 			 hWnd, (HMENU)STATUS_ID, hInst, NULL);
-
-	GetWindowRect(status.hwnd, &status.rect);
-	MapWindowPoints(NULL, hWnd, (POINT *)&status.rect, 2);
 
 	// Create tooltip
 
@@ -451,7 +448,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
 	// Update frequency
 
-	UpdateValues();
+	UpdateFrequency();
 	break;
 
 	// Colour static text
@@ -836,6 +833,17 @@ BOOL DrawSpectrum(HDC hdc, RECT rect)
 
     SetViewportOrgEx(hbdc, 0, height - 1, NULL);
 
+    // Yellow pen for frequency trace
+
+    SetDCPenColor(hbdc, RGB(255, 255, 0));
+
+    float xscale = (float)log(spectrum.length) / width;
+
+    int xf = round(log(spectrum.f) / xscale);
+
+    MoveToEx(hbdc, xf, 0, NULL);
+    LineTo(hbdc, xf, -height);
+
     // Green pen for spectrum trace
 
     SetDCPenColor(hbdc, RGB(0, 255, 0));
@@ -855,24 +863,28 @@ BOOL DrawSpectrum(HDC hdc, RECT rect)
 
     MoveToEx(hbdc, 0, 0, NULL);
 
-    float xscale = (float)spectrum.length / (float)width;
+    // Create trace
 
+    int last = 1;
     for (int x = 0; x < width; x++)
     {
 	float value = 0.0;
 
-	// Don't show DC component
-
-	if (x > 0)
+	int index = (int)round(pow(M_E, x * xscale));
+	for (int i = last; i <= index; i++)
 	{
-	    for (int j = 0; j < xscale; j++)
-	    {
-		int n = x * xscale + j;
+	    // Don't show DC component
 
-		if (value < spectrum.data[n])
-		    value = spectrum.data[n];
+	    if (i > 0 && i < spectrum.length)
+	    {
+		if (value < spectrum.data[i])
+		    value = spectrum.data[i];
 	    }
 	}
+
+	// Update last index
+
+	last = index + 1;
 
 	if (max < value)
 	    max = value;
@@ -1180,7 +1192,7 @@ void KeyDown(WPARAM wParam, LPARAM lParam)
 	return;
     }
 
-    UpdateValues();
+    UpdateFrequency();
 }
 
 // Knob clicked
@@ -1262,7 +1274,7 @@ void MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	    // Update frequency
 
-	    UpdateValues();
+	    UpdateFrequency();
 	}
 
 	// Remember angle
@@ -1277,17 +1289,18 @@ void MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	    move = FALSE;
 }
 
-// Update values
+// Update frequency
 
-void UpdateValues()
+void UpdateFrequency()
 {
-    static double fps = (double)SAMPLE_RATE / (double)SAMPLES;
+    static double fps = (double)SAMPLE_RATE / (double)STEP;
 
     // Update frequency
 
-    double frequency = pow(10.0, (double)scale.v / FREQ_SCALE) * 10.0;
+    double frequency = pow(10.0, (double)scale.v /
+			   (double)FREQ_SCALE) * 10.0;
     display.f = frequency;
-    spectrum.f = frequency /fps;
+    spectrum.f = frequency / fps;
 
     InvalidateRgn(display.hwnd, NULL, TRUE);
     InvalidateRgn(scale.hwnd, NULL, TRUE);
@@ -1551,20 +1564,20 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
     if (dB < -80.0)
 	dB = -80.0;
 
-    static long n;
+    static long timer;
 
     // Update display
 
-    if ((n % 4) == 0)
+    if ((timer % 4) == 0)
 	InvalidateRgn(spectrum.hwnd, NULL, TRUE);
 
-    if ((n % 16) == 0)
+    if ((timer % 16) == 0)
     {
 	    display.l = dB;
 	    InvalidateRgn(display.hwnd, NULL, TRUE);
     }
 
-    n++;
+    timer++;
 }
 
 // Real to complex FFT, ignores imaginary values in input array

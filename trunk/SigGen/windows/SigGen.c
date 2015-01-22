@@ -1253,10 +1253,10 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
     while ((flag = GetMessage(&msg, (HWND)-1, 0, 0)) != 0)
     {
-	static float K = 2.0 * M_PI / SAMPLE_RATE;
-	static float q = 0.0;
-	static float f;
-	static float l;
+	static double K = 2.0 * M_PI / SAMPLE_RATE;
+	static double q = 0.0;
+	static double f;
+	static double l;
 
 	WAVEHDR *hdrp;
 	short *datap;
@@ -1281,8 +1281,8 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 	    {
 		for (int j = 0; j < SAMPLES; j++)
 		{
-		    f += ((display.frequency - f) / (float)SAMPLES);
-		    l += ((audio.level - l) / (float)SAMPLES);
+		    f += ((display.frequency - f) / (double)SAMPLES);
+		    l += ((audio.level - l) / (double)SAMPLES);
 
 		    q += (q < M_PI)? f * K: (f * K) - (2.0 * M_PI);
 
@@ -1316,9 +1316,9 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
 	    for (int i = 0; i < SAMPLES; i++)
 	    {
-		f += ((display.frequency - f) / (float)SAMPLES);
-		l += audio.mute? -l / (float)SAMPLES: 
-		    (audio.level - l) / (float)SAMPLES;
+		f += ((display.frequency - f) / (double)SAMPLES);
+		l += audio.mute? -l / (double)SAMPLES: 
+		    (audio.level - l) / (double)SAMPLES;
 
 		q += (q < M_PI)? f * K: (f * K) - (2.0 * M_PI);
 

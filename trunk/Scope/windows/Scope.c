@@ -33,7 +33,7 @@
 
 // Macros
 
-#define LENGTH(a) (sizeof(a) / sizeof(a[0]))
+#define Length(a) (sizeof(a) / sizeof(a[0]))
 
 #define WCLASS "MainWClass"
 #define PCLASS "PopupClass"
@@ -549,20 +549,30 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    // Left
 
 	case LEFT_ID:
-	    scope.start -= xscale.step;
-	    if (scope.start < 0)
-		scope.start = 0;
-	    xscale.start = scope.start;
+	    xscale.start -= xscale.step;
+	    if (xscale.start < 0)
+		xscale.start = 0;
+
+	    float scale = 1.0 / (((float)SAMPLE_RATE / 100000.0) * scope.scale);
+
+	    scope.start = xscale.start / scale;
 	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
 	    break;
 
 	// Right
 
 	case RIGHT_ID:
-	    scope.start += xscale.step;
+	    scale = 1.0 / (((float)SAMPLE_RATE / 100000.0) * scope.scale);
+
+	    xscale.start += xscale.step;
+	    scope.start = xscale.start / scale;
+
 	    if (scope.start >= scope.length)
-		scope.start -= xscale.step;
-	    xscale.start = scope.start;
+	    {
+		xscale.start -= xscale.step;
+		scope.start = xscale.start / scale;
+	    }
+
 	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
 	    break;
 
@@ -578,10 +588,16 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    // End
 
 	case END_ID:
+	    scale = 1.0 / (((float)SAMPLE_RATE / 100000.0) * scope.scale);
+
 	    while (scope.start < scope.length)
-		scope.start += xscale.step;
-	    scope.start -= xscale.step;
-	    xscale.start = scope.start;
+	    {
+		xscale.start += xscale.step;
+		scope.start = xscale.start / scale;
+	    }
+
+	    xscale.start -= xscale.step;
+	    scope.start = xscale.start / scale;
 	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
 	    break;
 
@@ -620,6 +636,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	// Menu command
 
     case WM_MENUCOMMAND:
+
+	// Set up timebase
+
 	timebase.index = wParam;
 	break;
 
@@ -910,7 +929,7 @@ BOOL AddToolbarButtons(HWND control)
     // Add to toolbar
 
     SendMessage(control, TB_ADDBUTTONS,
-		LENGTH(buttons), (LPARAM)&buttons);
+		Length(buttons), (LPARAM)&buttons);
 }
 
 // Window resizing
@@ -1172,7 +1191,7 @@ BOOL DisplayTimebaseMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     SetMenuInfo(menu, &info);
 
-    for (int i = 0; i < LENGTH(timebase.strings); i++)
+    for (int i = 0; i < Length(timebase.strings); i++)
     	AppendMenu(menu, (i == timebase.index)? MF_STRING | MF_CHECKED:
 		   MF_STRING, i, timebase.strings[i]);
 
@@ -1593,20 +1612,23 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	sprintf(s, "%0.3f", (float)scope.data[i + xstart] / 32768.0);
 	TextOut(hbdc, scope.index, y, s, strlen(s));
 
-	SetTextAlign(hbdc, TA_CENTER | TA_BOTTOM);
+	SetTextAlign(hbdc, TA_LEFT | TA_BOTTOM);
 
 	if (scope.scale < 100.0)
 	{
-	    sprintf(s, (scope.scale < 1.0)? "%0.3f": 
-		    (scope.scale < 10.0)? "%0.2f": "%0.1f",
-		    (scope.start + (scope.index * scope.scale)) / 100.0);
+	    sprintf(s, (scope.scale < 1.0)? "%0.3f %f": 
+		    (scope.scale < 10.0)? "%0.2f %f": "%0.1f %f",
+		    ((scope.start * xscale) +
+		     (scope.index * scope.scale)) / 100.0,
+		    (float)(scope.start + scope.index) / xscale);
 	    TextOut(hbdc, scope.index, height / 2, s, strlen(s));
 	}
 
 	else
 	{
-	    sprintf(s,  "%0.3f", (scope.start + (scope.index *
-						 scope.scale)) / 100000.0);
+	    sprintf(s,  "%0.3f %f", ((scope.start * xscale) +
+				     (scope.index * scope.scale)) / 100000.0,
+		    (float)(scope.start + scope.index) / xscale);
 	    TextOut(hbdc, scope.index, height / 2, s, strlen(s));
 	}
     }
@@ -1627,6 +1649,18 @@ BOOL DrawScope(HDC hdc, RECT rect)
 
 DWORD WINAPI AudioThread(LPVOID lpParameter)
 {
+    // Set up timebase
+
+    scope.scale = timebase.values[timebase.index];
+    xscale.scale = scope.scale;
+    xscale.step = 500 * xscale.scale;
+
+    // Update display
+
+    InvalidateRgn(xscale.hwnd, NULL, TRUE);
+
+    UpdateStatus();
+
     // Create wave format structure
 
     static WAVEFORMATEX wf =
@@ -1693,7 +1727,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
 	// Get mixer line info
 
-	for (int i = 0; i < LENGTH(types); i++)
+	for (int i = 0; i < Length(types); i++)
 	{
 	    // Try a component type
 
@@ -1769,7 +1803,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 	 {(LPSTR)data[2], sizeof(data[2]), 0, 0, 0, 0},
 	 {(LPSTR)data[3], sizeof(data[3]), 0, 0, 0, 0}};
 
-    for (int i = 0; i < LENGTH(hdrs); i++)
+    for (int i = 0; i < Length(hdrs); i++)
     {
 	// Prepare a waveform audio input header
 
@@ -2004,13 +2038,19 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
     waveInAddBuffer(audio.hwi, (WAVEHDR *)lParam, sizeof(WAVEHDR));
 
-    // Check timebase
 
     if (scope.scale != timebase.values[timebase.index])
     {
+	// Set up scale
+
 	scope.scale = timebase.values[timebase.index];
-	xscale.scale = timebase.values[timebase.index];
+	xscale.scale = scope.scale;
 	xscale.step = 500 * xscale.scale;
+
+	// Reset start
+
+	scope.start = 0;
+	xscale.start = 0;
 
 	// Update display
 
