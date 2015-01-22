@@ -32,7 +32,6 @@
 #define LENGTH(a) (sizeof(a) / sizeof(a[0]))
 
 #define kToolbarID    CFSTR("com.billthefarmer.toolbar")
-#define kItemVolume   CFSTR("com.billthefarmer.toolbar.volume")
 #define kItemBright   CFSTR("com.billthefarmer.toolbar.bright")
 #define kItemSingle   CFSTR("com.billthefarmer.toolbar.single")
 #define kItemTrigger  CFSTR("com.billthefarmer.toolbar.trigger")
@@ -60,13 +59,6 @@ enum
     {kSamples = 262144,
      kFrames = 4096};
 
-// Slider values
-
-enum
-    {kVolumeMax  = 100,
-     kVolumeMin  = 0,
-     kVolumeStep = 10};
-
 
 // Window dimensions
 
@@ -85,8 +77,7 @@ enum
 // Command IDs
 
 enum
-    {kCommandVolume   = 'Volm',
-     kCommandBright   = 'Brgt',
+    {kCommandBright   = 'Brgt',
      kCommandSingle   = 'Sngl',
      kCommandTrigger  = 'Trig',
      kCommandSync     = 'Sync',
@@ -111,6 +102,14 @@ enum
 
 enum
     {kEventAudioUpdate = 'Updt'};
+
+// State machine values
+
+enum
+    {INIT,
+     FIRST,
+     NEXT,
+     LAST};
 
 // Scope id
 
@@ -156,14 +155,6 @@ Tool yscale;
 
 typedef struct
 {
-    HIViewRef pane;
-    HIViewRef view;
-} Volume;
-
-Volume volume;
-
-typedef struct
-{
     CFStringRef id;
     CFStringRef name;
     CFStringRef label;
@@ -172,9 +163,7 @@ typedef struct
 } Item;
 
 Item items[] =
-    {{kItemVolume, CFSTR("volumedrop"), CFSTR("Volume"),
-      CFSTR("Volume, click to pop up slider"), kCommandVolume},
-     {kItemBright, CFSTR("bright"), CFSTR("Bright line"),
+    {{kItemBright, CFSTR("bright"), CFSTR("Bright line"),
       CFSTR("Bright line, click to turn off sync"), kCommandBright},
      {kItemSingle, CFSTR("single"), CFSTR("Single shot"),
       CFSTR("Single shot, click to enable"), kCommandSingle},
@@ -258,9 +247,6 @@ OSStatus InputProc(void *, AudioUnitRenderActionFlags *,
 		   AudioBufferList *);
 
 OSStatus DisplayPopupMenu(WindowRef, HICommandExtended, HIRect);
-OSStatus DisplaySlider(WindowRef, HICommandExtended, HIRect);
-OSStatus ChangeVolume(EventRef, HICommandExtended, UInt32);
-void VolumeActionProc(HIViewRef, ControlPartCode);
 CGImageRef GetToolbarImage(CFStringRef);
 
 // Function main
@@ -908,9 +894,9 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 
     switch (state)
     {
-	// 0: waiting for sync
+	// INIT: waiting for sync
 
-    case 0:
+    case INIT:
 
 	index = 0;
 
@@ -973,9 +959,9 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	if (scope.single && scope.trigger)
 	    scope.trigger = false;
 
-	// 1: First chunk of data
+	// FIRST: First chunk of data
 
-    case 1:
+    case FIRST:
 
 	// Update count
 
@@ -990,7 +976,7 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	// If done, wait for sync again
 
 	if (index >= count)
-	    state = 0;
+	    state = INIT;
 
 	else
 
@@ -999,9 +985,9 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	    state++;
 	break;
 
-	// 2: Subsequent chunks of data
+	// NEXT: Subsequent chunks of data
 
-    case 2:
+    case NEXT:
 
 	// Copy data
 
@@ -1011,7 +997,7 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	// Done, wait for sync again
 
 	if (index >= count)
-	    state = 0;
+	    state = INIT;
 
 	// Else if last but one chunk, get last chunk next time
 
@@ -1019,9 +1005,9 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	    state++;
 	break;
 
-	// Last chunk of data
+	// LAST: Last chunk of data
 
-    case 3:
+    case LAST:
 
 	// Copy data
 
@@ -1029,7 +1015,7 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 
 	// Wait for sync next time
 
-	state = 0;
+	state = INIT;
 	break;
     }
 
@@ -1082,97 +1068,6 @@ CGImageRef GetToolbarImage(CFStringRef name)
     CGDataProviderRelease(data);
 
     return image;
-}
-
-// Display slider
-
-OSStatus DisplaySlider(WindowRef window, HICommandExtended command, HIRect rect)
-{
-    HIViewRef content;
-
-    if (volume.pane == NULL)
-    {
-	// Find the window content
-
-	HIViewFindByID(HIViewGetRoot(window),
-		       kHIViewWindowContentID,
-		       &content);
-
-	// Bounds of pane
-
-	Rect bounds =
-	    {0, 0, 112, 55};
-
-	// Create display pane
-
-	CreateUserPaneControl(window, &bounds,
-			      kControlSupportsEmbedding, &volume.pane);
-
-	// Place in the window
-    
-	HIViewAddSubview(content, volume.pane);
-	HIViewPlaceInSuperviewAt(volume.pane, rect.origin.x, 0);
-    
-	// Bounds of slider
-
-	bounds.bottom = 72;
-	bounds.right  = 15;
-
-	// Create slider
-
-	CreateSliderControl(window, &bounds, kVolumeMax, kVolumeMin, kVolumeMax,
-			    kControlSliderPointsDownOrRight,
-			    0, true, VolumeActionProc, &volume.view);
-	// Control size
-
-	ControlSize small = kControlSizeSmall;
-
-	// Set control size
-
-	SetControlData(volume.view, kControlEntireControl, kControlSizeTag,
-		       sizeof(small), &small);
-
-	// Set command ID
-
-	HIViewSetCommandID(volume.view, kCommandVolume);
-
-	// Set help tag
-
-	HMHelpContentRec help =
-	    {kMacHelpVersion,
-	     {0, 0, 0, 0},
-	     kHMInsideLeftCenterAligned,
-	     {{kHMCFStringContent,
-	       CFSTR("Volume, slide to adjust")},
-	      {kHMNoContent, NULL}}};
-
-	HMSetControlHelpContent(volume.view, &help);
-
-	// Place in the window
-
-	HIViewAddSubview(volume.pane, volume.view);
-	HIViewPlaceInSuperviewAt(volume.view, 20, 20);
-
-	// Draw events type spec
-
-	EventTypeSpec drawEvents[] =
-	    {{kEventClassControl, kEventControlDraw}};
-
-	// Install event handler
-
-	InstallControlEventHandler(volume.pane,
-				   NewEventHandlerUPP(PaneDrawEventHandler),
-				   LENGTH(drawEvents), drawEvents,
-				   volume.pane, NULL);
-    }
-
-    else if (HIViewIsVisible(volume.pane))
-	HIViewSetVisible(volume.pane, false);
-
-    else
-	HIViewSetVisible(volume.pane, true);
-
-    return noErr;
 }
 
 // Display popup menu
@@ -1664,40 +1559,6 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
     return noErr;
 }
 
-// Pane draw event handler
-
-OSStatus PaneDrawEventHandler(EventHandlerCallRef next,
-                              EventRef event, void *data)
-{
-    CGContextRef context;
-    HIViewRef view;
-    HIRect bounds;
-
-    // Get context
-
-    GetEventParameter(event, kEventParamCGContextRef,
-                      typeCGContextRef, NULL,
-                      sizeof(context), NULL,
-                      &context);
-    // Get view
-
-    GetEventParameter(event, kEventParamDirectObject,
-                      typeControlRef, NULL,
-                      sizeof(view), NULL,
-                      &view);
-    // Get bounds
-
-    HIViewGetBounds(view, &bounds);
-    CGContextSetGrayFillColor(context, 1, 0.9);
-    CGContextFillRect(context, bounds);
-
-    CGContextSetGrayStrokeColor(context, 0.8, 0.9);
-    CGContextSetLineWidth(context, 3);
-    CGContextStrokeRect(context, bounds);
-
-    return noErr;
-}
-
 // Command event handler
 
 OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
@@ -1708,7 +1569,6 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 
     HICommandExtended command;
     WindowRef window;
-    HIViewKind kind;
     HIRect bounds;
     UInt32 value;
 
@@ -1738,27 +1598,6 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 
 	switch (command.commandID)
 	{
-	    // Volume
-
-	case kCommandVolume:
-	    HIViewGetKind(command.source.control, &kind);
-
-	    switch (kind.kind)
-	    {
-		// Toolbar button
-
-            case kControlKindToolbarItemView:
-                DisplaySlider(window, command, bounds);
-                break;
-
-		// Slider
-
-            case kControlKindSlider:
-		ChangeVolume(event, command, value);
-		break;
-	    }
-	    break;
-
 	    // Bright line
 
 	case kCommandBright:
@@ -1771,7 +1610,7 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 				CFSTR("brightsel"):
 				CFSTR("bright"));
 
-	    HIToolbarItemSetImage(toolbar.items[1], image);
+	    HIToolbarItemSetImage(toolbar.items[0], image);
 	    CGImageRelease(image);
 	    break;
 
@@ -1787,7 +1626,7 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 				CFSTR("singlesel"):
 				CFSTR("single"));
 
-	    HIToolbarItemSetImage(toolbar.items[2], image);
+	    HIToolbarItemSetImage(toolbar.items[1], image);
 	    CGImageRelease(image);
 	    break;
 
@@ -1809,7 +1648,7 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 				CFSTR("negative"):
 				CFSTR("positive"));
 
-	    HIToolbarItemSetImage(toolbar.items[4], image);
+	    HIToolbarItemSetImage(toolbar.items[3], image);
 	    CGImageRelease(image);
 	    break;
 
@@ -1831,7 +1670,7 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 				CFSTR("storagesel"):
 				CFSTR("storage"));
 
-	    HIToolbarItemSetImage(toolbar.items[6], image);
+	    HIToolbarItemSetImage(toolbar.items[5], image);
 	    CGImageRelease(image);
 	    break;
 
@@ -1884,6 +1723,7 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 
 	case kCommandReset:
 	    scope.index = 0;
+	    scope.start = 0;
 	    scope.bright = false;
 	    scope.single = false;
 	    scope.polarity = false;
@@ -1893,25 +1733,25 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 	    // Get image
 
 	    image = GetToolbarImage(CFSTR("bright"));
-	    HIToolbarItemSetImage(toolbar.items[1], image);
+	    HIToolbarItemSetImage(toolbar.items[0], image);
 	    CGImageRelease(image);
 
 	    // Get image
 
 	    image = GetToolbarImage(CFSTR("single"));
-	    HIToolbarItemSetImage(toolbar.items[2], image);
+	    HIToolbarItemSetImage(toolbar.items[1], image);
 	    CGImageRelease(image);
 
 	    // Get image
 
 	    image = GetToolbarImage(CFSTR("positive"));
-	    HIToolbarItemSetImage(toolbar.items[4], image);
+	    HIToolbarItemSetImage(toolbar.items[3], image);
 	    CGImageRelease(image);
 
 	    // Get image
 
 	    image = GetToolbarImage(CFSTR("storage"));
-	    HIToolbarItemSetImage(toolbar.items[6], image);
+	    HIToolbarItemSetImage(toolbar.items[5], image);
 	    CGImageRelease(image);
 	    break;
 
@@ -2078,33 +1918,4 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
     }
 
     return noErr;
-}
-
-// Change volume
-
-OSStatus ChangeVolume(EventRef event,
-		      HICommandExtended command,
-		      UInt32 value)
-{
-    Float32 vol = (float)value / (float)kVolumeMax;
-
-    AudioUnitSetParameter(audio.output, kHALOutputParam_Volume,
-			  kAudioUnitScope_Input, 1, vol, 0);
-
-    HIViewSetVisible(volume.pane, false);
-    return noErr;
-}
-
-// Volume action proc
-
-void VolumeActionProc(HIViewRef view, ControlPartCode part)
-{
-    // Get the slider value
-
-    UInt32 value = HIViewGetValue(view);
-
-    Float32 volume = (float)value / (float)kVolumeMax;
-
-    AudioUnitSetParameter(audio.output, kHALOutputParam_Volume,
-			  kAudioUnitScope_Input, 1, volume, 0);
 }
