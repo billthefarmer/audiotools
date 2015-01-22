@@ -79,7 +79,7 @@ enum
 enum
     {OVERSAMPLE = 4,
      SAMPLES = 4096,
-     RANGE = SAMPLES * 7 / 16,
+     RANGE = SAMPLES * 15 / 32,
      STEP = SAMPLES / OVERSAMPLE};
 
 // Global data
@@ -268,9 +268,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 			 WS_VISIBLE | WS_CHILD,
 			 0, 0, 0, 0,
 			 hWnd, (HMENU)STATUS_ID, hInst, NULL);
-
-	GetWindowRect(status.hwnd, &status.rect);
-	MapWindowPoints(NULL, hWnd, (POINT *)&status.rect, 2);
 
 	// Create tooltip
 
@@ -547,24 +544,30 @@ BOOL DrawSpectrum(HDC hdc, RECT rect)
 
     MoveToEx(hbdc, 0, 0, NULL);
 
-    float xscale = (float)spectrum.length / (float)width;
+    float xscale = (float)log(spectrum.length) / width;
 
+    // Create trace
+
+    int last = 1;
     for (int x = 0; x < width; x++)
     {
 	float value = 0.0;
 
-	// Don't show DC component
-
-	if (x > 0)
+	int index = (int)round(pow(M_E, x * xscale));
+	for (int i = last; i <= index; i++)
 	{
-	    for (int j = 0; j < xscale; j++)
-	    {
-		int n = x * xscale + j;
+	    // Don't show DC component
 
-		if (value < spectrum.data[n])
-		    value = spectrum.data[n];
+	    if (i > 0 && i < spectrum.length)
+	    {
+		if (value < spectrum.data[i])
+		    value = spectrum.data[i];
 	    }
 	}
+
+	// Update last index
+
+	last = index + 1;
 
 	if (max < value)
 	    max = value;
@@ -939,6 +942,11 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
 void WaveInData(WPARAM wParam, LPARAM lParam)
 {
+    enum
+    {FREQ_TIME    = 64,
+     DISPLAY_TIME = 16,
+     SPECTRUM_TIME = 4};
+
     // Create buffers for processing the audio data
 
     static double buffer[SAMPLES];
@@ -1063,21 +1071,21 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	}
     }
 
-    static long n1;
+    static long freqTimer;
 
     if (max > MIN)
     {
 	display.f = f;
-	n1 = 0;
+	freqTimer = 0;
     }
 
     else
     {
-	if (n1 == 64)
+	if (freqTimer == 64)
 	    display.f = 0.0;
     }
 
-    n1++;
+    freqTimer++;
 
     double level = 0.0;
 
@@ -1096,17 +1104,17 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
     meter.l = level / pow(10.0, 0.15);
 
-    static long n2;
+    static long displayTimer;
 
     // Update display
 
-    if ((n2 % 4) == 0)
+    if ((displayTimer % SPECTRUM_TIME) == 0)
 	InvalidateRgn(spectrum.hwnd, NULL, TRUE);
 
-    if ((n2 % 16) == 0)
+    if ((displayTimer % DISPLAY_TIME) == 0)
 	InvalidateRgn(display.hwnd, NULL, TRUE);
 
-    n2++;
+    displayTimer++;
 }
 
 // Real to complex FFT, ignores imaginary values in input array
