@@ -1,0 +1,239 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A971089514A0ADEA0068850F /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8181014A0A87700AB94CE /* Accelerate.framework */; };
+		A971089614A0ADEB0068850F /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8181814A0A8AB00AB94CE /* AudioUnit.framework */; };
+		A971089714A0ADEC0068850F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8181414A0A89000AB94CE /* Carbon.framework */; };
+		A971089814A0ADED0068850F /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D8181B14A0A8C800AB94CE /* CoreAudio.framework */; };
+		A97108A014A0AF0E0068850F /* SLMS.icns in Resources */ = {isa = PBXBuildFile; fileRef = A971089F14A0AF0E0068850F /* SLMS.icns */; };
+		A9C2C85E14A0ABF900E4CB2C /* SLMS.c in Sources */ = {isa = PBXBuildFile; fileRef = A94E13B814A0AA160020B4A5 /* SLMS.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A94E13B814A0AA160020B4A5 /* SLMS.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = SLMS.c; sourceTree = "<group>"; };
+		A971089F14A0AF0E0068850F /* SLMS.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SLMS.icns; sourceTree = "<group>"; };
+		A9C2C85414A0AB6300E4CB2C /* Selective Level Measuring Set.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Selective Level Measuring Set.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9C2C85714A0AB6300E4CB2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9D8181014A0A87700AB94CE /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		A9D8181414A0A89000AB94CE /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		A9D8181814A0A8AB00AB94CE /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		A9D8181B14A0A8C800AB94CE /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A9C2C85214A0AB6300E4CB2C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A971089514A0ADEA0068850F /* Accelerate.framework in Frameworks */,
+				A971089614A0ADEB0068850F /* AudioUnit.framework in Frameworks */,
+				A971089714A0ADEC0068850F /* Carbon.framework in Frameworks */,
+				A971089814A0ADED0068850F /* CoreAudio.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A9C2C85514A0AB6300E4CB2C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A9C2C85414A0AB6300E4CB2C /* Selective Level Measuring Set.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A9C66DA615AA20CD00EAC892 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A9D8181014A0A87700AB94CE /* Accelerate.framework */,
+				A9D8181414A0A89000AB94CE /* Carbon.framework */,
+				A9D8181B14A0A8C800AB94CE /* CoreAudio.framework */,
+				A9D8181814A0A8AB00AB94CE /* AudioUnit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A9C66DA715AA20E100EAC892 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				A94E13B814A0AA160020B4A5 /* SLMS.c */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		A9C66DA815AA20F100EAC892 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A971089F14A0AF0E0068850F /* SLMS.icns */,
+				A9C2C85714A0AB6300E4CB2C /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		A9D8180314A0A7FB00AB94CE = {
+			isa = PBXGroup;
+			children = (
+				A9C66DA615AA20CD00EAC892 /* Frameworks */,
+				A9C66DA715AA20E100EAC892 /* Sources */,
+				A9C66DA815AA20F100EAC892 /* Resources */,
+				A9C2C85514A0AB6300E4CB2C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A9C2C85314A0AB6300E4CB2C /* Selective Level Measuring Set */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9C2C85814A0AB6400E4CB2C /* Build configuration list for PBXNativeTarget "Selective Level Measuring Set" */;
+			buildPhases = (
+				A9C2C85014A0AB6300E4CB2C /* Resources */,
+				A9C2C85114A0AB6300E4CB2C /* Sources */,
+				A9C2C85214A0AB6300E4CB2C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Selective Level Measuring Set";
+			productName = "Selective Level Measuring Set";
+			productReference = A9C2C85414A0AB6300E4CB2C /* Selective Level Measuring Set.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A9D8180514A0A7FB00AB94CE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0440;
+			};
+			buildConfigurationList = A9D8180614A0A7FB00AB94CE /* Build configuration list for PBXProject "Selective Level Measuring Set" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A9D8180314A0A7FB00AB94CE;
+			productRefGroup = A9C2C85514A0AB6300E4CB2C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A9C2C85314A0AB6300E4CB2C /* Selective Level Measuring Set */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A9C2C85014A0AB6300E4CB2C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A97108A014A0AF0E0068850F /* SLMS.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A9C2C85114A0AB6300E4CB2C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9C2C85E14A0ABF900E4CB2C /* SLMS.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A9C2C85914A0AB6400E4CB2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = "Selective Level Measuring Set";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		A9C2C85A14A0AB6400E4CB2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = "Selective Level Measuring Set";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		A9D8180714A0A7FB00AB94CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+			};
+			name = Debug;
+		};
+		A9D8180814A0A7FB00AB94CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A9C2C85814A0AB6400E4CB2C /* Build configuration list for PBXNativeTarget "Selective Level Measuring Set" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9C2C85914A0AB6400E4CB2C /* Debug */,
+				A9C2C85A14A0AB6400E4CB2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9D8180614A0A7FB00AB94CE /* Build configuration list for PBXProject "Selective Level Measuring Set" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9D8180714A0A7FB00AB94CE /* Debug */,
+				A9D8180814A0A7FB00AB94CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A9D8180514A0A7FB00AB94CE /* Project object */;
+}
