@@ -79,8 +79,8 @@ Spectrum spectrum;
 typedef struct
 {
     HIViewRef view;
-    float f;
-    float l;
+    float frequency;
+    float level;
 } Display;
 
 Display display;
@@ -90,7 +90,7 @@ typedef struct
     HIViewRef view;
     HIViewRef slider; 
     EventLoopTimerRef timer;
-    float l;
+    float level;
 } Meter;
 
 Meter meter;
@@ -811,14 +811,14 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 
     if (max > kMin)
     {
-	display.f = f;
+	display.frequency = f;
 	n1 = 0;
     }
 
     else
     {
 	if (n1 == 64)
-	    display.f = 0.0;
+	    display.frequency = 0.0;
     }
 
     n1++;
@@ -828,9 +828,9 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
     if (dB < -80.0)
 	dB = -80.0;
 
-    display.l = dB;
+    display.level = dB;
 
-    meter.l = level * 3.0 / powf(10.0, 0.15);
+    meter.level = level * 3.0 / powf(10.0, 0.15);
 
     static long n2;
 
@@ -855,7 +855,7 @@ void TimerProc(EventLoopTimerRef timer, void *data)
 
     // Do meter calculation
 
-    ml = ((ml * 7.0) + meter.l) / 8.0;
+    ml = ((ml * 7.0) + meter.level) / 8.0;
 
     int value = round(ml * kMeterMax) + kMeterValue;
 
@@ -1083,10 +1083,10 @@ OSStatus DisplayDrawEventHandler(EventHandlerCallRef next,
     CGContextSelectFont(context, "Arial Bold", kTextSize,
 			kCGEncodingMacRoman);
 
-    sprintf(s, "%7.1lfHz    ", display.f);
+    sprintf(s, "%7.1lfHz    ", display.frequency);
     CGContextShowTextAtPoint(context, 4, 28, s, strlen(s));
 
-    sprintf(s, "%5.1lfdB  ", display.l);
+    sprintf(s, "%5.1lfdB  ", display.level);
     CGContextShowTextAtPoint(context, width / 2, 28, s, strlen(s));
 
     return noErr;

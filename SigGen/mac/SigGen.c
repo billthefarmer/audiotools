@@ -687,10 +687,10 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 		   const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
 		   UInt32 inNumberFrames, AudioBufferList *ioData)
 {
-    static float K;
-    static float q = 0.0;
-    static float f;
-    static float l;
+    static double K;
+    static double q = 0.0;
+    static double f;
+    static double l;
 
     // Initialise static variables
 
@@ -709,9 +709,9 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
     {
 	// Track frequency and level adjustments
 
-	f += ((display.frequency - f) / (float)kSamples);
-	l += audio.mute? -l / (float)kSamples: 
-	    (audio.level - l) / (float)kSamples;
+	f += ((display.frequency - f) / (double)kSamples);
+	l += audio.mute? -l / (double)kSamples: 
+	    (audio.level - l) / (double)kSamples;
 
 	// Advance phase
 
