@@ -7,7 +7,7 @@ because of all the variables in the sound system.
 
 ## Audio Signal Generator ##
 
-![http://audiotools.googlecode.com/files/Siggen.png](http://audiotools.googlecode.com/files/Siggen.png)
+![http://audiotools.googlecode.com/files/Siggen.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/Siggen.png)
 
   * Frequency range 10Hz - 25KHz
   * Level range -6.0dB - -80dB
@@ -24,7 +24,7 @@ keys.
 
 ## Audio Level Measuring Set ##
 
-![http://audiotools.googlecode.com/files/LMS.png](http://audiotools.googlecode.com/files/LMS.png)
+![http://audiotools.googlecode.com/files/LMS.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/LMS.png)
 
 Audio level measuring set. Measures frequency and relative level
 with a frequency spectrum display. Absolute level is not possible
@@ -37,7 +37,7 @@ with a frequency spectrum display. Input is from the currently
 selected audio input.
 
 ## Audio Selective Level Measuring Set ##
-![http://audiotools.googlecode.com/files/SLMS.png](http://audiotools.googlecode.com/files/SLMS.png)
+![http://audiotools.googlecode.com/files/SLMS.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/SLMS.png)
 
 Audio selective level measuring set. Measures relative level at
 selected frequency with a frequency spectrum display. Absolute
@@ -52,7 +52,7 @@ turn knob, or left and right keys to adjust selected
 frequency. Input is from the currently selected audio input.
 
 ## Audio Oscilloscope ##
-![http://audiotools.googlecode.com/files/Scope.png](http://audiotools.googlecode.com/files/Scope.png)
+![http://audiotools.googlecode.com/files/Scope.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/Scope.png)
 
   * Timebase 0.1ms - 0.5sec
   * Resolution 0.022ms @ 44100 samples/sec
