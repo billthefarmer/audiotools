@@ -7,7 +7,7 @@ because of all the variables in the sound system.
 
 ## Audio Signal Generator ##
 
-![http://audiotools.googlecode.com/files/Siggen.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/Siggen.png)
+![http://audiotools.googlecode.com/files/Siggen.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/SigGen.png)
 
   * Frequency range 10Hz - 25KHz
   * Level range -6.0dB - -80dB
