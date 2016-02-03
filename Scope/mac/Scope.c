@@ -292,13 +292,13 @@ int main(int argc, char *argv[])
 
     // Set menu title
 
-    CFStringRef apple =
-	CFStringCreateWithPascalString(kCFAllocatorDefault,
-				       "\p\024",
-				       kCFStringEncodingMacRoman);
+    CFStringRef apple = CFSTR("\024");
+    //	CFStringCreateWithPascalString(kCFAllocatorDefault,
+    //				       "\p\024",
+    //				       kCFStringEncodingMacRoman);
 
     SetMenuTitleWithCFString(menu, apple);
-    CFRelease(apple);
+    //  CFRelease(apple);
 
     // Create an about item
 
@@ -1506,19 +1506,26 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
 	}
     }
 
-    // Select font
-
-    CGContextSelectFont(bitmap, "Arial Bold", kTextSize,
-			kCGEncodingMacRoman);
-
-    CGContextSetTextMatrix(bitmap, CGAffineTransformMakeScale(1, -1));
-    CGContextSetRGBFillColor(bitmap, 0, 1, 0, 1);
-
     // Draw cursor
 
     if (scope.index > 0)
     {
 	static char s[16];
+
+	// Select font
+
+	CGContextSelectFont(bitmap, "Arial Bold", kTextSize,
+			    kCGEncodingMacRoman);
+
+	CGContextSetTextMatrix(bitmap, CGAffineTransformMakeScale(1, -1));
+
+	// Yellow text
+
+	CGContextSetRGBFillColor(bitmap, 1, 1, 0, 1);
+
+	// Yellow trace
+
+	CGContextSetRGBStrokeColor(bitmap, 1, 1, 0, 1);
 
 	CGContextBeginPath(bitmap);
 	CGContextMoveToPoint(bitmap, scope.index, -height / 2);
@@ -1558,6 +1565,40 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
 
     return noErr;
 }
+
+// Pane draw event handler
+
+// OSStatus PaneDrawEventHandler(EventHandlerCallRef next,
+//                               EventRef event, void *data)
+// {
+//     CGContextRef context;
+//     HIViewRef view;
+//     HIRect bounds;
+
+//     // Get context
+
+//     GetEventParameter(event, kEventParamCGContextRef,
+//                       typeCGContextRef, NULL,
+//                       sizeof(context), NULL,
+//                       &context);
+//     // Get view
+
+//     GetEventParameter(event, kEventParamDirectObject,
+//                       typeControlRef, NULL,
+//                       sizeof(view), NULL,
+//                       &view);
+//     // Get bounds
+
+//     HIViewGetBounds(view, &bounds);
+//     CGContextSetGrayFillColor(context, 1, 0.9);
+//     CGContextFillRect(context, bounds);
+
+//     CGContextSetGrayStrokeColor(context, 0.8, 0.9);
+//     CGContextSetLineWidth(context, 3);
+//     CGContextStrokeRect(context, bounds);
+
+//     return noErr;
+// }
 
 // Command event handler
 
