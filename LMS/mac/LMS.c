@@ -160,13 +160,13 @@ int main(int argc, char *argv[])
 
     // Set menu title
 
-    CFStringRef apple =
-	CFStringCreateWithPascalString(kCFAllocatorDefault,
-				       "\p\024",
-				       kCFStringEncodingMacRoman);
+    CFStringRef apple = CFSTR("\024");
+    //	CFStringCreateWithPascalString(kCFAllocatorDefault,
+    //				       "\p\024",
+    //				       kCFStringEncodingMacRoman);
 
     SetMenuTitleWithCFString(menu, apple);
-    CFRelease(apple);
+    //  CFRelease(apple);
 
     // Create an about item
 
@@ -1260,10 +1260,6 @@ OSStatus WindowEventHandler(EventHandlerCallRef next,
 
 	AudioOutputUnitStop(audio.output);
 	AudioUnitUninitialize(audio.output);
-
-	// Flush preferences
-
-	CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
 
         // Quit the application
 
