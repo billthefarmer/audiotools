@@ -204,13 +204,13 @@ int main(int argc, char *argv[])
 
     // Set menu title
 
-    CFStringRef apple =
-	CFStringCreateWithPascalString(kCFAllocatorDefault,
-				       "\p\024",
-				       kCFStringEncodingMacRoman);
+    CFStringRef apple = CFSTR("\024");
+    //	CFStringCreateWithPascalString(kCFAllocatorDefault,
+    //				       "\p\024",
+    //				       kCFStringEncodingMacRoman);
 
     SetMenuTitleWithCFString(menu, apple);
-    CFRelease(apple);
+    //  CFRelease(apple);
 
     // Create an about item
 
