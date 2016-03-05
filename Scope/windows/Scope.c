@@ -51,7 +51,7 @@ enum
      BRIGHT_ID,
      SINGLE_ID,
      TRIGGER_ID,
-     SYNC_ID,
+     // SYNC_ID,
      TIMEBASE_ID,
      STORAGE_ID,
      CLEAR_ID,
@@ -145,15 +145,17 @@ TOOLTIP tooltip;
 typedef struct
 {
     HWND hwnd;
+    RECT rect;
     int index;
     int length;
+    int yscale;
     short *data;
     float scale;
     float start;
     BOOL bright;
     BOOL single;
     BOOL trigger;
-    BOOL polarity;
+    // BOOL polarity;
     BOOL storage;
     BOOL clear;
 } SCOPE, *SCOPEP;
@@ -171,7 +173,16 @@ typedef struct
 
 XSCALE xscale;
 
-TOOL yscale;
+typedef struct
+{
+    HWND hwnd;
+    RECT rect;
+    int height;
+    int index;
+} YSCALE, *YSCALEP;
+
+YSCALE yscale;
+
 TOOL level;
 
 typedef struct
@@ -230,9 +241,9 @@ BOOL FocusLost(HWND, WPARAM, LPARAM);
 BOOL ChangeLevel(WPARAM, LPARAM);
 BOOL LevelChange(WPARAM, LPARAM);
 BOOL ScopeClicked(WPARAM, LPARAM);
+BOOL YScaleClicked(WPARAM, LPARAM);
 BOOL DrawItem(WPARAM, LPARAM);
 BOOL DrawXScale(HDC, RECT);
-BOOL DrawYScale(HDC, RECT);
 BOOL DrawYScale(HDC, RECT);
 BOOL DrawScope(HDC, RECT);
 BOOL AddToolbarBitmap(HWND, LPCTSTR);
@@ -522,11 +533,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
 	    // Sync
 
-	case SYNC_ID:
-	    scope.polarity = !scope.polarity;
-	    SendMessage(toolbar.hwnd, TB_CHANGEBITMAP, SYNC_ID,
-			scope.polarity? NEGATIVE_BM: POSITIVE_BM);
-	    break;
+	// case SYNC_ID:
+	//     scope.polarity = !scope.polarity;
+	//     SendMessage(toolbar.hwnd, TB_CHANGEBITMAP, SYNC_ID,
+	// 		scope.polarity? NEGATIVE_BM: POSITIVE_BM);
+	//     break;
 
 	    // Timebase
 
@@ -582,7 +593,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    scope.start = 0;
 	    scope.index = 0;
 	    xscale.start = 0;
+	    yscale.index = 0;
 	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
+	    InvalidateRgn(yscale.hwnd, NULL, TRUE);
 	    break;
 
 	    // End
@@ -608,12 +621,18 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    scope.start = 0;
 	    scope.bright = FALSE;
 	    scope.single = FALSE;
-	    scope.polarity = FALSE;
+	    // scope.polarity = FALSE;
 	    scope.storage = FALSE;
+
+	    yscale.index = 0;
+	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
+
+	    yscale.index = 0;
+	    InvalidateRgn(yscale.hwnd, NULL, TRUE);
 
 	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, BRIGHT_ID, FALSE);
 	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, SINGLE_ID, FALSE);
-	    SendMessage(toolbar.hwnd, TB_CHANGEBITMAP, SYNC_ID, POSITIVE_BM);
+	    // SendMessage(toolbar.hwnd, TB_CHANGEBITMAP, SYNC_ID, POSITIVE_BM);
 	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, STORAGE_ID, FALSE);
 	    break;
 
@@ -621,6 +640,12 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
 	case SCOPE_ID:
 	    ScopeClicked(wParam, lParam);
+	    break;
+
+	    // Y scale
+
+	case YSCALE_ID:
+	    YScaleClicked(wParam, lParam);
 	    break;
 	}
 
@@ -903,9 +928,9 @@ BOOL AddToolbarButtons(HWND control)
 	 {TRIGGER_BM, TRIGGER_ID, TBSTATE_ENABLED, BTNS_BUTTON,
 	  {0}, 0, (INT_PTR)"Trigger, click to trigger trace"},
 	 {0, 0, 0, BTNS_SEP},
-	 {POSITIVE_BM, SYNC_ID, TBSTATE_ENABLED, BTNS_BUTTON,
-	  {0}, 0, (INT_PTR)"Sync polarity, click to change"},
-	 {0, 0, 0, BTNS_SEP},
+	 // {POSITIVE_BM, SYNC_ID, TBSTATE_ENABLED, BTNS_BUTTON,
+	 //  {0}, 0, (INT_PTR)"Sync polarity, click to change"},
+	 // {0, 0, 0, BTNS_SEP},
 	 {TIMEBASE_BM, TIMEBASE_ID, TBSTATE_ENABLED, BTNS_WHOLEDROPDOWN,
 	  {0}, 0, (INT_PTR)"Timebase, click to pop up menu"},
 	 {0, 0, 0, BTNS_SEP},
@@ -1212,6 +1237,19 @@ BOOL ScopeClicked(WPARAM wParam, LPARAM lParam)
     scope.index = point.x;
 }
 
+// Y scale clicked
+
+BOOL YScaleClicked(WPARAM wParam, LPARAM lParam)
+{
+    POINT point;
+
+    GetCursorPos(&point);
+    MapWindowPoints(HWND_DESKTOP, (HWND)lParam, &point, 1);
+
+    yscale.index = point.y - yscale.height / 2;;
+    InvalidateRgn(yscale.hwnd, NULL, TRUE);
+}
+
 // Key pressed
 
 void KeyDown(WPARAM wParam, LPARAM lParam)
@@ -1371,6 +1409,8 @@ BOOL DrawYScale(HDC hdc, RECT rect)
 
     FillRect(hdc, &rect, GetStockObject(WHITE_BRUSH));
 
+    yscale.height = height;
+
     // Move the origin
 
     SetViewportOrgEx(hdc, width / 2, height / 2, NULL);
@@ -1393,6 +1433,21 @@ BOOL DrawYScale(HDC hdc, RECT rect)
 
 	MoveToEx(hdc, width / 8, -y, NULL);
 	LineTo(hdc, width / 2, -y);
+    }
+
+    if (yscale.index != 0)
+    {
+	POINT points[] =
+	    {{-4, -4},
+	     {-4, 4},
+	     {4, 4},
+	     {8, 0},
+	     {4, -4}};
+
+	SetViewportOrgEx(hdc, width / 3, (yscale.height / 2) + yscale.index,
+			 NULL);
+	SelectObject(hdc, GetStockObject(BLACK_BRUSH));
+	Polygon(hdc, points, Length(points));
     }
 }
 
@@ -1545,7 +1600,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
     if (max < 4096)
 	max = 4096;
 
-    int yscale = max / (height / 2);
+    scope.yscale = max / (height / 2);
 
     max = 0;
 
@@ -1571,7 +1626,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 		max = abs(scope.data[i + xstart]);
 
 	    int x = round((float)i * xscale);
-	    int y = -round((float)scope.data[i + xstart] / yscale);
+	    int y = -round((float)scope.data[i + xstart] / scope.yscale);
 	    LineTo(hbdc, x, y);
 	}
     }
@@ -1584,7 +1639,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 		max = abs(scope.data[i + xstart]);
 
 	    int x = round((float)i * xscale);
-	    int y = -round((float)scope.data[i + xstart] / yscale);
+	    int y = -round((float)scope.data[i + xstart] / scope.yscale);
 	    LineTo(hbdc, x, y);
 
 	    // Draw points at max resolution
@@ -1594,7 +1649,8 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	}
     }
 
-    SetTextColor(hbdc, RGB(0, 255, 0));
+    SetDCPenColor(hbdc, RGB(255, 255, 0));
+    SetTextColor(hbdc, RGB(255, 255, 0));
     SetBkMode(hbdc, TRANSPARENT);
 
     // Draw index
@@ -1605,7 +1661,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	LineTo(hbdc, scope.index, -height / 2);
 
 	int i = round((float)scope.index / xscale);
-	int y = -round((float)scope.data[i + xstart] / yscale);
+	int y = -round((float)scope.data[i + xstart] / scope.yscale);
 
 	SetTextAlign(hbdc, TA_LEFT | (y > 0)? TA_TOP: TA_BOTTOM);
 
@@ -1928,15 +1984,19 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
 	    int dx = 0;
 
+	    // Calculate sync level
+
+	    int level = -yscale.index * scope.yscale;
+
 	    // Sync polarity
 
-	    if (scope.polarity)
+	    if (level < 0)
 	    {
 		for (int i = 0; i < STEP; i++)
 		{
 		    dx = data[i] - last;
 
-		    if (dx < 0 && last > 0 && data[i] < 0)
+		    if (dx < 0 && last > level && data[i] < level)
 		    {
 			index = i;
 			state++;
@@ -1953,7 +2013,7 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 		{
 		    dx = data[i] - last;
 
-		    if (dx > 0 && last < 0 && data[i] > 0)
+		    if (dx > 0 && last < level && data[i] > level)
 		    {
 			index = i;
 			state++;
@@ -2086,8 +2146,8 @@ BOOL UpdateStatus()
     if (scope.single)
 	strcat(s, "  single shot");
 
-    if (scope.polarity)
-	strcat(s, "  reverse sync");
+    // if (scope.polarity)
+    // 	strcat(s, "  reverse sync");
 
     if (scope.storage)
 	strcat(s, "  storage mode");
