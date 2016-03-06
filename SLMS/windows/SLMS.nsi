@@ -4,7 +4,7 @@
 !define PRODUCT_NAME "Selective Level Measuring Set"
 !define PRODUCT_VERSION "1.0"
 !define PRODUCT_PUBLISHER "Bill Farmer"
-!define PRODUCT_WEB_SITE "http://audiotools.googlecode.com"
+!define PRODUCT_WEB_SITE "https://github.com/billthefarmer/audiotools"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\SLMS.exe"
 !define PRODUCT_UNINST_NAME "UninstSLMS.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
