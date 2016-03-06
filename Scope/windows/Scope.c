@@ -1980,13 +1980,13 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	    if (scope.single && !scope.trigger)
 		break;
 
-	    // Initialise sync
-
-	    int dx = 0;
-
 	    // Calculate sync level
 
 	    int level = -yscale.index * scope.yscale;
+
+	    // Initialise sync
+
+	    int dx = 0;
 
 	    // Sync polarity
 
