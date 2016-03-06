@@ -1258,6 +1258,8 @@ void KeyDown(WPARAM wParam, LPARAM lParam)
 
     GetClientRect(scope.hwnd, &rect);
 
+    int height = rect.bottom - rect.top;
+
     switch(wParam)
     {
 	// Left
@@ -1272,6 +1274,24 @@ void KeyDown(WPARAM wParam, LPARAM lParam)
     case VK_RIGHT:
 	if (++scope.index >= rect.right)
 	    scope.index = 0;
+	break;
+
+	// Up
+
+    case VK_UP:
+	if (--yscale.index <= -height / 2)
+	    yscale.index = 0;
+
+	InvalidateRgn(yscale.hwnd, NULL, TRUE);
+	break;
+
+	// Down
+
+    case VK_DOWN:
+	if (++yscale.index >= height / 2)
+	    yscale.index = 0;
+
+	InvalidateRgn(yscale.hwnd, NULL, TRUE);
 	break;
 
     default:
@@ -1444,8 +1464,8 @@ BOOL DrawYScale(HDC hdc, RECT rect)
 	     {8, 0},
 	     {4, -4}};
 
-	SetViewportOrgEx(hdc, width / 3, (yscale.height / 2) + yscale.index,
-			 NULL);
+	SetViewportOrgEx(hdc, (width * 3) / 8,
+			 (yscale.height / 2) + yscale.index, NULL);
 	SelectObject(hdc, GetStockObject(BLACK_BRUSH));
 	Polygon(hdc, points, Length(points));
     }
