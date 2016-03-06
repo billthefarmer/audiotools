@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Selective Level Measuring Set"
-!define PRODUCT_VERSION "1.0"
+!define PRODUCT_VERSION "1.01"
 !define PRODUCT_PUBLISHER "Bill Farmer"
 !define PRODUCT_WEB_SITE "https://github.com/billthefarmer/audiotools"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\SLMS.exe"
