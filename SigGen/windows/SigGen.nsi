@@ -2,9 +2,9 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Audio Signal Generator"
-!define PRODUCT_VERSION "1.0"
+!define PRODUCT_VERSION "1.01"
 !define PRODUCT_PUBLISHER "Bill Farmer"
-!define PRODUCT_WEB_SITE "http://audiotools.googlecode.com"
+!define PRODUCT_WEB_SITE "https://github.com/billthefarmer/audiotools"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\SigGen.exe"
 !define PRODUCT_UNINST_NAME "UninstSigGen.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
