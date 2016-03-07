@@ -1,14 +1,11 @@
 language: c
 
 os:
+  - linux
   - osx
 
+before_install:
+  - scripts/install.sh
+
 script:
-  - cd LMS/mac
-  - make
-  - cd ../../Scope/mac
-  - make
-  - cd ../../SigGen/mac
-  - make
-  - cd ../../SLMS/mac
-  - make
+  - scripts/build.sh
