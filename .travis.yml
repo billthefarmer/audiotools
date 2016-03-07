@@ -1,13 +1,8 @@
 language: c
 
-sudo: required
-
 os:
   - linux
   - osx
-
-before_install:
-  - scripts/install.sh
 
 script:
   - scripts/build.sh
