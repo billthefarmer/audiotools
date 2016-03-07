@@ -35,7 +35,7 @@
 #define kItemBright   CFSTR("com.billthefarmer.toolbar.bright")
 #define kItemSingle   CFSTR("com.billthefarmer.toolbar.single")
 #define kItemTrigger  CFSTR("com.billthefarmer.toolbar.trigger")
-#define kItemSync     CFSTR("com.billthefarmer.toolbar.sync")
+// #define kItemSync     CFSTR("com.billthefarmer.toolbar.sync")
 #define kItemTimebase CFSTR("com.billthefarmer.toolbar.timebase")
 #define kItemStorage  CFSTR("com.billthefarmer.toolbar.storage")
 #define kItemClear    CFSTR("com.billthefarmer.toolbar.clear")
@@ -80,7 +80,7 @@ enum
     {kCommandBright   = 'Brgt',
      kCommandSingle   = 'Sngl',
      kCommandTrigger  = 'Trig',
-     kCommandSync     = 'Sync',
+     // kCommandSync     = 'Sync',
      kCommandTimebase = 'Time',
      kCommandStorage  = 'Stor',
      kCommandClear    = 'Clr ',
@@ -111,10 +111,21 @@ enum
      NEXT,
      LAST};
 
+// View ids
+
+enum
+  {kScopeID = 1,
+   kYScaleID};
+
 // Scope id
 
 HIViewID ScopeID =
-    {'Scop', 1};
+    {'Scop', kScopeID};
+
+// YScale id
+
+HIViewID YScaleID =
+    {'YSca', kYScaleID};
 
 // Global data
 
@@ -123,13 +134,14 @@ typedef struct
     HIViewRef view;
     float *data;
     float scale;
+    float yscale;
     int index;
     int start;
     int length;
     Boolean bright;
     Boolean single;
     Boolean trigger;
-    Boolean polarity;
+    // Boolean polarity;
     Boolean storage;
     Boolean clear;
 } Scope;
@@ -149,6 +161,7 @@ XScale xscale;
 typedef struct
 {
     HIViewRef view;
+    float index;
 } Tool;
 
 Tool yscale;
@@ -169,8 +182,8 @@ Item items[] =
       CFSTR("Single shot, click to enable"), kCommandSingle},
      {kItemTrigger, CFSTR("trigger"), CFSTR("Trigger"),
       CFSTR("Trigger, click to trigger trace"), kCommandTrigger},
-     {kItemSync, CFSTR("positive"), CFSTR("Sync"),
-      CFSTR("Sync, click to change sync polarity"), kCommandSync},
+     // {kItemSync, CFSTR("positive"), CFSTR("Sync"),
+     //  CFSTR("Sync, click to change sync polarity"), kCommandSync},
      {kItemTimebase, CFSTR("timebasedrop"), CFSTR("Timebase"),
       CFSTR("Timebase, click to pop up menu"), kCommandTimebase},
      {kItemStorage, CFSTR("storage"), CFSTR("Storage"),
@@ -424,6 +437,10 @@ int main(int argc, char *argv[])
     // Create Y scale
 
     CreateUserPaneControl(window, &bounds, 0, &yscale.view);
+
+    // Set id
+
+    HIViewSetID(yscale.view, YScaleID);
 
     // Set help tag
 
@@ -908,19 +925,23 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	    if (scope.single && !scope.trigger)
 		break;
 
+	    // Calculate sync level
+
+	    float level = -yscale.index * scope.yscale;
+
 	    // Initialise sync
 
 	    float dx = 0.0;
 
 	    // Sync polarity
 
-	    if (scope.polarity)
+	    if (level < 0.0)
 	    {
 		for (int i = 0; i < audio.frames; i++)
 		{
 		    dx = data[i] - last;
 
-		    if (dx < 0.0 && last > 0.0 && data[i] < 0.0)
+		    if (dx < 0.0 && last > level && data[i] < level)
 		    {
 			index = i;
 			state++;
@@ -937,7 +958,7 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 		{
 		    dx = data[i] - last;
 
-		    if (dx > 0.0 && last < 0.0 && data[i] > 0.0)
+		    if (dx > 0.0 && last < level && data[i] > level)
 		    {
 			index = i;
 			state++;
@@ -1295,6 +1316,20 @@ OSStatus YScaleDrawEventHandler(EventHandlerCallRef next,
 
     CGContextStrokePath(context);
 
+    if (yscale.index != 0)
+    {
+        CGContextTranslateCTM(context, -width / 8, yscale.index);
+
+        CGContextBeginPath(context);
+	CGContextMoveToPoint(context, -4, -4);
+	CGContextAddLineToPoint(context, -4, 4);
+	CGContextAddLineToPoint(context, 4, 4);
+	CGContextAddLineToPoint(context, 8, 0);
+	CGContextAddLineToPoint(context, 4, -4);
+        CGContextClosePath(context);
+        CGContextFillPath(context);
+    }
+
     return noErr;
 }
 
@@ -1442,7 +1477,7 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
     if (max < 0.125)
 	max = 0.125;
 
-    float yscale = max / ((float)height / 2.0);
+    scope.yscale = max / ((float)height / 2.0);
 
     max = 0.0;
 
@@ -1469,7 +1504,7 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
 		max = fabs(scope.data[i + xstart]);
 
 	    float x = (float)i * xscale;
-	    float y = -scope.data[i + xstart] / yscale;
+	    float y = -scope.data[i + xstart] / scope.yscale;
 
 	    CGContextAddLineToPoint(bitmap, x, y);
 	}
@@ -1485,7 +1520,7 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
 		max = fabs(scope.data[i + xstart]);
 
 	    float x = (float)i * xscale;
-	    float y = -scope.data[i + xstart] / yscale;
+	    float y = -scope.data[i + xstart] / scope.yscale;
 
 	    CGContextAddLineToPoint(bitmap, x, y);
 	}
@@ -1499,7 +1534,7 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
 	    for (int i = 0; i <= xstop - xstart; i++)
 	    {
 		float x = (float)i * xscale;
-		float y = -scope.data[i + xstart] / yscale;
+		float y = -scope.data[i + xstart] / scope.yscale;
 
 		CGContextStrokeRect(bitmap, CGRectMake(x - 2, y - 2, 4, 4));
 	    }
@@ -1535,7 +1570,7 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
 	CGContextSetShouldAntialias(bitmap, true);
 
 	int i = round((float)scope.index / xscale);
-	float y = -scope.data[i + xstart] / yscale;
+	float y = -scope.data[i + xstart] / scope.yscale;
 
 	sprintf(s, "%0.2f", scope.data[i + xstart]);
 	CGContextShowTextAtPoint(bitmap, scope.index, y, s, strlen(s));
@@ -1565,40 +1600,6 @@ OSStatus ScopeDrawEventHandler(EventHandlerCallRef next,
 
     return noErr;
 }
-
-// Pane draw event handler
-
-// OSStatus PaneDrawEventHandler(EventHandlerCallRef next,
-//                               EventRef event, void *data)
-// {
-//     CGContextRef context;
-//     HIViewRef view;
-//     HIRect bounds;
-
-//     // Get context
-
-//     GetEventParameter(event, kEventParamCGContextRef,
-//                       typeCGContextRef, NULL,
-//                       sizeof(context), NULL,
-//                       &context);
-//     // Get view
-
-//     GetEventParameter(event, kEventParamDirectObject,
-//                       typeControlRef, NULL,
-//                       sizeof(view), NULL,
-//                       &view);
-//     // Get bounds
-
-//     HIViewGetBounds(view, &bounds);
-//     CGContextSetGrayFillColor(context, 1, 0.9);
-//     CGContextFillRect(context, bounds);
-
-//     CGContextSetGrayStrokeColor(context, 0.8, 0.9);
-//     CGContextSetLineWidth(context, 3);
-//     CGContextStrokeRect(context, bounds);
-
-//     return noErr;
-// }
 
 // Command event handler
 
@@ -1679,19 +1680,19 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 
 	    // Sync polarity
 
-	case kCommandSync:
-	    scope.polarity = !scope.polarity;
+	// case kCommandSync:
+	//     scope.polarity = !scope.polarity;
 
-	    // Get image
+	//     // Get image
 
-	    image =
-		GetToolbarImage(scope.polarity?
-				CFSTR("negative"):
-				CFSTR("positive"));
+	//     image =
+	// 	GetToolbarImage(scope.polarity?
+	// 			CFSTR("negative"):
+	// 			CFSTR("positive"));
 
-	    HIToolbarItemSetImage(toolbar.items[3], image);
-	    CGImageRelease(image);
-	    break;
+	//     HIToolbarItemSetImage(toolbar.items[3], image);
+	//     CGImageRelease(image);
+	//     break;
 
 	    // Timebase
 
@@ -1747,7 +1748,9 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 	    scope.start = 0;
 	    scope.index = 0;
 	    xscale.start = 0;
+	    yscale.index = 0;
 	    HIViewSetNeedsDisplay(xscale.view, true);
+	    HIViewSetNeedsDisplay(yscale.view, true);
 	    break;
 
 	    // End
@@ -1767,9 +1770,13 @@ OSStatus CommandEventHandler(EventHandlerCallRef next, EventRef event,
 	    scope.start = 0;
 	    scope.bright = false;
 	    scope.single = false;
-	    scope.polarity = false;
+	    // scope.polarity = false;
 	    scope.storage = false;
 
+	    xscale.start = 0;
+	    yscale.index = 0;
+	    HIViewSetNeedsDisplay(xscale.view, true);
+	    HIViewSetNeedsDisplay(yscale.view, true);
 
 	    // Get image
 
@@ -1893,19 +1900,30 @@ OSStatus MouseEventHandler(EventHandlerCallRef next,
 			  NULL, &window);
 	HIPoint location;
 	HIViewRef view;
+	HIRect bounds;
 	HIViewID id;
 
 	HIViewGetViewForMouseEvent(HIViewGetRoot(window), event, &view);
 	HIViewGetID(view, &id);
 
+	GetEventParameter(event, kEventParamWindowMouseLocation,
+			  typeHIPoint, NULL, sizeof(location),
+			  NULL, &location);
+	HIViewConvertPoint(&location, NULL, view);
+	HIViewGetBounds(scope.view, &bounds);
+
 	switch (id.id)
 	{
-	case 1:
-	    GetEventParameter(event, kEventParamWindowMouseLocation,
-			      typeHIPoint, NULL, sizeof(location),
-			      NULL, &location);
-	    HIViewConvertPoint(&location, NULL, view);
+	case kScopeID:
 	    scope.index = location.x;
+	    break;
+
+	case kYScaleID:
+	  yscale.index = location.y - (bounds.size.height / 2);
+
+	    // Update display
+
+	    HIViewSetNeedsDisplay(yscale.view, true);
 	    break;
 
 	default:
@@ -1953,6 +1971,32 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	if (scope.index >= bounds.size.width)
 	    scope.index = 0;
 	break;
+
+	// Up
+
+    case kKeyboardUpKey:
+        yscale.index--;
+
+	if (yscale.index <= -bounds.size.height / 2)
+	    yscale.index = 0;
+
+	// Update display
+
+	HIViewSetNeedsDisplay(yscale.view, true);
+	break;
+
+	// Down
+
+    case kKeyboardDownKey:
+        yscale.index++;
+
+        if (yscale.index >= bounds.size.height / 2)
+	    yscale.index = 0;
+
+	// Update display
+
+	HIViewSetNeedsDisplay(yscale.view, true);
+        break;
 
     default:
 	return eventNotHandledErr;
