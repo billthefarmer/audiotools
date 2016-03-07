@@ -1,4 +1,4 @@
-# Audio Tools #
+# Audio Tools [![Build Status](https://travis-ci.org/billthefarmer/audiotools.svg?branch=master)](https://travis-ci.org/billthefarmer/audiotools)
 
 Audio tools for testing audio equipment in conjunction with a
 PC. Windows and Mac versions have been released. Display shows

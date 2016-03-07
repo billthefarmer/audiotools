@@ -1,0 +1,14 @@
+language: c
+
+os:
+  - osx
+
+script:
+  - cd LMS/mac
+  - make
+  - cd ../../Scope/mac
+  - make
+  - cd ../../SigGen/mac
+  - make
+  - cd ../../SLMS/mac
+  - make
