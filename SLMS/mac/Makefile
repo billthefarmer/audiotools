@@ -4,8 +4,8 @@ CP=cp
 
 GCC=gcc
 CFLAGS=-framework Carbon -framework Audiounit -framework CoreAudio \
-		-framework Accelerate -m32 -Wno-deprecated-declarations \
-		-mmacosx-version-min=10.6
+		-framework Accelerate -arch i386 \
+		-mmacosx-version-min=10.4
 
 APPNAME=SLMS
 
