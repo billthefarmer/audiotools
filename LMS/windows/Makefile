@@ -7,7 +7,7 @@
 GCC	= gcc
 WINDRES = windres
 
-all:	LMS.exe Test.exe
+all:	LMS.exe
 
 LMS.exe:	LMS.c LMS.o
 
