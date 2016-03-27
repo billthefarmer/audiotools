@@ -22,9 +22,9 @@ APPBUNDLEICON = $(APPBUNDLECONTENTS)/Resources
 APPDMG = $(APPNAME).dmg
 APPVDMG = $(APPNAME)-$(APPVERSION).dmg
 
-appdmg: appbundle
-	$(HDIU) create -size 5m -fs HFS+ -volname $(APPNAME) -ov $(APPNAME)
-	$(HDIU) attach $(APPDMG)
+$(APPVDMG): $(APPBUNDLE)
+	$(HDIU) create -size 5m -fs HFS+ -volname $(APPNAME) -ov $(APPNAME) -quiet
+	$(HDIU) attach $(APPDMG) -quiet
 	$(CP) -r $(APPBUNDLE) /Volumes/$(APPNAME)
 	$(LN) -s /Applications /Volumes/$(APPNAME)/Applications
 	$(CP) $(APPNAME).rtf /Volumes/$(APPNAME)
@@ -32,10 +32,10 @@ appdmg: appbundle
 	$(CP) CHANGES COPYING Makefile $(APPNAME).c Info.plist PkgInfo \
 	$(APPNAME).icns $(APPNAME).png /Volumes/$(APPNAME)/Sources
 	$(CP) -r images /Volumes/$(APPNAME)/Sources
-	$(HDIU) detach /Volumes/$(APPNAME)
-	$(HDIU) convert -format UDZO -o $(APPVDMG) -ov $(APPDMG)
+	$(HDIU) detach /Volumes/$(APPNAME) -quiet
+	$(HDIU) convert -format UDZO -o $(APPVDMG) -ov $(APPDMG) -quiet
 
-appbundle: $(APPNAME) $(APPNAME).icns
+$(APPBUNDLE): $(APPNAME) $(APPNAME).icns
 	$(RM) -rf $(APPBUNDLE)
 	$(MD) $(APPBUNDLE)
 	$(MD) $(APPBUNDLECONTENTS)

@@ -1,20 +1,39 @@
-RM=rm
-MD=mkdir
-CP=cp
+RM = rm
+MD = mkdir
+CP = cp
+LN = ln
+PLB = /usr/libexec/PlistBuddy
+HDIU = hdiutil
 
-GCC=gcc
-CFLAGS=-framework Carbon -framework Audiounit -framework CoreAudio \
+GCC = gcc
+CFLAGS = -framework Carbon -framework Audiounit -framework CoreAudio \
 		-framework Accelerate -arch i386 \
 		-mmacosx-version-min=10.4
 
-APPNAME=LMS
+APPNAME = LMS
+APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)
 
-APPBUNDLE=$(APPNAME).app
-APPBUNDLECONTENTS=$(APPBUNDLE)/Contents
-APPBUNDLEMACOS=$(APPBUNDLECONTENTS)/MacOS
-APPBUNDLERESOURCES=$(APPBUNDLECONTENTS)/Resources
+APPBUNDLE = $(APPNAME).app
+APPBUNDLECONTENTS = $(APPBUNDLE)/Contents
+APPBUNDLEMACOS = $(APPBUNDLECONTENTS)/MacOS
+APPBUNDLERESOURCES = $(APPBUNDLECONTENTS)/Resources
 
-appbundle: $(APPNAME) $(APPNAME).icns
+APPDMG = $(APPNAME).dmg
+APPVDMG = $(APPNAME)-$(APPVERSION).dmg
+
+$(APPVDMG): $(APPBUNDLE)
+	$(HDIU) create -size 5m -fs HFS+ -volname $(APPNAME) -ov $(APPNAME) -quiet
+	$(HDIU) attach $(APPDMG) -quiet
+	$(CP) -r $(APPBUNDLE) /Volumes/$(APPNAME)
+	$(LN) -s /Applications /Volumes/$(APPNAME)/Applications
+	$(CP) $(APPNAME).rtf /Volumes/$(APPNAME)
+	$(MD) /Volumes/$(APPNAME)/Sources
+	$(CP) CHANGES COPYING Makefile $(APPNAME).c Info.plist PkgInfo \
+	$(APPNAME).icns $(APPNAME).png /Volumes/$(APPNAME)/Sources
+	$(HDIU) detach /Volumes/$(APPNAME) -quiet
+	$(HDIU) convert -format UDZO -o $(APPVDMG) -ov $(APPDMG) -quiet
+
+$(APPBUNDLE): $(APPNAME) $(APPNAME).icns
 	$(RM) -rf $(APPBUNDLE)
 	$(MD) $(APPBUNDLE)
 	$(MD) $(APPBUNDLECONTENTS)
