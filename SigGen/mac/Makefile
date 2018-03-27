@@ -7,8 +7,7 @@ HDIU = hdiutil
 
 GCC = gcc
 CFLAGS = -framework Carbon -framework Audiounit -framework CoreAudio \
-		-framework Accelerate -arch i386 \
-		-mmacosx-version-min=10.4
+		-arch i386  -mmacosx-version-min=10.4
 
 APPNAME = SigGen
 APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)

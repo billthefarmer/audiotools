@@ -22,155 +22,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <Carbon/Carbon.h>
-#include <AudioUnit/AudioUnit.h>
-#include <CoreAudio/CoreAudio.h>
-// #include <Accelerate/Accelerate.h>
-
-// Macros
-
-#define Length(a) (sizeof(a) / sizeof(a[0]))
-
-// Audio out values
-
-enum
-    {kSampleRate       = 44100,
-     kSamples          = 4096,
-     kMaxLevel         = 1,
-     kBytesPerPacket   = 4,
-     kBytesPerFrame    = 4,
-     kChannelsPerFrame = 1};
-
-// Frequency scale
-
-enum
-    {kFrequencyScale = 250,
-     kFrequencyMax   = 850,
-     kFrequencyMin   = 0};
-
-// Fine slider
-
-enum
-    {kFineMax  = 100,
-     kFineRef  = 50,
-     kFineMin  = 0};
-
-// Level slider
-
-enum
-    {kLevelMax  = 100,
-     kLevelRef  = 20,
-     kLevelMin  = 0};
-
-// Waveform
-
-enum
-    {kSine,
-     kSquare,
-     kSawtooth};
-
-// Command IDs
-
-enum
-    {kCommandFrequency = 'Freq',
-     kCommandFine      = 'Fine',
-     kCommandLevel     = 'Levl',
-     kCommandSine      = 'Sine',
-     kCommandSquare    = 'Squa',
-     kCommandSawtooth  = 'Sawt',
-     kCommandMute      = 'Mute'};
-
-// Keycodes
-
-enum
-    {kKeyboardUpKey    = 0x7e,
-     kKeyboardDownKey  = 0x7d,
-     kKeyboardLeftKey  = 0x7b,
-     kKeyboardRightKey = 0x7c,
-     kKeyboardPriorKey = 0x74,
-     kKeyboardNextKey  = 0x79};
-
-// Global data
-
-typedef struct
-{
-    HIViewRef view;
-    float value;
-} Scale;
-
-Scale scale =
-    {NULL, kFrequencyScale * 2.0};
-
-typedef struct
-{
-    HIViewRef view;
-    float frequency;
-    float decibels;
-} Display;
-
-Display display =
-    {NULL, 1000.0, -20.0};
-
-typedef struct
-{
-    HIViewRef fine;
-    HIViewRef level;
-} Sliders;
-
-Sliders sliders;
-
-typedef struct
-{
-    HIViewRef sine;
-    HIViewRef square;
-    HIViewRef sawtooth;
-} Buttons;
-
-Buttons buttons;
-
-typedef struct
-{
-    AudioUnit output;
-    Boolean mute;
-    Boolean flag;
-    int waveform;
-    float level;
-    float rate;
-} Audio;
-
-Audio audio;
-
-// Function prototypes.
-
-OSStatus ScaleDrawEventHandler(EventHandlerCallRef, EventRef, void *);
-OSStatus DisplayDrawEventHandler(EventHandlerCallRef, EventRef, void *);
-OSStatus KnobDrawEventHandler(EventHandlerCallRef, EventRef, void *);
-OSStatus WindowEventHandler(EventHandlerCallRef, EventRef, void *);
-OSStatus CommandEventHandler(EventHandlerCallRef, EventRef, void *);
-OSStatus MouseEventHandler(EventHandlerCallRef, EventRef, void *);
-OSStatus KeyboardEventHandler(EventHandlerCallRef, EventRef, void *);
-
-OSStatus SetupAudio(void);
-OSStatus DisplayAlert(CFStringRef, CFStringRef);
-OSStatus InputProc(void *, AudioUnitRenderActionFlags *,
-		   const AudioTimeStamp *, UInt32, UInt32,
-		   AudioBufferList *);
-
-OSStatus ChangeFrequency(UInt32);
-OSStatus CentreTextAtPoint(CGContextRef, float, float, const char *, size_t);
-OSStatus ChangeLevel(UInt32);
-
-OSStatus UpdateFrequency(void);
-OSStatus UpdateLevel(void);
-
-OSStatus StrokeRoundRect(CGContextRef, CGRect, float);
-HIRect DrawEdge(CGContextRef, HIRect);
-
-void FineActionProc(HIViewRef, ControlPartCode);
-void LevelActionProc(HIViewRef, ControlPartCode);
+#include "SigGen.h"
 
 // Function main
-
 int main(int argc, char *argv[])
 {
     WindowRef window;
@@ -182,11 +36,9 @@ int main(int argc, char *argv[])
     MenuRef menu;
 
     // Window bounds
-
     Rect bounds = {0, 0, 248, 338};
 
     // Create window
-
     CreateNewWindow(kDocumentWindowClass,
 		    kWindowStandardFloatingAttributes |
 		    kWindowFrameworkScaledAttribute |
@@ -195,63 +47,47 @@ int main(int argc, char *argv[])
 		    &bounds, &window);
 
     // Set the title
-
     SetWindowTitleWithCFString(window, CFSTR("Audio Signal Generator"));
 
     // Create an application menu
-
     CreateNewMenu(0, 0, &menu);
 
     // Set menu title
-
     CFStringRef apple = CFSTR("\024");
-    //	CFStringCreateWithPascalString(kCFAllocatorDefault,
-    //				       "\p\024",
-    //				       kCFStringEncodingMacRoman);
 
     SetMenuTitleWithCFString(menu, apple);
-    //  CFRelease(apple);
 
     // Create an about item
-
     AppendMenuItemTextWithCFString(menu, CFSTR("About Signal Generator"),
                                    0, kHICommandAbout, NULL);
     // Insert the menu
-
     InsertMenu(menu, 0);
     ReleaseMenu(menu);
 
     // Create a standard window menu
-
     CreateStandardWindowMenu(0, &menu);
 
     // Insert the menu
-
     InsertMenu(menu, 0);
     ReleaseMenu(menu);
 
     // Show and position the window
-
     ShowWindow(window);
     RepositionWindow(window, NULL, kWindowAlertPositionOnMainScreen);
 
     // Find the window content
-
     HIViewFindByID(HIViewGetRoot(window),
                    kHIViewWindowContentID,
                    &content);
 
     // Bounds of scale
-
     bounds.bottom = 40;
     bounds.right  = 160;
 
     // Create scale pane
-
     CreateUserPaneControl(window, &bounds, 0, &scale.view);
 
     // Set help tag
-
     HMHelpContentRec help =
 	{kMacHelpVersion,
 	 {0, 0, 0, 0},
@@ -263,167 +99,133 @@ int main(int argc, char *argv[])
     HMSetControlHelpContent(scale.view, &help);
 
     // Place in the window
-
     HIViewAddSubview(content, scale.view);
     HIViewPlaceInSuperviewAt(scale.view, 20, 20);
 
     // Bounds of display
-
     bounds.bottom = 60;
     bounds.right  = 130;
 
     // Create display pane
-
     CreateUserPaneControl(window, &bounds, 0, &display.view);
 
     // Set help tag
-
     help.content[kHMMinimumContentIndex].u.tagCFString =
 	CFSTR("Frequency display");
     HMSetControlHelpContent(display.view, &help);
 
     // Place in the window
-
     HIViewAddSubview(content, display.view);
     HIViewPlaceInSuperviewAt(display.view, 188, 20);
 
     // Bounds of knob
-
     bounds.bottom = 168;
     bounds.right  = 168;
 
     // Create display pane
-
     CreateUserPaneControl(window, &bounds, 0, &knob);
 
     // Set command ID
-
     HIViewSetCommandID(knob, kCommandFrequency);
 
     // Set help tag
-
     help.content[kHMMinimumContentIndex].u.tagCFString =
 	CFSTR("Frequency");
     HMSetControlHelpContent(knob, &help);
 
     // Place in the window
-
     HIViewAddSubview(content, knob);
     HIViewPlaceInSuperviewAt(knob, 16, 64);
 
     // Bounds of slider
-
     bounds.bottom = 140;
     bounds.right  = 15;
 
     // Create slider
-
     CreateSliderControl(window, &bounds, kFineRef, kFineMin, kFineMax,
                         kControlSliderPointsDownOrRight, 0, true,
 			FineActionProc, &sliders.fine);
     // Control size
-
     ControlSize small = kControlSizeSmall;
 
     // Set control size
-
     SetControlData(sliders.fine, kControlEntireControl, kControlSizeTag,
 		   sizeof(small), &small);
 
     // Set command ID
-
     HIViewSetCommandID(sliders.fine, kCommandFine);
 
     // Set help tag
-
     help.content[kHMMinimumContentIndex].u.tagCFString =
 	CFSTR("Fine frequency");
     HMSetControlHelpContent(sliders.fine, &help);
 
     // Place in the window
-
     HIViewAddSubview(content, sliders.fine);
     HIViewPlaceInSuperviewAt(sliders.fine, 188, 88);
 
     // Bounds of slider
-
     bounds.bottom = 140;
     bounds.right  = 14;
 
     // Create slider
-
     CreateSliderControl(window, &bounds, kLevelRef, kLevelMin, kLevelMax,
                         kControlSliderPointsUpOrLeft, 0, true,
 			LevelActionProc, &sliders.level);
     // Set control size
-
     SetControlData(sliders.level, kControlEntireControl, kControlSizeTag,
 		   sizeof(small), &small);
 
     // Set command ID
-
     HIViewSetCommandID(sliders.level, kCommandLevel);
 
     // Set help tag
-
     help.content[kHMMinimumContentIndex].u.tagCFString =
 	CFSTR("Level");
     HMSetControlHelpContent(sliders.level, &help);
 
     // Place in the window
-
     HIViewAddSubview(content, sliders.level);
     HIViewPlaceInSuperviewAt(sliders.level, 211, 88);
 
     // Bounds of group
-
     bounds.bottom = 160;
     bounds.right = 85;
 
     // Create group
-
     CreateRadioGroupControl(window, &bounds, &group);
 
     // Place in the window
-
     HIViewAddSubview(content, group);
     HIViewPlaceInSuperviewAt(group, 233, 88);
 
     // Bounds of button
-
     bounds.bottom = 20;
     bounds.right  = 85;
 
     // Create sine button
-
     CreateRadioButtonControl(window, &bounds, CFSTR("Sine"),
 			     kControlRadioButtonCheckedValue,
 			     false, &buttons.sine);
     // Set command ID
-
     HIViewSetCommandID(buttons.sine, kCommandSine); 
 
     // Place in the group
-
     HIViewAddSubview(group, buttons.sine);
     HIViewPlaceInSuperviewAt(buttons.sine, 0, 0);
 
     // Create square button
-
     CreateRadioButtonControl(window, &bounds, CFSTR("Square"),
 			     kControlRadioButtonUncheckedValue,
 			     false, &buttons.square);
     // Set command ID
-
     HIViewSetCommandID(buttons.square, kCommandSquare); 
 
     // Place in the group
-
     HIViewAddSubview(group, buttons.square);
     HIViewPlaceInSuperviewAt(buttons.square, 0, 26);
 
     // Create sawtooth button
-
     CreateRadioButtonControl(window, &bounds, CFSTR("Sawtooth"),
 			     kControlRadioButtonUncheckedValue,
 			     false, &buttons.sawtooth);
@@ -432,49 +234,39 @@ int main(int argc, char *argv[])
     HIViewSetCommandID(buttons.sawtooth, kCommandSawtooth); 
 
     // Place in the window
-
     HIViewAddSubview(group, buttons.sawtooth);
     HIViewPlaceInSuperviewAt(buttons.sawtooth, 0, 52);
 
     // Create mute button
-
     CreateCheckBoxControl(window, &bounds, CFSTR("Mute"),
 			  kControlCheckBoxUncheckedValue,
 			  true, &button);
     // Set command ID
-
     HIViewSetCommandID(button, kCommandMute); 
 
     // Place in the window
-
     HIViewAddSubview(content, button);
     HIViewPlaceInSuperviewAt(button, 233, 168);
 
     // Bounds of quit button
-
     bounds.bottom = 20;
     bounds.right  = 85;
 
     // Create push button
-
     CreatePushButtonControl(window, &bounds, CFSTR("Quit"), &button);
 
     // Set command ID
-
     HIViewSetCommandID(button, kHICommandQuit); 
 
     // Place in the window
-
     HIViewAddSubview(content, button);
     HIViewPlaceInSuperviewAt(button, 233, 208);
 
     // Draw events type spec
-
     EventTypeSpec drawEvents[] =
 	{{kEventClassControl, kEventControlDraw}};
 
     // Install event handlers
-
     InstallControlEventHandler(scale.view,
 			       NewEventHandlerUPP(ScaleDrawEventHandler),
 			       Length(drawEvents), drawEvents,
@@ -490,54 +282,44 @@ int main(int argc, char *argv[])
 			       knob, NULL);
 
     // Window events type spec
-
     EventTypeSpec windowEvents[] =
         {{kEventClassWindow, kEventWindowClose}};
 
     // Install event handler
-
     InstallWindowEventHandler(window, NewEventHandlerUPP(WindowEventHandler),
                               Length(windowEvents), windowEvents,
                               NULL, NULL);
 
     // Command events type spec
-
     EventTypeSpec commandEvents[] =
         {{kEventClassCommand, kEventCommandProcess}};
 
     // Install event handler
-
     InstallApplicationEventHandler(NewEventHandlerUPP(CommandEventHandler),
                                    Length(commandEvents), commandEvents,
                                    window, NULL);
     // Mouse events type spec
-
     EventTypeSpec mouseEvents[] =
         {{kEventClassMouse, kEventMouseDragged}};
 
     // Install event handler
-
     InstallWindowEventHandler(window, NewEventHandlerUPP(MouseEventHandler),
 			      Length(mouseEvents), mouseEvents,
 			      window, NULL);
 
     // Keyboard events type spec
-
     EventTypeSpec keyboardEvents[] =
         {{kEventClassKeyboard, kEventRawKeyDown},
 	 {kEventClassKeyboard, kEventRawKeyRepeat}};
 
     // Install event handler
-
     InstallApplicationEventHandler(NewEventHandlerUPP(KeyboardEventHandler),
                                    Length(keyboardEvents), keyboardEvents,
                                    window, NULL);
     // Set up audio
-
     SetupAudio();
 
     // Run the application event loop
-
     RunApplicationEventLoop();
 
     return noErr;
@@ -546,7 +328,6 @@ int main(int argc, char *argv[])
 OSStatus SetupAudio()
 {
     // Specify an output unit
-
     ComponentDescription dc =
 	{kAudioUnitType_Output,
         kAudioUnitSubType_DefaultOutput,
@@ -554,7 +335,6 @@ OSStatus SetupAudio()
         0, 0};
 
     // Find an output unit
-
     Component cp
 	= FindNextComponent(NULL, &dc);
 
@@ -566,7 +346,6 @@ OSStatus SetupAudio()
     }
 
     // Open it
-
     OSStatus status = OpenAComponent(cp, &audio.output);
 
     if (status != noErr)
@@ -580,7 +359,6 @@ OSStatus SetupAudio()
     UInt32 size = sizeof(frames);
 
     // Set the max frames
-
     status = AudioUnitSetProperty(audio.output,
 				  kAudioUnitProperty_MaximumFramesPerSlice,
 				  kAudioUnitScope_Global, 0,
@@ -593,7 +371,6 @@ OSStatus SetupAudio()
     }
 
     // Set the buffer size
-
     status = AudioUnitSetProperty(audio.output,
 				  kAudioDevicePropertyBufferFrameSize,
 				  kAudioUnitScope_Global, 0,
@@ -609,7 +386,6 @@ OSStatus SetupAudio()
     size = sizeof(format);
 
     // Get stream format
-
     status = AudioUnitGetProperty(audio.output,
 				  kAudioUnitProperty_StreamFormat,
 				  kAudioUnitScope_Input, 0,
@@ -626,7 +402,6 @@ OSStatus SetupAudio()
     format.mChannelsPerFrame = kChannelsPerFrame;
 
     // Set stream format
-
     status = AudioUnitSetProperty(audio.output,
 				  kAudioUnitProperty_StreamFormat,
 				  kAudioUnitScope_Input, 0,
@@ -639,14 +414,12 @@ OSStatus SetupAudio()
     }
 
     // Save sample rate
-
     audio.rate = format.mSampleRate;
 
     AURenderCallbackStruct input =
 	{InputProc, &audio.output};
 
     // Set callback
-
     status = AudioUnitSetProperty(audio.output,
     				  kAudioUnitProperty_SetRenderCallback,
     				  kAudioUnitScope_Input, 0,
@@ -658,8 +431,7 @@ OSStatus SetupAudio()
 	return status;
     }
 
-    // Start the audio unit
-
+    // Init the audio unit
     status = AudioUnitInitialize(audio.output);
 
     if (status != noErr)
@@ -669,6 +441,7 @@ OSStatus SetupAudio()
 	return status;
     }
 
+    // Start the audio unit
     AudioOutputUnitStart(audio.output);
 
     if (status != noErr)
@@ -682,7 +455,6 @@ OSStatus SetupAudio()
 }
 
 // Input proc
-
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 		   const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
 		   UInt32 inNumberFrames, AudioBufferList *ioData)
@@ -693,7 +465,6 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
     static double l;
 
     // Initialise static variables
-
     if (K == 0)
     {
 	K = 2.0 * M_PI / audio.rate;
@@ -704,37 +475,30 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
     float *buffer = ioData->mBuffers[0].mData;
 
     // Fill buffer
-
     for (int i = 0; i < inNumberFrames; i++)
     {
 	// Track frequency and level adjustments
-
 	f += ((display.frequency - f) / (double)kSamples);
 	l += audio.mute? -l / (double)kSamples: 
 	    (audio.level - l) / (double)kSamples;
 
 	// Advance phase
-
 	q += (q < M_PI)? f * K: (f * K) - (2.0 * M_PI);
 
 	// Waveform
-
 	switch (audio.waveform)
 	{
 	    // Sine
-
 	case kSine:
 	    buffer[i] = sin(q) * l;
 	    break;
 
 	    // Square
-
 	case kSquare:
 	    buffer[i] = (q > 0.0)? l: -l;
 	    break;
 
 	    // Sawtooth
-
 	case kSawtooth:
 	    buffer[i] = (q / M_PI) * l;
 	    break;
@@ -745,7 +509,6 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 }
 
 // Display alert
-
 OSStatus DisplayAlert(CFStringRef error, CFStringRef explanation)
 {
     DialogRef dialog;
@@ -759,7 +522,6 @@ OSStatus DisplayAlert(CFStringRef error, CFStringRef explanation)
 }
 
 // Draw edge
-
 HIRect DrawEdge(CGContextRef context, HIRect bounds)
 {
     CGContextSetShouldAntialias(context, false);
@@ -767,11 +529,9 @@ HIRect DrawEdge(CGContextRef context, HIRect bounds)
     CGContextSetGrayStrokeColor(context, 0.8, 1);
 
     // Draw edge
-
     StrokeRoundRect(context, bounds, 7);
 
     // Create inset
-
     CGRect inset = CGRectInset(bounds, 2, 2);
     CGContextClipToRect(context, inset);
 
@@ -779,7 +539,6 @@ HIRect DrawEdge(CGContextRef context, HIRect bounds)
 }
 
 // Stroke round rect
-
 OSStatus StrokeRoundRect(CGContextRef context, CGRect rect, float radius)
 {
     CGPoint point = rect.origin;
@@ -788,7 +547,6 @@ OSStatus StrokeRoundRect(CGContextRef context, CGRect rect, float radius)
     CGContextBeginPath(context);
 
     // Draw rect with rounded corners
-
     CGContextMoveToPoint(context, point.x + radius, point.y);
     CGContextAddLineToPoint(context, point.x + size.width - radius, point.y);
     CGContextAddArcToPoint(context, point.x + size.width, point.y,
@@ -812,7 +570,6 @@ OSStatus StrokeRoundRect(CGContextRef context, CGRect rect, float radius)
 }
 
 // Draw scale
-
 OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
 			       EventRef event, void *data)
 {
@@ -821,24 +578,20 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
     HIViewRef view;
 
     // Text size
-
     enum
     {kTextSize = 12};
 
     // Get context
-
     GetEventParameter(event, kEventParamCGContextRef,
 		      typeCGContextRef, NULL,
 		      sizeof(context), NULL,
 		      &context);
     // Get view
-
     GetEventParameter(event, kEventParamDirectObject,
 		      typeControlRef, NULL,
 		      sizeof(view), NULL,
 		      &view);
     // Get bounds
-
     HIViewGetBounds(view, &bounds);
 
     inset = DrawEdge(context, bounds);
@@ -849,7 +602,6 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
     CGContextTranslateCTM(context, 2, 3);
 
     // Centre the origin
-
     CGContextTranslateCTM(context,  width / 2, height / 2);
 
     // Draw scale
@@ -884,14 +636,12 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
     }
 
     // Add centre line
-
     CGContextMoveToPoint(context, 0, -height / 2);
     CGContextAddLineToPoint(context, 0, height / 2);
 
     CGContextStrokePath(context);
 
     // Select font
-
     CGContextSelectFont(context, "Arial Bold", kTextSize,
 			kCGEncodingMacRoman);
     CGContextSetTextMatrix(context, CGAffineTransformMakeScale(1, -1));
@@ -922,26 +672,21 @@ OSStatus ScaleDrawEventHandler(EventHandlerCallRef next,
 }
 
 // Centre text at point
-
 OSStatus CentreTextAtPoint(CGContextRef context, float x, float y,
                            const char * bytes, size_t length)
 {
     // Draw invisible text
-
     CGContextSetTextDrawingMode(context, kCGTextInvisible);
     CGContextShowTextAtPoint(context, x, y, bytes, length);
 
     // Get new text position
-
     CGPoint point = CGContextGetTextPosition(context);
 
     // Calculate differences
-
     float dx = (point.x - x) / 2.0;
     float dy = (point.y - y) / 2.0;
 
     // Draw it again in the right place
-
     CGContextSetTextDrawingMode(context, kCGTextFill);
     CGContextShowTextAtPoint(context, x - dx, y - dy, bytes, length);
 
@@ -963,19 +708,16 @@ OSStatus DisplayDrawEventHandler(EventHandlerCallRef next,
     static char s[16];
 
     // Get context
-
     GetEventParameter(event, kEventParamCGContextRef,
 		      typeCGContextRef, NULL,
 		      sizeof(context), NULL,
 		      &context);
     // Get view
-
     GetEventParameter(event, kEventParamDirectObject,
 		      typeControlRef, NULL,
 		      sizeof(view), NULL,
 		      &view);
     // Get bounds
-
     HIViewGetBounds(view, &bounds);
 
     inset = DrawEdge(context, bounds);
@@ -988,7 +730,6 @@ OSStatus DisplayDrawEventHandler(EventHandlerCallRef next,
     CGContextSetTextDrawingMode(context, kCGTextFill);
 
     // Select font
-
     CGContextSelectFont(context, "Arial Bold", kTextSize,
 			kCGEncodingMacRoman);
 
@@ -1004,7 +745,6 @@ OSStatus DisplayDrawEventHandler(EventHandlerCallRef next,
 }
 
 // Draw knob
-
 OSStatus KnobDrawEventHandler(EventHandlerCallRef next,
 			      EventRef event, void *data)
 {
@@ -1013,26 +753,22 @@ OSStatus KnobDrawEventHandler(EventHandlerCallRef next,
     HIRect bounds;
 
     // Get context
-
     GetEventParameter(event, kEventParamCGContextRef,
 		      typeCGContextRef, NULL,
 		      sizeof(context), NULL,
 		      &context);
     // Get view
-
     GetEventParameter(event, kEventParamDirectObject,
 		      typeControlRef, NULL,
 		      sizeof(view), NULL,
 		      &view);
     // Get bounds
-
     HIViewGetBounds(view, &bounds);
 
     CGContextSetGrayFillColor(context, 0.9, 1);
     CGContextSetGrayStrokeColor(context, 0.6, 1);
 
     // Draw filled circle with shadow
-
     CGSize offset =
 	{4, -4};
     CGContextSetShadow(context, offset, 4);
@@ -1045,27 +781,22 @@ OSStatus KnobDrawEventHandler(EventHandlerCallRef next,
 }
 
 // Window event handler
-
 OSStatus WindowEventHandler(EventHandlerCallRef next,
 			    EventRef event, void *data)
 {
     // Get the event kind
-
     UInt32 kind = GetEventKind(event);
 
     // Switch on event kind
-
     switch (kind)
     {
     case kEventWindowClose:
 
 	// Close audio unit
-
 	AudioOutputUnitStop(audio.output);
 	AudioUnitUninitialize(audio.output);
 
         // Quit the application
-
         QuitApplicationEventLoop();
         break;
 
@@ -1074,12 +805,10 @@ OSStatus WindowEventHandler(EventHandlerCallRef next,
     }
 
     // Return ok
-
     return noErr;
 }
 
 // Command event handler
-
 OSStatus CommandEventHandler(EventHandlerCallRef next,
 			     EventRef event, void *data)
 {
@@ -1088,70 +817,57 @@ OSStatus CommandEventHandler(EventHandlerCallRef next,
     UInt32 value;
 
     // Get the command
-
     GetEventParameter(event, kEventParamDirectObject,
                       typeHICommand, NULL, sizeof(command),
                       NULL, &command);
 
     // Get the window
-    
     window = HIViewGetWindow(command.source.control);
 
     // Get the value
-
     value = HIViewGetValue(command.source.control);
 
     // Switch on the command ID
-
     switch (command.commandID)
     {
 	// Fine
-
     case kCommandFine:
 	ChangeFrequency(value);
 	break;
 
 	// Level
-
     case kCommandLevel:
 	ChangeLevel(value);
 	break;
 
 	// Sine
-
     case kCommandSine:
 	audio.waveform = kSine;
 	break;
 
 	// Square
-
     case kCommandSquare:
 	audio.waveform = kSquare;
 	break;
 
 	// Sawtooth
-
     case kCommandSawtooth:
 	audio.waveform = kSawtooth;
 	break;
 
 	// Mute
-
     case kCommandMute:
 	audio.mute = value;
 	break;
 
 	// Quit
-
     case kHICommandQuit:
 
 	// Close audio unit
-
 	AudioOutputUnitStop(audio.output);
 	AudioUnitUninitialize(audio.output);
 
 	// Let the default handler handle it
-
     default:
 	return eventNotHandledErr;
     }
@@ -1162,14 +878,12 @@ OSStatus CommandEventHandler(EventHandlerCallRef next,
 }
 
 // Mouse event handler
-
 OSStatus MouseEventHandler(EventHandlerCallRef next,
 			   EventRef event, void *data)
 {
     EventMouseButton button;
 
     // Get button
-
     GetEventParameter(event, kEventParamMouseButton,
 		      typeMouseButton, NULL, sizeof(button),
 		      NULL, &button);
@@ -1177,7 +891,6 @@ OSStatus MouseEventHandler(EventHandlerCallRef next,
     switch (button)
     {
 	// Primary button
-
     case kEventMouseButtonPrimary:
 	break;
 
@@ -1190,20 +903,17 @@ OSStatus MouseEventHandler(EventHandlerCallRef next,
     UInt32 id;
 
     // Get window
-
     GetEventParameter(event, kEventParamWindowRef,
 		      typeWindowRef, NULL, sizeof(window),
 		      NULL, &window);
 
     // Get view and id
-
     HIViewGetViewForMouseEvent(HIViewGetRoot(window), event, &view);
     HIViewGetCommandID(view, &id);
 
     switch (id)
     {
 	// Frequency
-
     case kCommandFrequency:
 	break;
 
@@ -1214,7 +924,6 @@ OSStatus MouseEventHandler(EventHandlerCallRef next,
     HIRect rect;
 
     // Get bounds
-
     HIViewGetBounds(view, &rect);
 
     HIPoint centre =
@@ -1225,42 +934,34 @@ OSStatus MouseEventHandler(EventHandlerCallRef next,
     HIPoint location;
 
     // Get mouse location
-
     GetEventParameter(event, kEventParamWindowMouseLocation,
 		      typeHIPoint, NULL, sizeof(location),
 		      NULL, &location);
 
     // Get delta
-
     GetEventParameter(event, kEventParamMouseDelta,
 		      typeHIPoint, NULL, sizeof(delta),
 		      NULL, &delta);
 
     // Convert point
-
     HIViewConvertPoint(&location, NULL, view);
 
     // Calculate previous location
-
     previous.x = location.x - delta.x;
     previous.y = location.y - delta.y;
 
     // Previous offset from centre of knob
-
     float x = previous.x - centre.x;
     float y = previous.y - centre.y;
 
     // Angle
-
     float theta = atan2f(x, -y);
 
     // Current offset from centre
-
     x = location.x - centre.x;
     y = location.y - centre.y;
 
     // Change in angle
-
     float change = atan2f(x, -y) - theta;
 
     if (change > M_PI)
@@ -1270,7 +971,6 @@ OSStatus MouseEventHandler(EventHandlerCallRef next,
 	change += 2.0 * M_PI;
 
     // Change frequency scale
-
     scale.value += round(change * 100.0 / M_PI);
 
     if (scale.value < kFrequencyMin)
@@ -1280,7 +980,6 @@ OSStatus MouseEventHandler(EventHandlerCallRef next,
 	scale.value = kFrequencyMax;
 
     // Update display
-
     HIViewSetNeedsDisplay(scale.view, true);
     UpdateFrequency();
 
@@ -1296,16 +995,13 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
     UInt32 value;
 
     // Get key code
-
     GetEventParameter(event, kEventParamKeyCode, typeUInt32,
 		      NULL, sizeof(code), NULL, &code);
 
     // Get fine slider value
-
     switch (code)
     {
 	// Up
-
     case kKeyboardUpKey:
 	value = HIViewGetValue(sliders.fine);
 	value++;
@@ -1314,7 +1010,6 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	break;
 
 	// Down
-
     case kKeyboardDownKey:
 	value = HIViewGetValue(sliders.fine);
 	value--;
@@ -1323,7 +1018,6 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	break;
 
 	// Left
-
     case kKeyboardLeftKey:
 	scale.value--;
 
@@ -1335,7 +1029,6 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	break;
 
 	// Right
-
     case kKeyboardRightKey:
 	scale.value++;
 
@@ -1347,7 +1040,6 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	break;
 
 	// Prior
-
     case kKeyboardPriorKey:
 	value = HIViewGetValue(sliders.level);
 	value++;
@@ -1356,7 +1048,6 @@ OSStatus KeyboardEventHandler(EventHandlerCallRef next,
 	break;
 
 	// Next
-
     case kKeyboardNextKey:
 	value = HIViewGetValue(sliders.level);
 	value--;
@@ -1398,11 +1089,9 @@ OSStatus ChangeFrequency(UInt32 value)
 }
 
 // Level action proc
-
 void LevelActionProc(HIViewRef view, ControlPartCode part)
 {
     // Get the slider value
-
     UInt32 value = HIViewGetValue(view);
     ChangeLevel(value);
 }
@@ -1412,7 +1101,6 @@ void LevelActionProc(HIViewRef view, ControlPartCode part)
 OSStatus ChangeLevel(UInt32 value)
 {
     // Calculate decibels
-
     audio.level = 1.0 * (float)value / (float)kLevelMax;
     display.decibels = log10f((float)value / 200.0) * 20.0;
 
@@ -1425,11 +1113,9 @@ OSStatus ChangeLevel(UInt32 value)
 }
 
 // Update frequency
-
 OSStatus UpdateFrequency()
 {
     // Get the slider value
-
     UInt32 value = HIViewGetValue(sliders.fine);
     ChangeFrequency(value);
 
@@ -1437,11 +1123,9 @@ OSStatus UpdateFrequency()
 }
 
 // Update level
-
 OSStatus UpdateLevel()
 {
     // Get the slider value
-
     UInt32 value = HIViewGetValue(sliders.level);
     ChangeLevel(value);
 
