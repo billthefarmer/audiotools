@@ -171,6 +171,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.contentView = stack
         window.makeKeyAndOrderFront(self)
         window.makeMain()
+
+        SetupAudio()
     }
 
     // sliderChange
@@ -197,6 +199,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
+        ShutdownAudio()
     }
 
 

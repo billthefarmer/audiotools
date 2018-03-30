@@ -21,7 +21,7 @@
 
 import Cocoa
 
-class KnobView: NSView
+class KnobView: NSControl
 {
 
     override func draw(_ dirtyRect: NSRect)
