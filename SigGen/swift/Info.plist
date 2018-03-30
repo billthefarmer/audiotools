@@ -8,6 +8,8 @@
 	<string>en</string>
 	<key>CFBundleExecutable</key>
 	<string>SigGen</string>
+	<key>CFBundleIconFile</key>
+	<string>SigGen.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.billthefarmer.SigGen</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -39,7 +41,7 @@
 	<key>DTXcodeBuild</key>
 	<string>9C40b</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.13</string>
+	<string>10.9</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2018 Bill Farmer. All rights reserved.</string>
 	<key>NSMainNibFile</key>

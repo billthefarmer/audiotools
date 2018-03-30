@@ -8,12 +8,15 @@
 
 import Cocoa
 
-class DisplayView: NSView {
+class DisplayView: SigGenView
+{
 
-    override func draw(_ dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect)
+    {
         super.draw(dirtyRect)
 
         // Drawing code here.
+        NSEraseRect(rect)
     }
     
 }

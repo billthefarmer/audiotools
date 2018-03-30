@@ -8,12 +8,15 @@
 
 import Cocoa
 
-class ScaleView: NSView {
+class ScaleView: SigGenView
+{
 
-    override func draw(_ dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect)
+    {
         super.draw(dirtyRect)
 
         // Drawing code here.
+        NSEraseRect(rect)
     }
     
 }
