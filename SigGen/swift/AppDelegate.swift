@@ -73,13 +73,18 @@ class AppDelegate: NSObject, NSApplicationDelegate
         scaleView = ScaleView()
         displayView = DisplayView()
 
+        knobView.target = self
+        knobeview.action = #selector(knobChange)
         knobView.toolTip = "Frequency knob"
+        knobView.tag = kTagFreq
+
         scaleView.toolTip = "Frequency scale"
         displayView.toolTip = "Frequency and level display"
 
         knobView.layerContentsRedrawPolicy = .onSetNeedsDisplay
         scaleView.layerContentsRedrawPolicy = .onSetNeedsDisplay
         displayView.layerContentsRedrawPolicy = .onSetNeedsDisplay
+
 
         let lStack = NSStackView(views: [scaleView, knobView])
 
@@ -99,12 +104,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
         fine.action = #selector(sliderChange)
         fine.toolTip = "Fine frequency"
         fine.doubleValue = 0.5
+        fine.tag = kTagFine
         setVertical(fine, true)
         let level = NSSlider()
         level.target = self
         level.action = #selector(sliderChange)
         level.toolTip = "Level"
         level.doubleValue = 0.2
+        level.tag = kTagLevel
         setVertical(level, true)
 
         let sine = NSButton()
@@ -175,10 +182,28 @@ class AppDelegate: NSObject, NSApplicationDelegate
         SetupAudio()
     }
 
+    // KnobChange
+    @objc func KnobChange(sender: KnobView)
+    {
+        print("Knob", sender, sender.doubleValue)
+    }
+
     // sliderChange
     @objc func sliderChange(sender: NSSlider)
     {
         print("Slider", sender, sender.doubleValue)
+        switch sender.tag
+        {
+        case kTagLevel :
+            audio.level = sender.doubleValue
+            break
+
+        case kTagFine :
+            break
+
+        default:
+            break
+        }
     }
 
     // buttonClicked

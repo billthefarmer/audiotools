@@ -87,11 +87,10 @@ typedef struct
 {
     AudioUnit output;
     double frequency;
-    Boolean mute;
-    Boolean flag;
-    int waveform;
-    float level;
+    double level;
     float rate;
+    bool mute;
+    int waveform;
 } Audio;
 Audio audio;
 
