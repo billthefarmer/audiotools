@@ -49,4 +49,16 @@ class SigGenView: NSView
         return inset
     }
 
+    // keyDown
+    func keyDown(with event: NSEvent)
+    {
+        let key = event.characters
+        switch key!.lowercased()
+        {
+
+        default:
+            NSLog("Key %s", key!)
+        }
+    }
+
 }
