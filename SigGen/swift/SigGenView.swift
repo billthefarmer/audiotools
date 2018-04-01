@@ -50,7 +50,7 @@ class SigGenView: NSView
     }
 
     // keyDown
-    func keyDown(with event: NSEvent)
+    override func keyDown(with event: NSEvent)
     {
         let key = event.characters
         switch key!.lowercased()

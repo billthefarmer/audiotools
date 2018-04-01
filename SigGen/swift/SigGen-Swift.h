@@ -202,11 +202,13 @@ SWIFT_CLASS("_TtC6SigGen11AppDelegate")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class NSEvent;
 @class NSCoder;
 
 SWIFT_CLASS("_TtC6SigGen10SigGenView")
 @interface SigGenView : NSView
 - (void)drawRect:(NSRect)dirtyRect;
+- (void)keyDown:(NSEvent * _Nonnull)event;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -219,7 +221,6 @@ SWIFT_CLASS("_TtC6SigGen11DisplayView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class NSEvent;
 
 SWIFT_CLASS("_TtC6SigGen8KnobView")
 @interface KnobView : NSControl
