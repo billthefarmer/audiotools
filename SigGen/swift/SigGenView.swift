@@ -32,19 +32,19 @@ class SigGenView: NSView
         NSGraphicsContext.saveGraphicsState()
 
         // Set colour
-        NSColor.gray.set()
+        NSColor.lightGray.set()
 
         // Draw edge
-        let path = NSBezierPath(roundedRect: rect, xRadius: 8, yRadius: 8)
-        path.lineWidth = 2
-        path.stroke()
+        var path = NSBezierPath(roundedRect: rect, xRadius: 8, yRadius: 8)
+        path.fill()
 
         // Restore context before clip
         NSGraphicsContext.restoreGraphicsState()
 
         // Create inset
         let inset = NSInsetRect(rect, 2, 2)
-        NSBezierPath.clip(inset)
+        path = NSBezierPath(roundedRect: inset, xRadius: 8, yRadius: 8)
+        path.setClip()
 
         return inset
     }
