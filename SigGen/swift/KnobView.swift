@@ -23,14 +23,70 @@ import Cocoa
 
 class KnobView: NSControl
 {
+    var value: CGFloat = 0
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
 
+    // mouseDragged
+    override func mouseDragged(with event: NSEvent)
+    {
+        if (event.type == .leftMouseDragged)
+        {
+            let position = event.locationInWindow
+
+            // Convert point
+            let location = convert(position, from: nil)
+
+            // Get centre
+            let centre = NSMakePoint(NSMidX(bounds), NSMidY(bounds))
+
+            // Calculate previous location
+            let prevX = location.x - event.deltaX
+            let prevY = location.y - event.deltaY
+
+            // Previous offset from centre of knob
+            var x = prevX - centre.x
+            var y = prevY - centre.y
+
+            // Angle
+            let theta = atan2(x, y)
+
+            // Current offset from centre
+            x = location.x - centre.x
+            y = location.y - centre.y
+
+            // Change in angle
+            var change = atan2(x, y) - theta
+
+            if (change > .pi)
+            {
+	        change -= 2.0 * .pi
+            }
+
+            if (change < -.pi)
+            {
+	        change += 2.0 * .pi
+            }
+
+            value += change / .pi
+            sendAction(action, to: target)
+
+            print("Change", change / .pi)
+            print("Value", value)
+        }
+    }
+
+    // draw
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
 
         // Drawing code here.
-        let indexSize = width / 32
-        let gradient = NSGradient(colors: [NSColor.white, NSColor.darkGray])!
+        let gradient = NSGradient(colors: [NSColor.white, NSColor.gray])!
         let shade = NSBezierPath(ovalIn: dirtyRect)
         gradient.draw(in: shade, angle: 315) 
         NSColor.lightGray.set()
@@ -42,7 +98,9 @@ class KnobView: NSControl
                                      byY: NSMidY(dirtyRect))
         (centre as NSAffineTransform).concat()
 
-        let indent = NSMakeRect(-size / 2, -size / 2, size, size)
+        let indentSize = NSMaxX(dirtyRect) / 32
+        let indent = NSMakeRect(-indentSize / 2, -indentSize / 2,
+                                indentSize, indentSize)
         let indentPath = NSBezierPath(ovalIn: indent)
 
         let y = NSMidY(inset) - NSMidY(inset) / 4

@@ -23,6 +23,13 @@ import Cocoa
 
 class ScaleView: SigGenView
 {
+    var value: CGFloat = 0
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
 
     override func draw(_ dirtyRect: NSRect)
     {

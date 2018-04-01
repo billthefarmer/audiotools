@@ -30,9 +30,7 @@ OSStatus SetupAudio()
         0, 0};
 
     // Find an output unit
-    AudioComponent cp
-	= AudioComponentFindNext(nil, &dc);
-
+    AudioComponent cp = AudioComponentFindNext(nil, &dc);
     if (cp == nil)
     {
         // AudioComponentFindNext

@@ -74,9 +74,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
         displayView = DisplayView()
 
         knobView.target = self
-        knobeview.action = #selector(knobChange)
+        knobView.action = #selector(knobChange)
         knobView.toolTip = "Frequency knob"
         knobView.tag = kTagFreq
+        knobView.value = 1.0
 
         scaleView.toolTip = "Frequency scale"
         displayView.toolTip = "Frequency and level display"
@@ -179,13 +180,18 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeKeyAndOrderFront(self)
         window.makeMain()
 
-        SetupAudio()
+        let status = SetupAudio()
+        if (status != noErr)
+        {
+            displayAlert("Tuner", "Audio initialisation failed", status)
+        }
     }
 
-    // KnobChange
-    @objc func KnobChange(sender: KnobView)
+    // knobChange
+    @objc func knobChange(sender: KnobView)
     {
-        print("Knob", sender, sender.doubleValue)
+        print("Knob", sender, sender.value)
+        scaleView.value = sender.value
     }
 
     // sliderChange
@@ -210,6 +216,41 @@ class AppDelegate: NSObject, NSApplicationDelegate
     @objc func buttonClicked(sender: NSButton)
     {
         print("Button", sender, sender.state)
+        switch sender.tag
+        {
+        case kTagSine :
+            audio.waveform = Int32(kSine)
+
+        case kTagSquare :
+            audio.waveform = Int32(kSquare)
+
+        case kTagSaw :
+            audio.waveform = Int32(kSawtooth)
+
+        case kTagMute :
+            audio.mute = !audio.mute
+
+        default :
+            break
+        }
+    }
+
+    // DisplayAlert
+    func displayAlert(_ message: String, _ informativeText: String,
+                      _ status: OSStatus)
+    {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = message
+
+        let error = (status > 0) ? UTCreateStringForOSType(OSType(status))
+          .takeRetainedValue() as String :
+          String(utf8String: AudioUnitErrString(status))!
+
+        alert.informativeText = informativeText + ": " + error +
+          " (" + String(status) + ")"
+
+        alert.runModal()
     }
 
     // applicationShouldTerminateAfterLastWindowClosed

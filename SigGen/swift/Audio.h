@@ -59,9 +59,9 @@ enum
 
 // Waveform
 enum
-    {kSine,
-     kSquare,
-     kSawtooth};
+    {kSine     = 'Sine',
+     kSquare   = 'Squa',
+     kSawtooth = 'Sawt'};
 
 // Tags
 enum
