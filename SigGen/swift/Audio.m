@@ -183,7 +183,6 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
     {
 	K = 2.0 * M_PI / audio.rate;
 	f = audio.frequency;
-	audio.level = (float)kMaxLevel * 0.2;
     }
 
     float *buffer = ioData->mBuffers[0].mData;

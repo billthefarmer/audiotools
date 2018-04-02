@@ -181,6 +181,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeFirstResponder(knobView)
         window.makeMain()
 
+        audio.frequency = 1000
+        audio.level = 0.2
+
         let status = SetupAudio()
         if (status != noErr)
         {
