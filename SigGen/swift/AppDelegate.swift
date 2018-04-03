@@ -24,6 +24,7 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
+    let kFineRef = 0.5
 
     @IBOutlet weak var window: NSWindow!
 
@@ -34,6 +35,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
     var scaleView: ScaleView!
     var displayView: DisplayView!
     var knobView: KnobView!
+
+    var fineSlider: NSSlider!
+    var levelSlider: NSSlider!
 
     // applicationDidFinishLaunching
     func applicationDidFinishLaunching(_ aNotification: Notification)
@@ -61,10 +65,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
             return
         }
 
-        window.setContentSize(NSMakeSize(420, 300))
-        window.contentMinSize = NSMakeSize(420, 300)
-        window.contentAspectRatio = NSMakeSize(1.4, 1.0)
-        window.showsResizeIndicator = true
+        // window.setContentSize(NSMakeSize(420, 300))
+        // window.contentMinSize = NSMakeSize(420, 300)
+        // window.contentAspectRatio = NSMakeSize(1.4, 1.0)
+        // window.showsResizeIndicator = true
 
         // Find the menu
         menu = NSApp.mainMenu
@@ -100,20 +104,21 @@ class AppDelegate: NSObject, NSApplicationDelegate
         lStack.orientation = .vertical
         lStack.spacing = 8
 
-        let fine = NSSlider()
-        fine.target = self
-        fine.action = #selector(sliderChange)
-        fine.toolTip = "Fine frequency"
-        fine.doubleValue = 0.5
-        fine.tag = kTagFine
-        setVertical(fine, true)
-        let level = NSSlider()
-        level.target = self
-        level.action = #selector(sliderChange)
-        level.toolTip = "Level"
-        level.doubleValue = 0.2
-        level.tag = kTagLevel
-        setVertical(level, true)
+        fineSlider = NSSlider()
+        fineSlider.target = self
+        fineSlider.action = #selector(sliderChange)
+        fineSlider.toolTip = "Fine frequency"
+        fineSlider.doubleValue = 0.5
+        fineSlider.tag = kTagFine
+        setVertical(fineSlider, true)
+
+        levelSlider = NSSlider()
+        levelSlider.target = self
+        levelSlider.action = #selector(sliderChange)
+        levelSlider.toolTip = "Level"
+        levelSlider.doubleValue = 0.2
+        levelSlider.tag = kTagLevel
+        setVertical(levelSlider, true)
 
         let sine = NSButton()
         sine.target = self
@@ -145,7 +150,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         vStack.orientation = .vertical
         vStack.alignment = .left
         vStack.spacing = 8
-        let hStack = NSStackView(views: [fine, level, vStack])
+        let hStack = NSStackView(views: [fineSlider, levelSlider, vStack])
         hStack.orientation = .horizontal
         hStack.alignment = .top
         hStack.spacing = 16
@@ -195,21 +200,34 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // knobChange
     @objc func knobChange(sender: KnobView)
     {
-        print("Knob", sender, sender.value)
-        scaleView.value = sender.value
+        let value = sender.value
+        scaleView.value = value
+
+        let fine = (fineSlider.doubleValue  - kFineRef) / 1000.0
+        var frequency = pow(10.0, value) * 10.0
+        frequency += (frequency * fine)
+        displayView.frequency = frequency
+        audio.frequency = frequency
+
     }
 
     // sliderChange
     @objc func sliderChange(sender: NSSlider)
     {
-        print("Slider", sender, sender.doubleValue)
+        let value = sender.doubleValue
         switch sender.tag
         {
         case kTagLevel :
-            audio.level = sender.doubleValue
+            audio.level = value
+            displayView.decibels = log10(value) * 20.0
             break
 
         case kTagFine :
+            let fine = (value  - kFineRef) / 1000.0
+            var frequency = pow(10.0, knobView.value) * 10.0
+            frequency += (frequency * fine)
+            displayView.frequency = frequency
+            audio.frequency = frequency
             break
 
         default:
