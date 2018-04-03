@@ -23,7 +23,7 @@ import Cocoa
 
 class DisplayView: SigGenView
 {
-    var frequency: Double = 0
+    var frequency: Double = 0.0
     {
         didSet
         {
@@ -31,7 +31,7 @@ class DisplayView: SigGenView
         }
     }
 
-    var decibels: Double = 0
+    var decibels: Double = 0.0
     {
         didSet
         {
