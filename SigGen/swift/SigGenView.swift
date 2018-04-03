@@ -65,14 +65,34 @@ class SigGenView: NSView
     // keyDown
     override func keyDown(with event: NSEvent)
     {
-        let key = event.characters!
-        let code = event.keyCode
-        switch key.lowercased()
+        let code = Int(event.keyCode)
+        switch code
         {
+        case kUpKey:
+            fineSlider.doubleValue += 0.01
+            fineSlider.sendAction(fineSlider.action, to: fineSlider.target)
+
+        case kDownKey:
+            fineSlider.doubleValue -= 0.01
+            fineSlider.sendAction(fineSlider.action, to: fineSlider.target)
+
+        case kLeftKey:
+            knobView.value -= 0.01
+
+        case kRightKey:
+            knobView.value += 0.01
+
+        case kPriorKey:
+            levelSlider.doubleValue += 0.01
+            levelSlider.sendAction(fineSlider.action, to: levelSlider.target)
+
+        case kNextKey:
+            levelSlider.doubleValue -= 0.01
+            levelSlider.sendAction(fineSlider.action, to: levelSlider.target)
 
         default:
-            NSLog("Key %@", key)
             NSLog("Key %x", code)
+            
         }
     }
 

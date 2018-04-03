@@ -75,12 +75,12 @@ enum
 
 // Keycodes
 enum
-    {kKeyboardUpKey    = 0x7e,
-     kKeyboardDownKey  = 0x7d,
-     kKeyboardLeftKey  = 0x7b,
-     kKeyboardRightKey = 0x7c,
-     kKeyboardPriorKey = 0x74,
-     kKeyboardNextKey  = 0x79};
+    {kUpKey    = 0x7e,
+     kDownKey  = 0x7d,
+     kLeftKey  = 0x7b,
+     kRightKey = 0x7c,
+     kPriorKey = 0x74,
+     kNextKey  = 0x79};
 
 // Global data
 typedef struct

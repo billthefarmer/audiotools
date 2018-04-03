@@ -21,6 +21,13 @@
 
 import Cocoa
 
+var scaleView: ScaleView!
+var displayView: DisplayView!
+var knobView: KnobView!
+
+var fineSlider: NSSlider!
+var levelSlider: NSSlider!
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
@@ -31,13 +38,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     var menu: NSMenu!
 
     var stack: NSStackView!
-
-    var scaleView: ScaleView!
-    var displayView: DisplayView!
-    var knobView: KnobView!
-
-    var fineSlider: NSSlider!
-    var levelSlider: NSSlider!
 
     // applicationDidFinishLaunching
     func applicationDidFinishLaunching(_ aNotification: Notification)
@@ -81,7 +81,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         knobView.action = #selector(knobChange)
         knobView.toolTip = "Frequency knob"
         knobView.tag = kTagFreq
-        knobView.value = 1.0
 
         scaleView.toolTip = "Frequency scale"
         displayView.toolTip = "Frequency and level display"
@@ -116,7 +115,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         levelSlider.target = self
         levelSlider.action = #selector(sliderChange)
         levelSlider.toolTip = "Level"
-        levelSlider.doubleValue = 0.2
+        levelSlider.doubleValue = 0.1
         levelSlider.tag = kTagLevel
         setVertical(levelSlider, true)
 
@@ -186,7 +185,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeFirstResponder(displayView)
         window.makeMain()
 
-        audio.frequency = 1000
+        knobView.value = 2.0
+        audio.frequency = 1000.0
         audio.waveform = Int32(kSine)
         audio.level = 0.2
 
@@ -200,15 +200,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // knobChange
     @objc func knobChange(sender: KnobView)
     {
-        let value = sender.value
-        scaleView.value = value
-
-        let fine = (fineSlider.doubleValue  - kFineRef) / 1000.0
-        var frequency = pow(10.0, value) * 10.0
-        frequency += (frequency * fine)
-        displayView.frequency = frequency
-        audio.frequency = frequency
-
+        let value = Double(sender.value)
+        frequencyChange(value, fineSlider.doubleValue)
     }
 
     // sliderChange
@@ -217,22 +210,32 @@ class AppDelegate: NSObject, NSApplicationDelegate
         let value = sender.doubleValue
         switch sender.tag
         {
-        case kTagLevel :
+        case kTagLevel:
             audio.level = value
-            displayView.decibels = log10(value) * 20.0
-            break
+            var decibels = log10(value) * 20.0
+            if (decibels < -80.0)
+            {
+                decibels = -80.0
+            }
+            displayView.decibels = decibels
 
-        case kTagFine :
-            let fine = (value  - kFineRef) / 1000.0
-            var frequency = pow(10.0, knobView.value) * 10.0
-            frequency += (frequency * fine)
-            displayView.frequency = frequency
-            audio.frequency = frequency
-            break
+        case kTagFine:
+            frequencyChange(Double(knobView.value), value)
 
         default:
             break
         }
+    }
+
+    //frequencyChange
+    func frequencyChange(_ value: Double, _ fine: Double)
+    {
+        var frequency = pow(10.0, value / 2.0) * 10.0
+        let fine = (fine  - kFineRef) / 1000.0
+        frequency += (frequency * fine)
+
+        displayView.frequency = frequency
+        audio.frequency = frequency
     }
 
     // buttonClicked

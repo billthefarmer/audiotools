@@ -23,13 +23,24 @@ import Cocoa
 
 class KnobView: NSControl
 {
-    let kFrequencyMax: CGFloat = 3.4
+    let kFrequencyMax: CGFloat = 6.8
     let kFrequencyMin: CGFloat = 0.0
 
     var value: CGFloat = 0.0
     {
         didSet
         {
+            if (value > kFrequencyMax)
+            {
+                value = kFrequencyMax
+            }
+
+            if (value < kFrequencyMin)
+            {
+                value = kFrequencyMin
+            }
+
+            sendAction(action, to: target)
             needsDisplay = true
         }
     }
@@ -76,18 +87,6 @@ class KnobView: NSControl
             }
 
             value += change / .pi
-
-            if (value > kFrequencyMax)
-            {
-                value = kFrequencyMax
-            }
-
-            if (value < kFrequencyMin)
-            {
-                value = kFrequencyMin
-            }
-
-            sendAction(action, to: target)
 
             NSLog("Change %f", change / .pi)
             NSLog("Value %f", value)
