@@ -178,10 +178,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         window.contentView = stack
         window.makeKeyAndOrderFront(self)
-        window.makeFirstResponder(knobView)
+        window.makeFirstResponder(displayView)
         window.makeMain()
 
         audio.frequency = 1000
+        audio.waveform = Int32(kSine)
         audio.level = 0.2
 
         let status = SetupAudio()

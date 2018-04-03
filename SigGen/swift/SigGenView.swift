@@ -65,12 +65,14 @@ class SigGenView: NSView
     // keyDown
     override func keyDown(with event: NSEvent)
     {
-        let key = event.characters
-        switch key!.lowercased()
+        let key = event.characters!
+        let code = event.keyCode
+        switch key.lowercased()
         {
 
         default:
-            NSLog("Key %s", key!)
+            NSLog("Key %@", key)
+            NSLog("Key %x", code)
         }
     }
 

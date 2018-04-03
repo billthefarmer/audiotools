@@ -22,8 +22,8 @@
 #ifndef Audio_h
 #define Audio_h
 
-#import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import <Foundation/Foundation.h>
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
