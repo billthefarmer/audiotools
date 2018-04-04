@@ -23,21 +23,22 @@ import Cocoa
 
 class KnobView: NSControl
 {
-    let kFrequencyMax: CGFloat = 6.8
-    let kFrequencyMin: CGFloat = 0.0
+    let kKnobMax: CGFloat = 6.8
+    let kKnobRef: CGFloat = 2.0
+    let kKnobMin: CGFloat = 0.0
 
-    var value: CGFloat = 0.0
+    var value = kKnobRef
     {
         didSet
         {
-            if (value > kFrequencyMax)
+            if (value > kKnobMax)
             {
-                value = kFrequencyMax
+                value = kKnobMax
             }
 
-            if (value < kFrequencyMin)
+            if (value < kKnobMin)
             {
-                value = kFrequencyMin
+                value = kKnobMin
             }
 
             sendAction(action, to: target)
@@ -58,37 +59,33 @@ class KnobView: NSControl
             // Get centre
             let centre = NSMakePoint(NSMidX(bounds), NSMidY(bounds))
 
-            // Calculate previous location
-            let prevX = location.x - event.deltaX
-            let prevY = location.y - event.deltaY
-
-            // Previous offset from centre of knob
-            var x = prevX - centre.x
-            var y = prevY - centre.y
+            // Current offset from centre
+            let x = location.x - centre.x
+            let y = location.y - centre.y
 
             // Angle
             let theta = atan2(x, y)
 
-            // Current offset from centre
-            x = location.x - centre.x
-            y = location.y - centre.y
+            // Calculate previous location
+            let prevX = x - event.deltaX
+            let prevY = y - event.deltaY
 
             // Change in angle
-            var change = atan2(x, y) - theta
+            var delta = theta - atan2(x, y)
 
-            if (change > .pi)
+            if (delta > .pi)
             {
-	        change -= 2.0 * .pi
+	        delta -= 2.0 * .pi
             }
 
-            if (change < -.pi)
+            if (delta < -.pi)
             {
-	        change += 2.0 * .pi
+	        delta += 2.0 * .pi
             }
 
-            value += change / .pi
+            value += delta / .pi
 
-            NSLog("Change %f", change / .pi)
+            NSLog("Change %f", delta / .pi)
             NSLog("Value %f", value)
 
         default:

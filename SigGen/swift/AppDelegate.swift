@@ -31,7 +31,11 @@ var levelSlider: NSSlider!
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
-    let kFineRef = 0.5
+    let kFineRef  = 0.5
+    let kLevelRef = 0.1
+
+    let kFreqVal = 1000.0
+    let kLevelVal = -20.0
 
     @IBOutlet weak var window: NSWindow!
 
@@ -115,7 +119,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         levelSlider.target = self
         levelSlider.action = #selector(sliderChange)
         levelSlider.toolTip = "Level"
-        levelSlider.doubleValue = 0.1
+        levelSlider.doubleValue = kLevelRef
         levelSlider.tag = kTagLevel
         setVertical(levelSlider, true)
 
@@ -185,10 +189,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeFirstResponder(displayView)
         window.makeMain()
 
-        knobView.value = 2.0
-        audio.frequency = 1000.0
+        displayView.frequency = kFreqVal
+        displayView.decibels = kLevelVal
+
+        audio.frequency = kFreqVal
         audio.waveform = Int32(kSine)
-        audio.level = 0.2
+        audio.level = kLevelRef
 
         let status = SetupAudio()
         if (status != noErr)
@@ -201,7 +207,17 @@ class AppDelegate: NSObject, NSApplicationDelegate
     @objc func knobChange(sender: KnobView)
     {
         let value = Double(sender.value)
-        frequencyChange(value, fineSlider.doubleValue)
+        switch sender.tag
+        {
+        case kTagFreq:
+            if (fineSlider != nil)
+            {
+                frequencyChange(value, fineSlider.doubleValue)
+            }
+
+        default:
+            break
+        }
     }
 
     // sliderChange
@@ -211,16 +227,19 @@ class AppDelegate: NSObject, NSApplicationDelegate
         switch sender.tag
         {
         case kTagLevel:
-            audio.level = value
             var decibels = log10(value) * 20.0
             if (decibels < -80.0)
             {
                 decibels = -80.0
             }
             displayView.decibels = decibels
+            audio.level = value
 
         case kTagFine:
-            frequencyChange(Double(knobView.value), value)
+            if (knobView != nil)
+            {
+                frequencyChange(Double(knobView.value), value)
+            }
 
         default:
             break

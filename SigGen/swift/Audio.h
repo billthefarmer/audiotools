@@ -39,24 +39,6 @@ enum
      kBytesPerFrame    = 4,
      kChannelsPerFrame = 1};
 
-// Frequency scale
-enum
-    {kFrequencyScale = 250,
-     kFrequencyMax   = 850,
-     kFrequencyMin   = 0};
-
-// Fine slider
-enum
-    {kFineMax  = 100,
-     kFineRef  = 50,
-     kFineMin  = 0};
-
-// Level slider
-enum
-    {kLevelMax  = 100,
-     kLevelRef  = 20,
-     kLevelMin  = 0};
-
 // Waveform
 enum
     {kSine     = 'Sine',
