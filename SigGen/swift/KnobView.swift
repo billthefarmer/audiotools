@@ -21,12 +21,12 @@
 
 import Cocoa
 
+let kKnobMax: CGFloat = 6.8
+let kKnobRef: CGFloat = 4.0
+let kKnobMin: CGFloat = 0.0
+
 class KnobView: NSControl
 {
-    let kKnobMax: CGFloat = 6.8
-    let kKnobRef: CGFloat = 2.0
-    let kKnobMin: CGFloat = 0.0
-
     var value = kKnobRef
     {
         didSet
@@ -68,10 +68,10 @@ class KnobView: NSControl
 
             // Calculate previous location
             let prevX = x - event.deltaX
-            let prevY = y - event.deltaY
+            let prevY = y + event.deltaY
 
             // Change in angle
-            var delta = theta - atan2(x, y)
+            var delta = theta - atan2(prevX, prevY)
 
             if (delta > .pi)
             {

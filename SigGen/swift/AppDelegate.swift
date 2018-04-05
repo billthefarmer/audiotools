@@ -69,11 +69,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
             return
         }
 
-        // window.setContentSize(NSMakeSize(420, 300))
-        // window.contentMinSize = NSMakeSize(420, 300)
-        // window.contentAspectRatio = NSMakeSize(1.4, 1.0)
-        // window.showsResizeIndicator = true
-
         // Find the menu
         menu = NSApp.mainMenu
 
@@ -148,8 +143,21 @@ class AppDelegate: NSObject, NSApplicationDelegate
         mute.setButtonType(.switch)
         mute.title = "Mute"
         mute.tag = kTagMute
+        let exact = NSButton()
+        exact.target = self
+        exact.action = #selector(showExact)
+        exact.setButtonType(.momentaryPushIn)
+        exact.bezelStyle = .rounded
+        exact.title = "Exact…"
+        let quit = NSButton()
+        quit.target = NSApp
+        quit.action = #selector(NSApp.terminate)
+        quit.setButtonType(.momentaryPushIn)
+        quit.bezelStyle = .rounded
+        quit.title = "Quit"
 
-        let vStack = NSStackView(views: [sine, square, sawtooth, mute])
+        let vStack = NSStackView(views: [sine, square, sawtooth,
+                                         mute, exact, quit])
         vStack.orientation = .vertical
         vStack.alignment = .left
         vStack.spacing = 8
@@ -169,7 +177,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                                multiplier: 0.46,
                                                constant: 0)
         rStack.addConstraint(displayHeight)
-        let stack = NSStackView(views: [lStack, rStack])
+        stack = NSStackView(views: [lStack, rStack])
         stack.orientation = .horizontal
         stack.alignment = .top
         stack.spacing = 8
@@ -181,10 +189,22 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                             multiplier: 1,
                                             constant: 0)
         stack.addConstraint(stackWidth)
+        let scaleHeight = NSLayoutConstraint(item: scaleView,
+                                             attribute: .height,
+                                             relatedBy: .equal,
+                                             toItem: displayView,
+                                             attribute: .height,
+                                             multiplier: 1,
+                                             constant: 0)
+        stack.addConstraint(scaleHeight)
         stack.edgeInsets = NSEdgeInsets(top: 20, left: 20,
                                         bottom: 20, right: 20)
-
         window.contentView = stack
+
+        // window.setContentSize(NSMakeSize(318, 238))
+        // window.contentMinSize = NSMakeSize(318, 238)
+        // window.contentAspectRatio = NSMakeSize(318, 238)
+
         window.makeKeyAndOrderFront(self)
         window.makeFirstResponder(displayView)
         window.makeMain()
@@ -214,6 +234,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
             {
                 frequencyChange(value, fineSlider.doubleValue)
             }
+            print("Bounds", stack.bounds)
 
         default:
             break
@@ -278,6 +299,29 @@ class AppDelegate: NSObject, NSApplicationDelegate
         default :
             break
         }
+    }
+
+    // showExact
+    @objc func showExact(sender: Any)
+    {
+        let alert = NSAlert()
+        alert.alertStyle = .informational
+        alert.messageText = "Enter exact frequency"
+        alert.informativeText = "Right here"
+        alert.showsSuppressionButton = true
+        let freq = NSTextField()
+        freq.doubleValue = audio.frequency
+        freq.isEditable = true
+        freq.drawsBackground = true
+        let accessory = NSStackView(views: [freq])
+        alert.accessoryView = accessory
+        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Cancel")
+        // alert.layout()
+
+        let result = alert.runModal()
+        print("Value", freq.doubleValue)
+        print("Result", result)
     }
 
     // DisplayAlert

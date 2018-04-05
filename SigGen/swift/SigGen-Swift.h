@@ -197,6 +197,7 @@ SWIFT_CLASS("_TtC6SigGen11AppDelegate")
 - (void)knobChangeWithSender:(KnobView * _Nonnull)sender;
 - (void)sliderChangeWithSender:(NSSlider * _Nonnull)sender;
 - (void)buttonClickedWithSender:(NSButton * _Nonnull)sender;
+- (void)showExactWithSender:(id _Nonnull)sender;
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication * _Nonnull)sender SWIFT_WARN_UNUSED_RESULT;
 - (void)applicationWillTerminate:(NSNotification * _Nonnull)aNotification;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;

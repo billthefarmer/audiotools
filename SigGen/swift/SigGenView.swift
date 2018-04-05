@@ -77,10 +77,10 @@ class SigGenView: NSView
             fineSlider.sendAction(fineSlider.action, to: fineSlider.target)
 
         case kLeftKey:
-            knobView.value -= 0.01
+            knobView.value = round((knobView.value * 100.0) - 1) / 100.0
 
         case kRightKey:
-            knobView.value += 0.01
+            knobView.value = round((knobView.value * 100.0) + 1) / 100.0
 
         case kPriorKey:
             levelSlider.doubleValue += 0.01
