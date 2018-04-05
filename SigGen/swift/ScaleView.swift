@@ -21,9 +21,12 @@
 
 import Cocoa
 
+let kScaleRef: CGFloat = 2.0
+
 class ScaleView: SigGenView
 {
-    var value: CGFloat = 0
+
+    var value = kScaleRef
     {
         didSet
         {
@@ -35,8 +38,78 @@ class ScaleView: SigGenView
     {
         super.draw(dirtyRect)
 
+        let kTextSize = height / 3
+        let kFreqScale = width
+        let context = NSGraphicsContext.current!
+
+        let font = NSFont.systemFont(ofSize: kTextSize)
+        var attribs: [NSAttributedStringKey: Any] = [.font: font]
+
+        // Scale text if necessary
+        let dx = "80".size(withAttributes: attribs).width
+        if (dx > width / 8)
+        {
+            let expansion = log((width / 8) / dx)
+            attribs = [.font: font, .expansion: expansion]
+        }
+
         // Drawing code here.
         NSEraseRect(rect)
+
+        let transform = AffineTransform(translationByX: NSMidX(rect),
+                                        byY: NSMidY(rect))
+        (transform as NSAffineTransform).concat()
+
+        let a = [1, 2, 3, 4, 6, 8]
+        for i in a
+        {
+            var x = (kFreqScale * log10(CGFloat(i))) -
+              value * kFreqScale
+
+            for _ in 0 ... 1
+            {
+                var s = String(format: "%d", i)
+                var offset = s.size(withAttributes: attribs).width / 2
+                s.draw(at: NSMakePoint(x - offset, 0),
+                       withAttributes: attribs)
+
+                s = String(format: "%d", i * 10)
+                offset = s.size(withAttributes: attribs).width / 2
+                s.draw(at: NSMakePoint(x + kFreqScale - offset, 0),
+                       withAttributes: attribs)
+                x += 2 * kFreqScale
+            }
+        }
+
+        context.shouldAntialias = false;
+
+        for i in 1 ... 10
+        {
+            var x = (kFreqScale * log10(CGFloat(i))) -
+              value * kFreqScale
+
+            for _ in 0 ... 3
+            {
+                NSBezierPath.strokeLine(from: NSMakePoint(x, 0),
+                                        to: NSMakePoint(x, -NSMidY(rect) / 2))
+                x += kFreqScale
+            }
+        }
+
+        for i in stride(from: 3, through: 19, by: 2)
+        {
+            var x = (kFreqScale * log10(CGFloat(i) / 2.0)) -
+              value * kFreqScale
+
+            for _ in 0 ... 3
+            {
+                NSBezierPath.strokeLine(from: NSMakePoint(x, -NSMidY(rect) / 6),
+                                        to: NSMakePoint(x, -NSMidY(rect) / 2))
+ 	        x += kFreqScale;
+            }
+        }
+
+        NSBezierPath.strokeLine(from: NSMakePoint(0, NSMidY(rect)),
+                                to: NSMakePoint(0, -NSMidY(rect)))
     }
-    
 }

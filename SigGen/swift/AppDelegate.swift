@@ -197,13 +197,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                              multiplier: 1,
                                              constant: 0)
         stack.addConstraint(scaleHeight)
-        stack.edgeInsets = NSEdgeInsets(top: 20, left: 20,
-                                        bottom: 20, right: 20)
+        stack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20)
         window.contentView = stack
 
-        // window.setContentSize(NSMakeSize(318, 238))
-        // window.contentMinSize = NSMakeSize(318, 238)
-        // window.contentAspectRatio = NSMakeSize(318, 238)
+        window.contentMinSize = NSMakeSize(340, 260)
+        window.contentAspectRatio = NSMakeSize(340, 260)
 
         window.makeKeyAndOrderFront(self)
         window.makeFirstResponder(displayView)
@@ -227,14 +225,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
     @objc func knobChange(sender: KnobView)
     {
         let value = Double(sender.value)
+
         switch sender.tag
         {
         case kTagFreq:
+            scaleView.value = sender.value / 2.0
             if (fineSlider != nil)
             {
                 frequencyChange(value, fineSlider.doubleValue)
             }
-            print("Bounds", stack.bounds)
 
         default:
             break
@@ -278,6 +277,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
         audio.frequency = frequency
     }
 
+    // setFrequency
+    func setFrequency(_ value: Double)
+    {
+        fineSlider.doubleValue = kFineRef
+        knobView.value = log10(CGFloat(value / 10)) * 2
+    }
+
     // buttonClicked
     @objc func buttonClicked(sender: NSButton)
     {
@@ -306,22 +312,24 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         let alert = NSAlert()
         alert.alertStyle = .informational
-        alert.messageText = "Enter exact frequency"
-        alert.informativeText = "Right here"
-        alert.showsSuppressionButton = true
-        let freq = NSTextField()
-        freq.doubleValue = audio.frequency
-        freq.isEditable = true
-        freq.drawsBackground = true
-        let accessory = NSStackView(views: [freq])
+        alert.messageText = "Please enter exact frequency"
+        let accessory = NSTextView(frame: NSMakeRect(0, 0, 180, 18))
+        accessory.isFieldEditor = true
+        accessory.font = NSFont.boldSystemFont(ofSize: 16)
+        accessory.string = String(format: "%1.1f", audio.frequency)
         alert.accessoryView = accessory
         alert.addButton(withTitle: "OK")
         alert.addButton(withTitle: "Cancel")
-        // alert.layout()
 
         let result = alert.runModal()
-        print("Value", freq.doubleValue)
-        print("Result", result)
+        if (result == .alertFirstButtonReturn)
+        {
+            let value = Double(accessory.string)
+            if (value != nil)
+            {
+                setFrequency(value!)
+            }
+        }
     }
 
     // DisplayAlert
