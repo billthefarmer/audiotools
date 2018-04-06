@@ -270,7 +270,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func frequencyChange(_ value: Double, _ fine: Double)
     {
         var frequency = pow(10.0, value / 2.0) * 10.0
-        let fine = (fine  - kFineRef) / 1000.0
+        let fine = (fine  - kFineRef) / 100.0
         frequency += (frequency * fine)
 
         displayView.frequency = frequency
