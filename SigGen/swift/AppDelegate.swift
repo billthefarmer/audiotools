@@ -316,7 +316,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         let accessory = NSTextView(frame: NSMakeRect(0, 0, 180, 18))
         accessory.isFieldEditor = true
         accessory.font = NSFont.boldSystemFont(ofSize: 16)
-        accessory.string = String(format: "%1.1f", audio.frequency)
+        accessory.string = String(format: "%1.2f", audio.frequency)
         alert.accessoryView = accessory
         alert.addButton(withTitle: "OK")
         alert.addButton(withTitle: "Cancel")

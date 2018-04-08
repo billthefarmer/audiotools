@@ -53,7 +53,7 @@ class DisplayView: SigGenView
         var attribs: [NSAttributedStringKey: Any] = [.font: font]
 
         // Scale text if necessary
-        let dx = "25000.0Hz".size(withAttributes: attribs).width
+        let dx = "25000.00Hz".size(withAttributes: attribs).width
         if (dx >= width)
         {
             let expansion = log((width) / dx)
@@ -64,13 +64,13 @@ class DisplayView: SigGenView
         var y = NSMaxY(rect) - textSize - 2
 
         // Draw frequency
-        let freq = String(format: "%6.1fHz", frequency)
+        let freq = String(format: "%1.2fHz", frequency)
         freq.draw(at: NSMakePoint(x, y), withAttributes: attribs)
 
         y -= textSize
 
         // Draw decibels
-        let db = String(format: "%+6.1fdB", decibels)
+        let db = String(format: "%+1.2fdB", decibels)
         db.draw(at: NSMakePoint(x, y), withAttributes: attribs)
     }
 }
