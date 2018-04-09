@@ -91,6 +91,8 @@ clean:
 	$(RM) -rf $(APPBUNDLE)
 	$(RM) $(APPNAME).icns
 	$(RM) $(APPNAME)
+	$(RM) Audio.o
+	$(RM) *.dmg
 
 dmg:	$(APPVDMG)
 
