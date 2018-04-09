@@ -92,16 +92,14 @@ clean:
 	$(RM) $(APPNAME).icns
 	$(RM) $(APPNAME)
 
+dmg:	$(APPVDMG)
+
 $(APPVDMG): $(APPBUNDLE)
-	$(HDIU) create -size 5m -fs HFS+ -volname $(APPNAME) -ov $(APPNAME) -quiet
+	$(HDIU) create -size 16m -fs HFS+ -volname $(APPNAME) -ov $(APPNAME) -quiet
 	$(HDIU) attach $(APPDMG) -quiet
 	$(CP) -r $(APPBUNDLE) /Volumes/$(APPNAME)
 	$(LN) -s /Applications /Volumes/$(APPNAME)/Applications
-	$(CP) Readme.rtf /Volumes/$(APPNAME)
-	$(MD) /Volumes/$(APPNAME)/Sources
-	$(CP) CHANGES COPYING Makefile $(APPNAME).c $(APPNAME).h Info.plist \
-	PkgInfo $(APPNAME).icns $(APPNAME).png /Volumes/$(APPNAME)/Sources
-	$(CP) -r Fonts /Volumes/$(APPNAME)/Sources
+	$(CP) README.md /Volumes/$(APPNAME)
 	$(HDIU) detach /Volumes/$(APPNAME) -quiet
 	$(HDIU) convert -format UDZO -o $(APPVDMG) -ov $(APPDMG) -quiet
 

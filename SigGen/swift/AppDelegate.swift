@@ -69,6 +69,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
             return
         }
 
+        window.contentMinSize = NSMakeSize(340, 260)
+        window.contentAspectRatio = NSMakeSize(340, 260)
+        window.collectionBehavior.insert(.fullScreenNone)
+
         // Find the menu
         menu = NSApp.mainMenu
 
@@ -199,9 +203,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         stack.addConstraint(scaleHeight)
         stack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20)
         window.contentView = stack
-
-        window.contentMinSize = NSMakeSize(340, 260)
-        window.contentAspectRatio = NSMakeSize(340, 260)
 
         window.makeKeyAndOrderFront(self)
         window.makeFirstResponder(displayView)
