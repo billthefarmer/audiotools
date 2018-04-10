@@ -8,9 +8,11 @@
 
 import Cocoa
 
-class XScaleView: NSView {
+class XScaleView: NSView
+{
 
-    override func draw(_ dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect)
+    {
         super.draw(dirtyRect)
 
         // Drawing code here.
