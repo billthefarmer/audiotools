@@ -185,12 +185,14 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 @class NSWindow;
+@class NSApplication;
 
 SWIFT_CLASS("_TtC5Scope11AppDelegate")
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 @property (nonatomic, weak) IBOutlet NSWindow * _Null_unspecified window;
 - (void)applicationDidFinishLaunching:(NSNotification * _Nonnull)aNotification;
 - (void)applicationWillTerminate:(NSNotification * _Nonnull)aNotification;
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication * _Nonnull)sender SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
