@@ -20,28 +20,67 @@
 
 import Cocoa
 
+var scopeView: ScopeView!
+var xScaleView: XScaleView!
+var yScaleView: YScaleView!
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
+    let kToolbar = "toolbar"
 
     @IBOutlet weak var window: NSWindow!
 
     var menu: NSMenu!
-
+    var toolbar: NSToolbar!
     var stack: NSStackView!
 
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         // Insert code here to initialize your application
+        window.setContentSize(NSMakeSize(CGFloat(kMinimumWidth),
+                                         CGFloat(kMinimumHeight)))
+        window.contentMinSize = NSMakeSize(CGFloat(kMinimumWidth),
+                                           CGFloat(kMinimumHeight))
+        window.contentMaxSize = NSMakeSize(CGFloat(kMaximumWidth),
+                                           CGFloat(kMaximumHeight))
         window.collectionBehavior.insert(.fullScreenNone)
 
         // Find the menu
         menu = NSApp.mainMenu
+
+        // Toolbar
+        let toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))
+        toolbar.delegate = ToolbarDelegate()
+        window.toolbar = toolbar
+
+        // Views
+        scopeView = ScopeView()
+        xScaleView = XScaleView()
+        yScaleView = YScaleView()
+
+        let vStack = NSStackView(views: [scopeView, xScaleView])
+        vStack.orientation = .vertical
+        stack = NSStackView(views: [yScaleView, vStack])
+        window.contentView = stack
     }
 
-    func applicationWillTerminate(_ aNotification: Notification)
+    // DisplayAlert
+    func displayAlert(_ message: String, _ informativeText: String,
+                      _ status: OSStatus)
     {
-        // Insert code here to tear down your application
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = message
+
+        let error = (status > 0) ? UTCreateStringForOSType(OSType(status))
+          .takeRetainedValue() as String :
+          String(utf8String: AudioUnitErrString(status))!
+
+        alert.informativeText = informativeText + ": " + error +
+          " (" + String(status) + ")"
+
+        alert.runModal()
     }
 
     // applicationShouldTerminateAfterLastWindowClosed
@@ -52,5 +91,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
         return true
     }
 
+    func applicationWillTerminate(_ aNotification: Notification)
+    {
+        // Insert code here to tear down your application
+    }
+
+    class ToolbarDelegate: NSObject, NSToolbarDelegate
+    {
+    }
 }
 

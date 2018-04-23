@@ -191,8 +191,8 @@ SWIFT_CLASS("_TtC5Scope11AppDelegate")
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 @property (nonatomic, weak) IBOutlet NSWindow * _Null_unspecified window;
 - (void)applicationDidFinishLaunching:(NSNotification * _Nonnull)aNotification;
-- (void)applicationWillTerminate:(NSNotification * _Nonnull)aNotification;
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication * _Nonnull)sender SWIFT_WARN_UNUSED_RESULT;
+- (void)applicationWillTerminate:(NSNotification * _Nonnull)aNotification;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -200,7 +200,7 @@ SWIFT_CLASS("_TtC5Scope11AppDelegate")
 
 SWIFT_CLASS("_TtC5Scope9ScopeView")
 @interface ScopeView : NSView
-- (void)drawRect:(NSRect)dirtyRect;
+- (void)drawRect:(NSRect)rect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end

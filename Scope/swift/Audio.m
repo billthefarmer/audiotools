@@ -445,3 +445,57 @@ OSStatus DisplayAlert(CFStringRef error, CFStringRef explanation)
 {
     return noErr;
 }
+
+// AudioUnitErrString
+char *AudioUnitErrString(OSStatus status)
+{
+    static UInt32 audioUnitErrCodes[] =
+        {kAudioUnitErr_CannotDoInCurrentContext,
+         kAudioUnitErr_FailedInitialization,
+         kAudioUnitErr_FileNotSpecified,
+         kAudioUnitErr_FormatNotSupported,
+         kAudioUnitErr_Initialized,
+         kAudioUnitErr_InvalidElement,
+         kAudioUnitErr_InvalidFile,
+         kAudioUnitErr_InvalidOfflineRender,
+         kAudioUnitErr_InvalidParameter,
+         kAudioUnitErr_InvalidProperty,
+         kAudioUnitErr_InvalidPropertyValue,
+         kAudioUnitErr_InvalidScope,
+         kAudioUnitErr_NoConnection,
+         kAudioUnitErr_PropertyNotInUse,
+         kAudioUnitErr_PropertyNotWritable,
+         kAudioUnitErr_TooManyFramesToProcess,
+         kAudioUnitErr_Unauthorized,
+         kAudioUnitErr_Uninitialized,
+         kAudioUnitErr_UnknownFileType,
+         kAudioUnitErr_RenderTimeout};
+
+    static char *audioUnitErrStrings[] =
+        {"AudioUnitErr_CannotDoInCurrentContext",
+         "AudioUnitErr_FailedInitialization",
+         "AudioUnitErr_FileNotSpecified",
+         "AudioUnitErr_FormatNotSupported",
+         "AudioUnitErr_Initialized",
+         "AudioUnitErr_InvalidElement",
+         "AudioUnitErr_InvalidFile",
+         "AudioUnitErr_InvalidOfflineRender",
+         "AudioUnitErr_InvalidParameter",
+         "AudioUnitErr_InvalidProperty",
+         "AudioUnitErr_InvalidPropertyValue",
+         "AudioUnitErr_InvalidScope",
+         "AudioUnitErr_NoConnection",
+         "AudioUnitErr_PropertyNotInUse",
+         "AudioUnitErr_PropertyNotWritable",
+         "AudioUnitErr_TooManyFramesToProcess",
+         "AudioUnitErr_Unauthorized",
+         "AudioUnitErr_Uninitialized",
+         "AudioUnitErr_UnknownFileType",
+         "AudioUnitErr_RenderTimeout"};
+
+    for (int i = 0; i < sizeof(audioUnitErrCodes) / sizeof(UInt32); i++)
+        if (audioUnitErrCodes[i] == status)
+            return audioUnitErrStrings[i];
+
+    return "UnknownErr";
+}

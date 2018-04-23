@@ -13,6 +13,27 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
+// Window dimensions
+enum
+    {kMinimumWidth  = 640,
+     kMaximumWidth  = 1024,
+     kMinimumHeight = 480,
+     kMaximumHeight = 768};
+
+// Keycodes
+enum
+    {kKeyboardUpKey    = 0x7e,
+     kKeyboardDownKey  = 0x7d,
+     kKeyboardLeftKey  = 0x7b,
+     kKeyboardRightKey = 0x7c};
+
+// State machine values
+enum
+    {INIT,
+     FIRST,
+     NEXT,
+     LAST};
+
 // Audio in values
 enum
     {kSampleRate       = 44100,
@@ -24,13 +45,6 @@ enum
 enum
     {kSamples = 262144,
      kFrames = 4096};
-
-// State machine values
-enum
-    {INIT,
-     FIRST,
-     NEXT,
-     LAST};
 
 typedef struct
 {
@@ -96,5 +110,6 @@ Timebase timebase =
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
                    UInt32 inNumberFrames, AudioBufferList *ioData);
+char *AudioUnitErrString(OSStatus);
 
 #endif /* Audio_h */
