@@ -5,7 +5,7 @@
 ################################################################################
 
 GCC	= gcc
-G++	= g++
+GPLUSPLUS	= g++
 WINDRES = windres
 
 all:	Scope.exe
@@ -18,7 +18,7 @@ clean:
 	rm *.exe *.o
 
 %.exe:	%.cpp
-	$(G++) -o $@ $^ -Os -std=gnu++11 \
+	$(GPLUSPLUS) -o $@ $^ -Os -std=gnu++98 \
 		-mwindows -lgdiplus -lcomctl32 -lwinmm
 
 %.o:	%.rc
