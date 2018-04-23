@@ -20,6 +20,11 @@ enum
      kMinimumHeight = 480,
      kMaximumHeight = 768};
 
+// Scale dimensions
+enum
+    {kScaleHeight = 24,
+     kScaleWidth  = 16};
+
 // Keycodes
 enum
     {kKeyboardUpKey    = 0x7e,

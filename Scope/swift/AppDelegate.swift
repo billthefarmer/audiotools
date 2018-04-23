@@ -59,6 +59,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
         xScaleView = XScaleView()
         yScaleView = YScaleView()
 
+        xScaleView.autoresizingMask = .width
+        yScaleView.autoresizingMask = .height
+
         let vStack = NSStackView(views: [scopeView, xScaleView])
         vStack.orientation = .vertical
         stack = NSStackView(views: [yScaleView, vStack])

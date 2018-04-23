@@ -10,6 +10,7 @@ import Cocoa
 
 class XScaleView: NSView
 {
+    var intrinsicContentSize = NSSize(NSViewNoInstrinsicMetric, kScaleHeight)
 
     override func draw(_ dirtyRect: NSRect)
     {
