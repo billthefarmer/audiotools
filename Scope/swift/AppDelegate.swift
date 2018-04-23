@@ -5,19 +5,79 @@
 //  Created by Bill Farmer on 08/04/2018.
 //  Copyright © 2018 Bill Farmer. All rights reserved.
 //
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import Cocoa
+
+var scopeView: ScopeView!
+var xScaleView: XScaleView!
+var yScaleView: YScaleView!
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
+    let kToolbar = "toolbar"
 
     @IBOutlet weak var window: NSWindow!
 
+    var menu: NSMenu!
+    var toolbar: NSToolbar!
+    var stack: NSStackView!
 
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         // Insert code here to initialize your application
+        window.contentMinSize = NSMakeSize(kMinimumWidth, kMinimumHeight)
+        window.contentMaxSize = NSMakeSize(kMaximumWidth, kMaximumHeight)
+        window.collectionBehavior.insert(.fullScreenNone)
+
+        // Find the menu
+        menu = NSApp.mainMenu
+
+        // Toolbar
+        var toolbar = NSToolbar(kToolbar)
+
+        // Views
+        scopeView = ScopeView()
+        xScaleView = XScaleView()
+        yScaleView = YScaleView()
+    }
+
+    // DisplayAlert
+    func displayAlert(_ message: String, _ informativeText: String,
+                      _ status: OSStatus)
+    {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = message
+
+        let error = (status > 0) ? UTCreateStringForOSType(OSType(status))
+          .takeRetainedValue() as String :
+          String(utf8String: AudioUnitErrString(status))!
+
+        alert.informativeText = informativeText + ": " + error +
+          " (" + String(status) + ")"
+
+        alert.runModal()
+    }
+
+    // applicationShouldTerminateAfterLastWindowClosed
+    func
+      applicationShouldTerminateAfterLastWindowClosed(_ sender:
+                                                        NSApplication) -> Bool
+    {
+        return true
     }
 
     func applicationWillTerminate(_ aNotification: Notification)
@@ -25,6 +85,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // Insert code here to tear down your application
     }
 
-
+    class ToolbarDelegate: NSObject, NSToolbarDelegate
+    {
+    }
 }
 
