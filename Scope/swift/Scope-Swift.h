@@ -208,7 +208,8 @@ SWIFT_CLASS("_TtC5Scope9ScopeView")
 
 SWIFT_CLASS("_TtC5Scope10XScaleView")
 @interface XScaleView : NSView
-- (void)drawRect:(NSRect)dirtyRect;
+@property (nonatomic, readonly) NSSize intrinsicContentSize;
+- (void)drawRect:(NSRect)rect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -216,7 +217,8 @@ SWIFT_CLASS("_TtC5Scope10XScaleView")
 
 SWIFT_CLASS("_TtC5Scope10YScaleView")
 @interface YScaleView : NSView
-- (void)drawRect:(NSRect)dirtyRect;
+@property (nonatomic, readonly) NSSize intrinsicContentSize;
+- (void)drawRect:(NSRect)rect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end

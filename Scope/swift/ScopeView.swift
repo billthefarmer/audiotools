@@ -30,7 +30,7 @@ class ScopeView: NSView
         NSBezierPath.fill(rect)
 
         // Dark green graticule
-        let darkGreen = NSColor(red: 0, green: 0.25, blue: 0, alpha: 1.0)
+        let darkGreen = NSColor(red: 0, green: 0.125, blue: 0, alpha: 1.0)
         darkGreen.set()
 
         // Move the origin

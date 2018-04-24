@@ -33,7 +33,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     var menu: NSMenu!
     var toolbar: NSToolbar!
-    var stack: NSStackView!
 
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
@@ -62,9 +61,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
         xScaleView.autoresizingMask = .width
         yScaleView.autoresizingMask = .height
 
-        let vStack = NSStackView(views: [scopeView, xScaleView])
-        vStack.orientation = .vertical
-        stack = NSStackView(views: [yScaleView, vStack])
+        let hStack = NSStackView(views: [yScaleView, scopeView])
+        hStack.spacing = 0
+        let stack = NSStackView(views: [hStack, xScaleView])
+        stack.orientation = .vertical
+        stack.spacing = 0
         window.contentView = stack
     }
 
@@ -101,6 +102,28 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     class ToolbarDelegate: NSObject, NSToolbarDelegate
     {
+        // toolbar
+        func toolbar(_ toolbar: NSToolbar, 
+                     itemForItemIdentifier itemIdentifier:
+                       NSToolbarItem.Identifier, 
+                     willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem?
+        {
+            return nil
+        }
+
+        // toolbarAllowedItemIdentifiers
+        func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) ->
+          [NSToolbarItem.Identifier]
+        {
+            return []
+        }
+
+        // toolbarDefaultItemIdentifiers
+        func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) ->
+          [NSToolbarItem.Identifier]
+        {
+            return []
+        }
     }
 }
 
