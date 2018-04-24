@@ -12,6 +12,8 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    sudo apt update
+    sudo apt install mingw-w64
     cd LMS/windows
     make GCC=i586-mingw32msvc-gcc WINDRES=i586-mingw32msvc-windres
     cd ../../Scope/windows
