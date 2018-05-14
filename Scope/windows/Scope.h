@@ -73,8 +73,8 @@ enum
 enum
     {HEIGHT     = 480,
      WIDTH      = 640,
-     MAX_HEIGHT = 768,
-     MAX_WIDTH = 1024};
+     MAX_HEIGHT = 1024,
+     MAX_WIDTH = 1280};
 
 enum
     {SCALE_HEIGHT = 24,
@@ -188,7 +188,7 @@ TIMEBASE timebase =
       "0.1 sec", "0.2 sec", "0.5 sec"},
      {128, 256, 512, 1024,
       2048, 4096, 8192, 16384,
-      32768, 65536, 131072, 262144}};
+      32768, 65536, 131072, 393216}};
 
 // Function prototypes.
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int);

@@ -4,9 +4,9 @@
 #
 ################################################################################
 
-GCC	= gcc
-GPLUSPLUS	= g++
-WINDRES = windres
+GCC	  = gcc
+GPLUSPLUS = g++
+WINDRES   = windres
 
 all:	Scope.exe
 
