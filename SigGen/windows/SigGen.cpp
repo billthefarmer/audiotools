@@ -731,11 +731,11 @@ BOOL DrawKnob(HDC hdc, RECT rect, UINT state)
 	SelectObject(hidc, image);
 
         // Erase background
-        RECT brct = {0, 0, width, height};
-        FillRect(hidc, &brct, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        FillRect(hidc, &rect, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
         // Draw knob
         Graphics graphics(hidc);
+        graphics.SetSmoothingMode(SmoothingModeAntiAlias);
         LinearGradientBrush gradient(Point(0, 0),
                                      Point(width, height),
                                      Color(255, 255, 255, 255),
@@ -750,6 +750,7 @@ BOOL DrawKnob(HDC hdc, RECT rect, UINT state)
     	   hidc, 0, 0, SRCCOPY);
 
     Graphics graphics(hbdc);
+    graphics.SetSmoothingMode(SmoothingModeAntiAlias);
 
     float size = width / 24.0;
 
