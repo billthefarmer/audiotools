@@ -464,8 +464,7 @@ BOOL RegisterKnobClass(HINSTANCE hinst)
 	{0, KnobProc,
 	 0, 0, hinst,
 	 NULL, LoadCursor(NULL, IDC_ARROW),
-	 GetSysColorBrush(COLOR_WINDOW),
-	 NULL, KNOBCLASS};
+	 NULL, NULL, KNOBCLASS};
 
     // Register the window class.
     return RegisterClass(&wc);
@@ -583,8 +582,7 @@ BOOL DrawScale(HDC hdc, RECT rect, UINT state)
     }
 
     // Erase background
-    RECT brct =
-	{0, 0, width, height};
+    RECT brct = {0, 0, width, height};
     FillRect(hbdc, &brct, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
     // Translate viewport
@@ -893,7 +891,6 @@ VOID MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	    scale.value += delta * 100.0 / M_PI;
 
 	    // Enforce limits
-
 	    if (scale.value < FREQ_MIN)
 		scale.value = FREQ_MIN;
 

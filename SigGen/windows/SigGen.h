@@ -72,7 +72,7 @@ enum
 enum
     {SAMPLES = 4096};
 
-// View sizes
+// View dimensions
 enum
     {SCALE_WIDTH = 168,
      SCALE_HEIGHT = 60,
