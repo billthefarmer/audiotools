@@ -1,4 +1,4 @@
-
+// Resources
 #include <windows.h>
 
 LMS   ICON   "LMS.ico"

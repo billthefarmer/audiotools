@@ -4,21 +4,22 @@
 #
 ################################################################################
 
-GCC	= gcc
-WINDRES = windres
+GCC	  = gcc
+GPLUSPLUS = g++
+WINDRES   = windres
 
 all:	SLMS.exe
 
-SLMS.exe:	SLMS.c SLMS.o
+SLMS.exe:	SLMS.cpp SLMS.o
 
-SLMS.o:	SLMS.rc SLMS.ico Knob.bmp SLMS.manifest
+SLMS.o:	SLMS.rc SLMS.ico SLMS.h SLMS.manifest Makefile
 
 clean:
 	rm *.exe *.o
 
-%.exe:	%.c
-	$(GCC) -o $@ $^ -Os -std=gnu99 \
-		-mwindows -lcomctl32 -lwinmm
+%.exe:	%.cpp
+	$(GPLUSPLUS) -o $@ $^ -Os -std=gnu++11 \
+		-mwindows -lgdiplus -lcomctl32 -lwinmm
 
 %.o:	%.rc
 	$(WINDRES) -o $@ $<

@@ -1,8 +1,7 @@
-
+// Resources
 #include <windows.h>
 
 SLMS   ICON "SLMS.ico"
-Knob BITMAP "Knob.bmp"
 
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "SLMS.manifest"
 
