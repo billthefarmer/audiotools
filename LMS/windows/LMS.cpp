@@ -495,11 +495,11 @@ BOOL DrawDisplay(HDC hdc, RECT rect)
 
     // Display frequency
     sprintf(s, "%1.1lfHz", display.f);
-    TextOut(hdc, 8, 8, s, strlen(s));
+    TextOut(hbdc, 8, 8, s, strlen(s));
 
     // Display level
     sprintf(s, "%1.1lfdB", display.l);
-    TextOut(hdc, width / 2 + 8, 8, s, strlen(s));
+    TextOut(hbdc, width / 2 + 8, 8, s, strlen(s));
 
     // Copy the bitmap
     BitBlt(hdc, rect.left, rect.top, width, height,
