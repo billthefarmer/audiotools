@@ -18,7 +18,7 @@ clean:
 	rm *.exe rm *.o
 
 %.exe:	%.cpp
-	$(GPLUSPLUS) -o $@ $^ -Os -std=gnu++11 -mwin32 \
+	$(GPLUSPLUS) -o $@ $^ -Os -std=gnu++11 \
 		-mwindows -lgdiplus -lcomctl32 -lwinmm
 
 %.o:	%.rc
