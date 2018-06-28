@@ -15,7 +15,7 @@ SigGen.exe:	SigGen.cpp SigGen.o
 SigGen.o:	SigGen.rc SigGen.h SigGen.manifest SigGen.ico Makefile
 
 clean:
-	rm *.exe rm *.o
+	rm *.exe *.o
 
 %.exe:	%.cpp
 	$(GXX) -o $@ $^ -Os -std=gnu++11 -static \

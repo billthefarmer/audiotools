@@ -6,8 +6,8 @@ LMS   ICON   "LMS.ico"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "LMS.manifest"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION    	1,0,1,0
-PRODUCTVERSION 	1,0,1,0
+FILEVERSION    	1,0,2,0
+PRODUCTVERSION 	1,0,2,0
 FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
 FILEFLAGS      	0x0L
 FILEOS         	VOS__WINDOWS32
@@ -21,12 +21,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      "Bill Farmer"
             VALUE "FileDescription",  "Level Measuring Set"
-            VALUE "FileVersion",      "1.01"
+            VALUE "FileVersion",      "1.02"
             VALUE "InternalName",     "LMS"
-            VALUE "LegalCopyright",   "Copyright (C) 2011 Bill Farmer"
+            VALUE "LegalCopyright",   "Copyright (C) 2018 Bill Farmer"
             VALUE "OriginalFilename", "LMS.exe"
             VALUE "ProductName",      "LMS"
-            VALUE "ProductVersion",   "1.01"
+            VALUE "ProductVersion",   "1.02"
         END
     END
     BLOCK "VarFileInfo"
