@@ -1,4 +1,4 @@
-
+// Resources
 #include <windows.h>
 
 Scope   ICON   "Scope.ico"
@@ -7,8 +7,8 @@ Toolbar BITMAP "Toolbar.bmp"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Scope.manifest"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION    	1,0,2,0
-PRODUCTVERSION 	1,0,2,0
+FILEVERSION    	1,0,3,0
+PRODUCTVERSION 	1,0,3,0
 FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
 FILEFLAGS      	0x0L
 FILEOS         	VOS__WINDOWS32
@@ -22,12 +22,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      "Bill Farmer"
             VALUE "FileDescription",  "Audio Oscilloscope"
-            VALUE "FileVersion",      "1.02"
+            VALUE "FileVersion",      "1.03"
             VALUE "InternalName",     "Scope"
-            VALUE "LegalCopyright",   "Copyright (C) 2016 Bill Farmer"
+            VALUE "LegalCopyright",   "Copyright (C) 2018 Bill Farmer"
             VALUE "OriginalFilename", "Scope.exe"
             VALUE "ProductName",      "Scope"
-            VALUE "ProductVersion",   "1.02"
+            VALUE "ProductVersion",   "1.03"
         END
     END
     BLOCK "VarFileInfo"

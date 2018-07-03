@@ -5,20 +5,21 @@
 ################################################################################
 
 GCC	= gcc
+GXX     = g++
 WINDRES = windres
 
 all:	SigGen.exe
 
-SigGen.exe:	SigGen.c SigGen.o
+SigGen.exe:	SigGen.cpp SigGen.o
 
-SigGen.o:	SigGen.rc SigGen.manifest SigGen.ico Knob.bmp
+SigGen.o:	SigGen.rc SigGen.h SigGen.manifest SigGen.ico Makefile
 
 clean:
-	rm *.exe
+	rm *.exe *.o
 
-%.exe:	%.c
-	$(GCC) -o $@ $^ -Os -std=gnu99 -mwin32 \
-		-mwindows -lcomctl32 -lwinmm
+%.exe:	%.cpp
+	$(GXX) -o $@ $^ -Os -std=gnu++11 -static \
+		-mwindows -lgdiplus -lcomctl32 -lwinmm
 
 %.o:	%.rc
 	$(WINDRES) -o $@ $<

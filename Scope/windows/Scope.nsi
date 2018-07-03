@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Audio Oscilloscope"
-!define PRODUCT_VERSION "1.02"
+!define PRODUCT_VERSION "1.03"
 !define PRODUCT_PUBLISHER "Bill Farmer"
 !define PRODUCT_WEB_SITE "https://github.com/billthefarmer/audiotools"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Scope.exe"
@@ -74,7 +74,7 @@ Section -AdditionalIcons
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
   SetShellVarContext all
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Audio Tools on Google Code.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Audio Tools.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Uninstall ${PRODUCT_NAME}.lnk" "$INSTDIR\${PRODUCT_UNINST_NAME}"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
@@ -111,7 +111,7 @@ Section Uninstall
 
   SetShellVarContext all
   Delete "$SMPROGRAMS\$ICONS_GROUP\Uninstall ${PRODUCT_NAME}.lnk"
-  Delete "$SMPROGRAMS\$ICONS_GROUP\Audio Tools on Google Code.lnk"
+  Delete "$SMPROGRAMS\$ICONS_GROUP\Audio Tools.lnk"
   Delete "$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME}.lnk"
 
   RMDir "$SMPROGRAMS\$ICONS_GROUP"

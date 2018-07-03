@@ -1,5 +1,7 @@
 # Audio Tools [![Build Status](https://travis-ci.org/billthefarmer/audiotools.svg?branch=master)](https://travis-ci.org/billthefarmer/audiotools)
 
+![http://audiotools.googlecode.com/files/Audiotools.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/Audiotools.png)
+
 Audio tools for testing audio equipment in conjunction with a
 PC. Windows and Mac versions have been released. Display shows
 frequency and relative level. Absolute level is not possible
