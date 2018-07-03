@@ -28,9 +28,9 @@
 // Window dimensions
 enum
     {kMinimumWidth  = 640,
-     kMaximumWidth  = 1024,
+     kMaximumWidth  = 1280,
      kMinimumHeight = 480,
-     kMaximumHeight = 768};
+     kMaximumHeight = 1024};
 
 // Scale dimensions
 enum

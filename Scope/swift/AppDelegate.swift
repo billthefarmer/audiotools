@@ -50,8 +50,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         // Toolbar
         let toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))
-        toolbar.delegate = ToolbarDelegate()
+        toolbar.delegate = ToolbarDelegate(self)
         window.toolbar = toolbar
+        NSLog("Items", toolbar.items);
 
         // Views
         scopeView = ScopeView()
@@ -67,6 +68,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         stack.orientation = .vertical
         stack.spacing = 0
         window.contentView = stack
+        window.makeKeyAndOrderFront(self)
+        window.makeMain()
     }
 
     // DisplayAlert
@@ -102,12 +105,47 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     class ToolbarDelegate: NSObject, NSToolbarDelegate
     {
+        let bright = NSToolbarItem.Identifier("bright")
+        let single = NSToolbarItem.Identifier("single")
+        let trigger = NSToolbarItem.Identifier("trigger")
+        let timebase = NSToolbarItem.Identifier("timebase")
+        let storage = NSToolbarItem.Identifier("storage")
+        let clear = NSToolbarItem.Identifier("clear")
+        let left = NSToolbarItem.Identifier("left")
+        let right = NSToolbarItem.Identifier("right")
+        let start = NSToolbarItem.Identifier("start")
+        let end = NSToolbarItem.Identifier("end")
+        let reset = NSToolbarItem.Identifier("reset")
+
+        var app: AppDelegate!
+
+        init(_ app: AppDelegate)
+        {
+            self.app = app
+        }
+
         // toolbar
         func toolbar(_ toolbar: NSToolbar, 
                      itemForItemIdentifier itemIdentifier:
                        NSToolbarItem.Identifier, 
                      willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem?
         {
+            let item = NSToolbarItem(itemIdentifier: itemIdentifier)
+            NSLog("Toolbar item")
+            switch itemIdentifier
+            {
+            case bright:
+                item.label = "Bright line"
+                item.toolTip = "Bright line"
+                let image = NSImage(byReferencingFile:
+                                      "Icons/ic_action_important.png")
+                item.image = image
+                return item
+
+            default:
+                break
+            }
+
             return nil
         }
 
@@ -115,14 +153,27 @@ class AppDelegate: NSObject, NSApplicationDelegate
         func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            return []
+            NSLog("Allowed")
+            return [bright, single, trigger, timebase,
+                    storage, clear, left, right, start,
+                    end, reset]
         }
 
         // toolbarDefaultItemIdentifiers
         func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            return []
+            NSLog("Default")
+            return [bright, single, trigger, timebase,
+                    storage, clear, left, right, start,
+                    end, reset]
+        }
+
+        // toolbarSelectableItemIdentifiers
+        func toolbarSelectableItemIdentifiers(_ toolbar: NSToolbar) ->
+          [NSToolbarItem.Identifier]
+        {
+            return [bright, single, storage]
         }
     }
 }
