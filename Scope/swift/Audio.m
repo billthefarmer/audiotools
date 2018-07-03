@@ -231,7 +231,6 @@ OSStatus SetupAudio()
         {InputProc, &audio.output};
 
     // Set callback
-
     status = AudioUnitSetProperty(audio.output,
                                   kAudioOutputUnitProperty_SetInputCallback,
                                   kAudioUnitScope_Global, 0,
