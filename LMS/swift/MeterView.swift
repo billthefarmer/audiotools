@@ -1,5 +1,5 @@
 //
-//  Meter.swift
+//  MeterView.swift
 //  LMS
 //
 //  Created by Bill Farmer on 03/07/2018.
@@ -8,9 +8,11 @@
 
 import Cocoa
 
-class Meter: NSView {
+class MeterView: NSView
+{
 
-    override func draw(_ dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect)
+    {
         super.draw(dirtyRect)
 
         // Drawing code here.
