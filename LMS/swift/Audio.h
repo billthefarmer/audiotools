@@ -83,8 +83,8 @@ typedef struct
 Audio audio;
 
 NSView *displayView;
-NSView *spectrumView;
 NSView *meterView;
+NSView *spectrumView;
 
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,

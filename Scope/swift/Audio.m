@@ -270,7 +270,6 @@ OSStatus SetupAudio()
 }
 
 // Input proc
-
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
                    UInt32 inNumberFrames, AudioBufferList *ioData)
