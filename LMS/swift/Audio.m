@@ -246,22 +246,25 @@ OSStatus SetupAudio()
 	return status;
     }
 
-    // Start the audio unit
+    // Init the audio unit
     status = AudioUnitInitialize(audio.output);
 
     if (status != noErr)
     {
-	DisplayAlert(CFSTR("AudioUnitInitialize"), 
-		     CFSTR("Can't initialise output audio unit"));
-	return status;
+        // AudioUnitInitialize
+        NSLog(@"Error in AudioUnitInitialize %s (%d)",
+              AudioUnitErrString(status), status);
+        return status;
     }
 
+    // Start the audio unit
     AudioOutputUnitStart(audio.output);
 
     if (status != noErr)
     {
-	DisplayAlert(CFSTR("AudioOutputUnitStart"), 
-		     CFSTR("Can't start output audio unit"));
+        // AudioOutputUnitStart
+        NSLog(@"Error in AudioOutputUnitStart %s (%d)",
+              AudioUnitErrString(status), status);
 	return status;
     }
 
@@ -278,14 +281,12 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 	{1, {1, 0, nil}};
 
     // Initialise data structs
-
     static Float32 buffer[kSamples];
 
     if (audio.buffer == nil)
 	audio.buffer = buffer;
 
     // Render data
-
     OSStatus status
 	= AudioUnitRender(*(AudioUnit *)inRefCon, ioActionFlags,
 			  inTimeStamp, inBusNumber,
@@ -294,7 +295,6 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 	return status;
 
     // Copy the input data
-
     memmove(buffer, buffer + audio.frames,
 	    (kSamples - audio.frames) * sizeof(float));
 
@@ -303,29 +303,16 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
     memmove(buffer + kSamples - audio.frames, data,
 	    audio.frames * sizeof(float));
 
-    // Create an event to post to the main event queue
-
-    EventRef event;
-
-    CreateEvent(kCFAllocatorDefault, kEventClassApplication,
-		kEventAudioUpdate, 0,
-		kEventAttributeUserEvent, &event);
-
-    PostEventToQueue(GetMainEventQueue(), event,
-		     kEventPriorityHigh);
-
-    ReleaseEvent(event);
+    // Run in main queue
+    dispatch_async(dispatch_get_main_queue(), ProcessAudio);
 
     return noErr;
 }
 
-// Audio event handler
-
-OSStatus AudioEventHandler(EventHandlerCallRef next,
-			   EventRef event, void *data)
+// Process audio
+void (^ProcessAudio)() = ^
 {
     // Arrays for processing input
-
     static float xa[kRange];
     static float xp[kRange];
     static float xq[kRange];
@@ -349,7 +336,6 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
     static float expect;
 
     // Initialise structures
-
     if (spectrum.data == nil)
     {
 	spectrum.data = xa;
@@ -359,83 +345,66 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	expect = 2.0 * M_PI * (float)kStep / (float)kSamples;
 
 	// Init Hamming window
-
 	vDSP_hamm_window(window, kSamples, 0);
 
 	// Init FFT
-
 	setup = vDSP_create_fftsetup(kLog2Samples, kFFTRadix2);
     }
 
     // Get RMS
-
     float level;
 
     vDSP_rmsqv(audio.buffer, 1, &level, kSamples);
 
     // Maximum data value
-
     static float dmax;
 
     if (dmax < 0.125)
 	dmax = 0.125;
 
     // Calculate normalising value
-
     float norm = dmax;
 
     // Get max magitude
-
     vDSP_maxmgv(audio.buffer, 1, &dmax, kSamples);
 
     // Divide by normalisation
-
     vDSP_vsdiv(audio.buffer, 1, &norm, input, 1, kSamples);
 
     // Multiply by window
-
     vDSP_vmul(input, 1, window, 1, input, 1, kSamples);
 
     // Copy input to split complex vector
-
     vDSP_ctoz((COMPLEX *)input, 2, &x, 1, kSamples2);
 
     // Do FFT
-
     vDSP_fft_zrip(setup, &x, 1, kLog2Samples, kFFTDirection_Forward);
 
     // Zero the zeroth part
-
     x.realp[0] = 0.0;
     x.imagp[0] = 0.0;
 
     // Scale the output
-
     float scale = kScale;
 
     vDSP_vsdiv(x.realp, 1, &scale, x.realp, 1, kSamples2);
     vDSP_vsdiv(x.imagp, 1, &scale, x.imagp, 1, kSamples2);
 
     // Magnitude
-
     vDSP_vdist(x.realp, 1, x.imagp, 1, xa, 1, kRange);
 
     // Phase
-
     vDSP_zvphas(&x, 1, xq, 1, kRange);
 
     // Phase difference
-
     vDSP_vsub(xp, 1, xq, 1, dxp, 1, kRange);
 
     for (int i = 1; i < kRange; i++)
     {
 	// Do frequency calculation
-
 	float dp = dxp[i];
 
 	// Calculate phase difference
-
 	dp -= (float)i * expect;
 
 	int qpd = dp / M_PI;
@@ -449,27 +418,22 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
 	dp -=  M_PI * (float)qpd;
 
 	// Calculate frequency difference
-
 	float df = kOversample * dp / (2.0 * M_PI);
 
 	// Calculate actual frequency from slot frequency plus
 	// frequency difference
-
 	xf[i] = i * fps + df * fps;
 
 	// Calculate differences for finding maxima
-
 	dxa[i] = xa[i] - xa[i - 1];
     }
 
     // Copy phase vector
-
     memmove(xp, xq, kRange * sizeof(float));
 
     // Maximum FFT output
-
     float  max;
-    UInt32 imax;
+    vDSP_Length imax;
 
     vDSP_maxmgvi(xa, 1, &max, &imax, kRange);
 
@@ -503,16 +467,65 @@ OSStatus AudioEventHandler(EventHandlerCallRef next,
     static long n2;
 
     // Update display
+    // if ((n2 % 4) == 0)
+    //     HIViewSetNeedsDisplay(spectrum.view, true);
 
-    if ((n2 % 4) == 0)
-	HIViewSetNeedsDisplay(spectrum.view, true);
-
-    if ((n2 % 16) == 0)
-	HIViewSetNeedsDisplay(display.view, true);
+    // if ((n2 % 16) == 0)
+    //     HIViewSetNeedsDisplay(display.view, true);
 
     n2++;
+};
 
-    return noErr;
+// AudioUnitErrString
+char *AudioUnitErrString(OSStatus status)
+{
+    static UInt32 audioUnitErrCodes[] =
+        {kAudioUnitErr_CannotDoInCurrentContext,
+         kAudioUnitErr_FailedInitialization,
+         kAudioUnitErr_FileNotSpecified,
+         kAudioUnitErr_FormatNotSupported,
+         kAudioUnitErr_Initialized,
+         kAudioUnitErr_InvalidElement,
+         kAudioUnitErr_InvalidFile,
+         kAudioUnitErr_InvalidOfflineRender,
+         kAudioUnitErr_InvalidParameter,
+         kAudioUnitErr_InvalidProperty,
+         kAudioUnitErr_InvalidPropertyValue,
+         kAudioUnitErr_InvalidScope,
+         kAudioUnitErr_NoConnection,
+         kAudioUnitErr_PropertyNotInUse,
+         kAudioUnitErr_PropertyNotWritable,
+         kAudioUnitErr_TooManyFramesToProcess,
+         kAudioUnitErr_Unauthorized,
+         kAudioUnitErr_Uninitialized,
+         kAudioUnitErr_UnknownFileType,
+         kAudioUnitErr_RenderTimeout};
+
+    static char *audioUnitErrStrings[] =
+        {"AudioUnitErr_CannotDoInCurrentContext",
+         "AudioUnitErr_FailedInitialization",
+         "AudioUnitErr_FileNotSpecified",
+         "AudioUnitErr_FormatNotSupported",
+         "AudioUnitErr_Initialized",
+         "AudioUnitErr_InvalidElement",
+         "AudioUnitErr_InvalidFile",
+         "AudioUnitErr_InvalidOfflineRender",
+         "AudioUnitErr_InvalidParameter",
+         "AudioUnitErr_InvalidProperty",
+         "AudioUnitErr_InvalidPropertyValue",
+         "AudioUnitErr_InvalidScope",
+         "AudioUnitErr_NoConnection",
+         "AudioUnitErr_PropertyNotInUse",
+         "AudioUnitErr_PropertyNotWritable",
+         "AudioUnitErr_TooManyFramesToProcess",
+         "AudioUnitErr_Unauthorized",
+         "AudioUnitErr_Uninitialized",
+         "AudioUnitErr_UnknownFileType",
+         "AudioUnitErr_RenderTimeout"};
+
+    for (int i = 0; i < sizeof(audioUnitErrCodes) / sizeof(UInt32); i++)
+        if (audioUnitErrCodes[i] == status)
+            return audioUnitErrStrings[i];
+
+    return "UnknownErr";
 }
-
-#import "Audio.h"

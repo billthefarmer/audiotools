@@ -25,6 +25,7 @@
 
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
+#import <Accelerate/Accelerate.h>
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
@@ -34,6 +35,13 @@
 #define kMin        0.5
 #define kScale   1024.0
 #define kTimerDelay 0.1
+
+// Audio in values
+enum
+    {kSampleRate       = 44100,
+     kBytesPerPacket   = 4,
+     kBytesPerFrame    = 4,
+     kChannelsPerFrame = 1};
 
 // Audio processing values
 enum
@@ -73,5 +81,15 @@ typedef struct
     float sample;
 } Audio;
 Audio audio;
+
+NSView *displayView;
+NSView *spectrumView;
+NSView *meterView;
+
+OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
+                   const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
+                   UInt32 inNumberFrames, AudioBufferList *ioData);
+void (^ProcessAudio)();
+char *AudioUnitErrString(OSStatus);
 
 #endif /* Audio_h */

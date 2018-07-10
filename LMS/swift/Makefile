@@ -29,6 +29,9 @@ HDIU = hdiutil
 SWIFTC = swiftc
 PLB = /usr/libexec/PlistBuddy
 
+AUDIO = Audio
+AUDIOOBJ = $(AUDIO).o
+
 APPNAME = LMS
 APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)
 
@@ -70,6 +73,7 @@ $(APPBUNDLE): $(APPNAME) $(APPNAME).icns
 $(APPNAME): $(SOURCES)
 	$(SWIFTC) $(SOURCES) -o $(APPNAME) $(SFLAGS)
 
+$(AUDIOOBJ):	$(AUDIO).m Audio.h Makefile
 
 $(APPNAME).icns: $(APPNAME).png
 	$(RM) -rf $(APPNAME).iconset
