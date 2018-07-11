@@ -1,8 +1,8 @@
 //
-//  SigGenView.swift
-//  SigGen
+//  LMSView.swift
+//  LMS
 //
-//  Created by Bill Farmer on 29/03/2018.
+//  Created by Bill Farmer on 03/07/2018.
 //  Copyright © 2018 Bill Farmer. All rights reserved.
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 import Cocoa
 
-class SigGenView: NSView
+class LMSView: NSView
 {
     var rect: NSRect = .zero
     var width: CGFloat = 0
@@ -60,39 +60,5 @@ class SigGenView: NSView
         path.setClip()
 
         return inset
-    }
-
-    // keyDown
-    override func keyDown(with event: NSEvent)
-    {
-        let code = Int(event.keyCode)
-        switch code
-        {
-        case kUpKey:
-            fineSlider.doubleValue += 0.01
-            fineSlider.sendAction(fineSlider.action, to: fineSlider.target)
-
-        case kDownKey:
-            fineSlider.doubleValue -= 0.01
-            fineSlider.sendAction(fineSlider.action, to: fineSlider.target)
-
-        case kLeftKey:
-            knobView.value = round((knobView.value * 100.0) - 1) / 100.0
-
-        case kRightKey:
-            knobView.value = round((knobView.value * 100.0) + 1) / 100.0
-
-        case kPriorKey:
-            levelSlider.doubleValue += 0.01
-            levelSlider.sendAction(fineSlider.action, to: levelSlider.target)
-
-        case kNextKey:
-            levelSlider.doubleValue -= 0.01
-            levelSlider.sendAction(fineSlider.action, to: levelSlider.target)
-
-        default:
-            NSLog("Key %x", code)
-            
-        }
     }
 }
