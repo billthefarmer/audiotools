@@ -443,14 +443,14 @@ void (^ProcessAudio)() = ^
 
     if (max > kMin)
     {
-	display.frequency = f;
+	disp.frequency = f;
 	n1 = 0;
     }
 
     else
     {
 	if (n1 == 64)
-	    display.frequency = 0.0;
+            disp.frequency = 0.0;
     }
 
     n1++;
@@ -460,18 +460,21 @@ void (^ProcessAudio)() = ^
     if (dB < -80.0)
 	dB = -80.0;
 
-    display.level = dB;
+    disp.level = dB;
 
     meter.level = level * 3.0 / powf(10.0, 0.15);
 
     static long n2;
 
     // Update display
-    // if ((n2 % 4) == 0)
-    //     HIViewSetNeedsDisplay(spectrum.view, true);
+    if ((n2 % 4) == 0)
+    {
+        spectrumView.needsDisplay = true;
+        meterView.needsDisplay = true;
+    }
 
-    // if ((n2 % 16) == 0)
-    //     HIViewSetNeedsDisplay(display.view, true);
+    if ((n2 % 16) == 0)
+        displayView.needsDisplay = true;
 
     n2++;
 };

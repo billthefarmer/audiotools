@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class MeterView: NSView
+class MeterView: LMSView
 {
 
     override func draw(_ dirtyRect: NSRect)
@@ -16,6 +16,7 @@ class MeterView: NSView
         super.draw(dirtyRect)
 
         // Drawing code here.
+        NSEraseRect(rect)
     }
     
 }

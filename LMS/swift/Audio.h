@@ -65,7 +65,7 @@ typedef struct
     float frequency;
     float level;
 } Display;
-Display display;
+Display disp;
 
 typedef struct
 {
@@ -82,9 +82,9 @@ typedef struct
 } Audio;
 Audio audio;
 
-DisplayView *displayView;
-MeterView *meterView;
-SpectrumView *spectrumView;
+NSView *displayView;
+NSView *meterView;
+NSView *spectrumView;
 
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,

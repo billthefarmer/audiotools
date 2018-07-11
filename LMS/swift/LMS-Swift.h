@@ -198,16 +198,25 @@ SWIFT_CLASS("_TtC3LMS11AppDelegate")
 
 @class NSCoder;
 
-SWIFT_CLASS("_TtC3LMS11DisplayView")
-@interface DisplayView : NSView
+SWIFT_CLASS("_TtC3LMS7LMSView")
+@interface LMSView : NSView
 - (void)drawRect:(NSRect)dirtyRect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
+SWIFT_CLASS("_TtC3LMS11DisplayView")
+@interface DisplayView : LMSView
+- (void)drawRect:(NSRect)dirtyRect;
+- (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+
 SWIFT_CLASS("_TtC3LMS9MeterView")
-@interface MeterView : NSView
+@interface MeterView : LMSView
 - (void)drawRect:(NSRect)dirtyRect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
@@ -215,7 +224,7 @@ SWIFT_CLASS("_TtC3LMS9MeterView")
 
 
 SWIFT_CLASS("_TtC3LMS12SpectrumView")
-@interface SpectrumView : NSView
+@interface SpectrumView : LMSView
 - (void)drawRect:(NSRect)dirtyRect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;

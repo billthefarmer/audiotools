@@ -47,8 +47,8 @@ APPVDMG = $(APPNAME)-$(APPVERSION).dmg
 HEADER = LMS-Bridging-Header.h
 SWIFTH = LMS-Swift.h
 
-SOURCES = AppDelegate.swift DisplayView.swift \
-		MeterView.swift SpectrumView.swift Audio.o
+SOURCES = AppDelegate.swift DisplayView.swift MeterView.swift \
+		SpectrumView.swift LMSView.swift Audio.o
 
 SFLAGS = -g -target x86_64-apple-macosx10.9 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \

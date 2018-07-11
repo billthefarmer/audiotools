@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class SpectrumView: NSView
+class SpectrumView: LMSView
 {
 
     override func draw(_ dirtyRect: NSRect)
@@ -16,6 +16,7 @@ class SpectrumView: NSView
         super.draw(dirtyRect)
 
         // Drawing code here.
+        NSEraseRect(rect)
     }
     
 }
