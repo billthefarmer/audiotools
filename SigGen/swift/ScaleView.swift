@@ -43,7 +43,7 @@ class ScaleView: SigGenView
         let context = NSGraphicsContext.current!
 
         let font = NSFont.systemFont(ofSize: kTextSize)
-        var attribs: [NSAttributedStringKey: Any] = [.font: font]
+        var attribs: [NSAttributedString.Key: Any] = [.font: font]
 
         // Scale text if necessary
         let dx = "80".size(withAttributes: attribs).width

@@ -50,7 +50,7 @@ class DisplayView: SigGenView
 
 	// Select font
         let font = NSFont.boldSystemFont(ofSize: textSize)
-        var attribs: [NSAttributedStringKey: Any] = [.font: font]
+        var attribs: [NSAttributedString.Key: Any] = [.font: font]
 
         // Scale text if necessary
         let dx = "25000.00Hz".size(withAttributes: attribs).width
