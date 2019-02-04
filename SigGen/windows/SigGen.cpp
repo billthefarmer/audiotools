@@ -681,12 +681,12 @@ BOOL DrawDisplay(HDC hdc, RECT rect, UINT state)
 
     SelectObject(hdc, font);
 
-    sprintf(text, "%6.1lfHz  ", display.frequency);
+    sprintf(text, "%6.2lfHz  ", display.frequency);
     TextOut(hdc, x, y, text, strlen(text));
 
     y += height / 2;
 
-    sprintf(text, "%+6.1lfdB  ", display.decibels);
+    sprintf(text, "%+6.2lfdB  ", display.decibels);
     TextOut(hdc, x, y, text, strlen(text));
 
     return TRUE;

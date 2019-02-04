@@ -5,6 +5,22 @@
 //  Created by Bill Farmer on 03/07/2018.
 //  Copyright © 2018 Bill Farmer. All rights reserved.
 //
+//  Created by Bill Farmer on 03/07/2018.
+//  Copyright © 2018 Bill Farmer. All rights reserved.
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
 
 import Cocoa
 
@@ -20,19 +36,23 @@ class DisplayView: LMSView
         // Drawing code here.
         NSEraseRect(rect)
 
-	// Select font
+	// Select font, scale text
         let font = NSFont.boldSystemFont(ofSize: textSize)
-        var attribs: [NSAttributedStringKey: Any] = [.font: font]
+        let dx = "25000.00Hz".size(withAttributes: attribs).width
+        let attribs: [NSAttributedStringKey: Any] = (dx >= width) ?
+          [.font: font, .expansion: log(width / dx)] : [.font: font]
+
+        // var attribs: [NSAttributedStringKey: Any] = [.font: font]
 
         // Scale text if necessary
-        let dx = "25000.00Hz".size(withAttributes: attribs).width
-        if (dx >= width)
-        {
-            let expansion = log((width) / dx)
-            attribs = [.font: font, .expansion: expansion]
-        }
+        // let dx = "25000.00Hz".size(withAttributes: attribs).width
+        // if (dx >= width)
+        // {
+        //     let expansion = log((width) / dx)
+        //     attribs = [.font: font, .expansion: expansion]
+        // }
 
-        let x = NSMinX(rect) + 2
+        let x = NSMinX(rect) + 8
         var y = NSMaxY(rect) - textSize - 2
 
         // Draw frequency
