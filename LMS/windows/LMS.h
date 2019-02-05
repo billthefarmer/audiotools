@@ -119,6 +119,7 @@ typedef struct
 {
     HWND hwnd;
     RECT rect;
+    double s;
     UINT length;
     double *data;
 } SPECTRUM, *SPECTRUMP;

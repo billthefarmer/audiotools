@@ -431,6 +431,14 @@ BOOL DrawSpectrum(HDC hdc, RECT rect)
     // Move the origin back
     SetViewportOrgEx(hbdc, 0, 0, NULL);
 
+    // Yellow pen for frequency trace
+    SetDCPenColor(hbdc, RGB(255, 255, 0));
+
+    int xf = round(log(spectrum.s) / xscale);
+
+    MoveToEx(hbdc, xf, 0, NULL);
+    LineTo(hbdc, xf, height);
+
     // Copy the bitmap
     BitBlt(hdc, rect.left, rect.top, width, height,
 	   hbdc, 0, 0, SRCCOPY);
@@ -927,13 +935,17 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
     if (max > MIN)
     {
 	display.f = f;
+        spectrum.s = f / fps;
 	freqTimer = 0;
     }
 
     else
     {
 	if (freqTimer == 64)
+        {
 	    display.f = 0.0;
+            spectrum.s = 0.0;
+        }
     }
 
     freqTimer++;
