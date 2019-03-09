@@ -38,31 +38,28 @@ class DisplayView: LMSView
 
 	// Select font, scale text
         let font = NSFont.boldSystemFont(ofSize: textSize)
-        let dx = "25000.00Hz".size(withAttributes: attribs).width
-        let attribs: [NSAttributedStringKey: Any] = (dx >= width) ?
-          [.font: font, .expansion: log(width / dx)] : [.font: font]
-
-        // var attribs: [NSAttributedStringKey: Any] = [.font: font]
+        var attribs: [NSAttributedString.Key: Any] = [.font: font]
 
         // Scale text if necessary
-        // let dx = "25000.00Hz".size(withAttributes: attribs).width
-        // if (dx >= width)
-        // {
-        //     let expansion = log((width) / dx)
-        //     attribs = [.font: font, .expansion: expansion]
-        // }
+        let dx = "25000.00Hz".size(withAttributes: attribs).width
+        if (dx >= width)
+        {
+            let expansion = log((width) / dx)
+            attribs = [.font: font, .expansion: expansion]
+        }
 
-        let x = NSMinX(rect) + 8
         var y = NSMaxY(rect) - textSize - 2
 
         // Draw frequency
         let freq = String(format: "%1.2fHz", disp.frequency)
+        var x = NSMaxX(rect) - freq.size(withAttributes: attribs).width - 2
         freq.draw(at: NSMakePoint(x, y), withAttributes: attribs)
 
         y -= textSize
 
         // Draw decibels
         let db = String(format: "%+1.2fdB", disp.level)
+        x = NSMaxX(rect) - db.size(withAttributes: attribs).width - 2
         db.draw(at: NSMakePoint(x, y), withAttributes: attribs)
     }
     
