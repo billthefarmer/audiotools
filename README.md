@@ -74,14 +74,3 @@ the trace in current timebase units, and the nominal trace value at
 that point. There is no calibration because of the various level
 controls in the audio system. The shift to start and reset toolbar
 buttons clear the sync level and the cursor.
-
-### Bugs ###
-
-In accordance with Just in Time Programming<sup>TM</sup> principles,
-the input level control does not exist until the Input Level toolbar
-button is clicked, also, in accordance with Resource
-Conservation<sup>GM</sup>, it is conserved until the Scope program is
-closed. This means that if you change the audio input source using the
-[Recording Devices](http://www.howtogeek.com/howto/39532/how-to-enable-stereo-mix-in-windows-7-to-record-audio)
-pane after using the level control, it will be still connected to the
-original source. To fix this quit and restart the program.
