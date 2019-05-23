@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Introduction on Audiotools</title>
+    <link>https://billthefarmer.github.io/audiotools/introduction/</link>
+    <description>Recent content in Introduction on Audiotools</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>Copyright &amp;copy; 2019 Bill Farmer</copyright>
+    <lastBuildDate>Tue, 21 May 2019 14:43:36 +0100</lastBuildDate>
+    
+	<atom:link href="https://billthefarmer.github.io/audiotools/introduction/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+  </channel>
+</rss>

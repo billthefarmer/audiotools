@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tools on Audiotools</title>
+    <link>https://billthefarmer.github.io/audiotools/tools/</link>
+    <description>Recent content in Tools on Audiotools</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>Copyright &amp;copy; 2019 Bill Farmer</copyright>
+    <lastBuildDate>Tue, 21 May 2019 14:46:23 +0100</lastBuildDate>
+    
+	<atom:link href="https://billthefarmer.github.io/audiotools/tools/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Signal Generator</title>
+      <link>https://billthefarmer.github.io/audiotools/tools/siggen/</link>
+      <pubDate>Wed, 22 May 2019 10:51:50 +0100</pubDate>
+      
+      <guid>https://billthefarmer.github.io/audiotools/tools/siggen/</guid>
+      <description>Frequency range 10Hz - 25KHz Level range 0dB - -80dB Frequency knob Frequency scale Frequency and level display Sine, square and sawtooth waveforms Mute control Set exact frequency  Responds to keyboard navigation keys
+ Left - frequency knob down Right - frequency knob up Up - fine frequency up Down - fine frequency down Page Up - level up Page Down - level down  Downloads Windows and Mac versions here, Android version here.</description>
+    </item>
+    
+    <item>
+      <title>Oscilloscope</title>
+      <link>https://billthefarmer.github.io/audiotools/tools/scope/</link>
+      <pubDate>Wed, 22 May 2019 10:52:04 +0100</pubDate>
+      
+      <guid>https://billthefarmer.github.io/audiotools/tools/scope/</guid>
+      <description>               Timebase 0.1ms &amp;ndash; 0.5sec Resolution 0.022ms @ 44100 samples/sec Single shot Adjustable sync level Storage Index  The icons on the toolbar are, from left to right:
+ Bright line &amp;ndash; Defeats the sync and single shot Single shot &amp;ndash; Click the trigger icon to get a trace Trigger &amp;ndash; Click for a trace Timebase &amp;ndash; Drops a submenu of timebase timings Storage &amp;ndash; Does not clear the display between traces Clear &amp;ndash; Clears the display Left &amp;ndash; Moves the trace to the left Right &amp;ndash; Moves the trace to the right Start &amp;ndash; Moves the trace to the start End &amp;ndash; Moves the trace to the end  </description>
+    </item>
+    
+    <item>
+      <title>LMS</title>
+      <link>https://billthefarmer.github.io/audiotools/tools/lms/</link>
+      <pubDate>Wed, 22 May 2019 10:52:14 +0100</pubDate>
+      
+      <guid>https://billthefarmer.github.io/audiotools/tools/lms/</guid>
+      <description> Level -80dB &amp;ndash; +3dB  </description>
+    </item>
+    
+    <item>
+      <title>SLMS</title>
+      <link>https://billthefarmer.github.io/audiotools/tools/slms/</link>
+      <pubDate>Wed, 22 May 2019 10:52:22 +0100</pubDate>
+      
+      <guid>https://billthefarmer.github.io/audiotools/tools/slms/</guid>
+      <description> Frequency range 10Hz - 25KHz Level -80dB &amp;ndash; +3dB  </description>
+    </item>
+    
+  </channel>
+</rss>
