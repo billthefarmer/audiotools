@@ -33,6 +33,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     var menu: NSMenu!
     var toolbar: NSToolbar!
+    var delegate: ToolbarDelegate!
 
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
@@ -50,7 +51,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         // Toolbar
         let toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))
-        toolbar.delegate = ToolbarDelegate(self)
+        delegate = ToolbarDelegate(self)
+        toolbar.delegate = delegate
+        toolbar.displayMode = .iconOnly
         window.toolbar = toolbar
         NSLog("Items", toolbar.items);
 
@@ -137,8 +140,35 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case bright:
                 item.label = "Bright line"
                 item.toolTip = "Bright line"
-                let image = NSImage(byReferencingFile:
-                                      "Icons/ic_action_important.png")
+                let image = getImage("ic_action_important")
+                item.image = image
+                return item
+
+            case single:
+                item.label = "Single shot"
+                item.toolTip = "Single shot"
+                let image = getImage("ic_action_flash_on")
+                item.image = image
+                return item
+
+            case trigger:
+                item.label = "Trigger"
+                item.toolTip = "Trigger"
+                let image = getImage("ic_action_repeat")
+                item.image = image
+                return item
+
+            case timebase:
+                item.label = "Timebase"
+                item.toolTip = "Timebase"
+                let image = getImage("ic_action_time")
+                item.image = image
+                return item
+
+            case storage:
+                item.label = "Storage"
+                item.toolTip = "Storage"
+                let image = getImage("ic_action_storage")
                 item.image = image
                 return item
 
@@ -174,6 +204,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
           [NSToolbarItem.Identifier]
         {
             return [bright, single, storage]
+        }
+
+        func getImage(_ image: String) -> NSImage
+        {
+            let main = Bundle.main
+            let url = main.url(forResource: image,
+                               withExtension: "png",
+                               subdirectory: "Icons")!
+            return NSImage(contentsOf: url)!
         }
     }
 }
