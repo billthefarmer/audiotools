@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/introduction/</loc>
+    <lastmod>2019-05-21T14:43:36+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/tools/</loc>
+    <lastmod>2019-05-21T14:46:23+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/tools/siggen/</loc>
+    <lastmod>2019-05-22T10:51:50+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/tools/scope/</loc>
+    <lastmod>2019-05-22T10:52:04+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/tools/lms/</loc>
+    <lastmod>2019-05-22T10:52:14+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/tools/slms/</loc>
+    <lastmod>2019-05-22T10:52:22+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/</loc>
+    <lastmod>2019-05-22T10:52:22+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://billthefarmer.github.io/audiotools/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>
