@@ -172,6 +172,48 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.image = image
                 return item
 
+            case clear:
+                item.label = "Clear"
+                item.toolTip = "Clear"
+                let image = getImage("ic_action_refresh")
+                item.image = image
+                return item
+
+            case left:
+                item.label = "Left"
+                item.toolTip = "Left"
+                let image = getImage("ic_action_previous_item")
+                item.image = image
+                return item
+
+            case right:
+                item.label = "Right"
+                item.toolTip = "Right"
+                let image = getImage("ic_action_next_item")
+                item.image = image
+                return item
+
+            case start:
+                item.label = "Start"
+                item.toolTip = "Start"
+                let image = getImage("ic_action_back")
+                item.image = image
+                return item
+
+            case end:
+                item.label = "End"
+                item.toolTip = "End"
+                let image = getImage("ic_action_forward")
+                item.image = image
+                return item
+
+            case reset:
+                item.label = "Reset"
+                item.toolTip = "Reset"
+                let image = getImage("ic_action_undo")
+                item.image = image
+                return item
+
             default:
                 break
             }
@@ -206,13 +248,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
             return [bright, single, storage]
         }
 
-        func getImage(_ image: String) -> NSImage
+        func getImage(_ image: String) -> NSImage?
         {
             let main = Bundle.main
             let url = main.url(forResource: image,
                                withExtension: "png",
-                               subdirectory: "Icons")!
-            return NSImage(contentsOf: url)!
+                               subdirectory: "Icons")
+            return NSImage(contentsOf: url ??
+                             URL(fileReferenceLiteralResourceName: ""))
         }
     }
 }
