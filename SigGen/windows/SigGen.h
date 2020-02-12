@@ -34,8 +34,9 @@
 // Macros
 #define Length(a) (sizeof(a) / sizeof(a[0]))
 
-#define WCLASS   "MainWClass"
-#define KNOBCLASS "KnobClass"
+#define WCLASS "MainWClass"
+#define KCLASS "KnobWClass"
+#define ECLASS "ExactWClass"
 
 // Global handle
 HINSTANCE hInst;
@@ -57,6 +58,11 @@ enum
      SQUARE_ID,
      SAWTOOTH_ID,
      MUTE_ID,
+     EXACT_ID,
+     TEXT_ID,
+     EDIT_ID,
+     CANCEL_ID,
+     OK_ID,
      QUIT_ID,
      STATUS_ID};
 
@@ -72,6 +78,12 @@ enum
 enum
     {SAMPLES = 4096};
 
+// Margins
+enum
+    {MARGIN = 20,
+     SPACING = 8,
+     OFFSET = 32};
+
 // View dimensions
 enum
     {SCALE_WIDTH = 168,
@@ -83,17 +95,19 @@ enum
      SLIDER_WIDTH = 36,
      SLIDER_HEIGHT = 168,
      BUTTON_WIDTH = 72,
-     BUTTON_HEIGHT = 24};
-
-// Margins
-enum
-    {MARGIN = 20,
-     SPACING = 8};
+     BUTTON_HEIGHT = 24,
+     TEXT_WIDTH = BUTTON_WIDTH * 2 + SPACING,
+     TEXT_HEIGHT = BUTTON_HEIGHT};
 
 // Window size
 enum
     {WIDTH  = SCALE_WIDTH + DISPLAY_WIDTH + MARGIN * 3,
-     HEIGHT = SCALE_HEIGHT + KNOB_HEIGHT + MARGIN * 2 + SPACING + 24};
+     HEIGHT = SCALE_HEIGHT + KNOB_HEIGHT + MARGIN * 2 + SPACING + 32};
+
+// Exact size
+enum
+    {EXACT_WIDTH = BUTTON_WIDTH * 2 + MARGIN * 2 + SPACING,
+     EXACT_HEIGHT = TEXT_HEIGHT * 2 + MARGIN * 2 + SPACING * 2 + BUTTON_HEIGHT};
 
 // Frequency scale
 enum
@@ -125,11 +139,12 @@ enum
 typedef struct
 {
     HWND hwnd;
+    RECT wind;
     RECT rect;
-    RECT clnt;
 } WINDOW, *WINDOWP;
 
 WINDOW window;
+WINDOW exact;
 
 typedef struct
 {
@@ -178,10 +193,21 @@ typedef struct
     TOOL square;
     TOOL sawtooth;
     TOOL mute;
+    TOOL exact;
     TOOL quit;
 } BUTTONS;
 
 BUTTONS buttons;
+
+typedef struct
+{
+    TOOL text;
+    TOOL edit;
+    TOOL cancel;
+    TOOL ok;
+} WIDGETS;
+
+WIDGETS widgets;
 
 typedef struct
 {
@@ -206,18 +232,21 @@ AUDIO audio;
 // Function prototypes.
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int);
 LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK KnobProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK KnobWndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK ExactWndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL RegisterMainClass(HINSTANCE);
 BOOL RegisterKnobClass(HINSTANCE);
 BOOL DrawItem(WPARAM, LPARAM);
 BOOL DrawDisplay(HDC, RECT, UINT);
 BOOL DrawScale(HDC, RECT, UINT);
 BOOL DrawKnob(HDC, RECT, UINT);
+VOID DisplayExact(WPARAM, LPARAM);
 VOID CharPressed(WPARAM, LPARAM);
 VOID KeyDown(WPARAM, LPARAM);
 VOID KnobClicked(HWND, WPARAM, LPARAM);
 VOID MouseMove(HWND, WPARAM, LPARAM);
 BOOL SliderChange(WPARAM, LPARAM);
+VOID ExactFrequency(WPARAM, LPARAM);
 VOID UpdateValues(VOID);
 VOID TooltipShow(WPARAM, LPARAM);
 VOID TooltipPop(WPARAM, LPARAM);

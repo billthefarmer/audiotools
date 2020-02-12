@@ -110,14 +110,14 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
     case WM_CREATE:
         {
             // Get the window and client dimensions
-            GetWindowRect(hWnd, &window.rect);
-            GetClientRect(hWnd, &window.clnt);
+            GetWindowRect(hWnd, &window.wind);
+            GetClientRect(hWnd, &window.rect);
 
             // Calculate desired window width and height
             int border =
-                (window.rect.right - window.rect.left) - window.clnt.right;
+                (window.wind.right - window.wind.left) - window.rect.right;
             int header =
-                (window.rect.bottom - window.rect.top) - window.clnt.bottom;
+                (window.wind.bottom - window.wind.top) - window.rect.bottom;
 
             int width  = WIDTH + border;
             int height = HEIGHT + header;
@@ -128,11 +128,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                          SWP_NOMOVE | SWP_NOZORDER);
 
             // Get client dimensions
-            GetWindowRect(hWnd, &window.rect);
-            GetClientRect(hWnd, &window.clnt);
+            GetWindowRect(hWnd, &window.wind);
+            GetClientRect(hWnd, &window.rect);
 
-            width = window.clnt.right - window.clnt.left;
-            height = window.clnt.bottom - window.clnt.top;
+            width = window.rect.right - window.rect.left;
+            height = window.rect.bottom - window.rect.top;
 
             // Create tooltip
             tooltip.hwnd =
@@ -189,7 +189,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
             // Create knob
             knob.hwnd =
-                CreateWindow(KNOBCLASS, NULL,
+                CreateWindow(KCLASS, NULL,
                              WS_VISIBLE | WS_CHILD,
                              MARGIN, scale.rect.bottom + SPACING,
                              KNOB_WIDTH, KNOB_HEIGHT, hWnd,
@@ -310,12 +310,24 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             GetWindowRect(buttons.mute.hwnd, &buttons.mute.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&buttons.mute.rect, 2);
 
+            // Create exact button
+            buttons.exact.hwnd =
+                CreateWindow(WC_BUTTON, "Exact...",
+                             WS_VISIBLE | WS_CHILD,
+                             buttons.mute.rect.left,
+                             buttons.mute.rect.bottom + SPACING,
+                             BUTTON_WIDTH, BUTTON_HEIGHT, hWnd,
+                             (HMENU)EXACT_ID, hInst, NULL);
+
+            GetWindowRect(buttons.exact.hwnd, &buttons.exact.rect);
+            MapWindowPoints(NULL, hWnd, (POINT *)&buttons.exact.rect, 2);
+
             // Create quit button
             buttons.quit.hwnd =
                 CreateWindow(WC_BUTTON, "Quit",
                              WS_VISIBLE | WS_CHILD,
-                             buttons.mute.rect.left,
-                             buttons.mute.rect.bottom + SPACING,
+                             buttons.exact.rect.left,
+                             buttons.exact.rect.bottom + SPACING,
                              BUTTON_WIDTH, BUTTON_HEIGHT, hWnd,
                              (HMENU)QUIT_ID, hInst, NULL);
 
@@ -393,12 +405,14 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	    audio.mute = !audio.mute;
 	    break;
 
+	    // Exact
+	case EXACT_ID:
+            DisplayExact(wParam, lParam);
+	    break;
+
 	    // Quit
 	case QUIT_ID:
-            Gdiplus::GdiplusShutdown(token);
-	    waveOutReset(audio.hwo);
-	    waveOutClose(audio.hwo);
-	    PostQuitMessage(0);
+            DestroyWindow(hWnd);
 	    break;
 	}
 
@@ -461,18 +475,18 @@ BOOL RegisterKnobClass(HINSTANCE hinst)
     // Fill in the window class structure with parameters
     // that describe the main window.
     WNDCLASS wc = 
-	{0, KnobProc,
+	{0, KnobWndProc,
 	 0, 0, hinst,
 	 NULL, LoadCursor(NULL, IDC_ARROW),
-	 NULL, NULL, KNOBCLASS};
+	 NULL, NULL, KCLASS};
 
     // Register the window class.
     return RegisterClass(&wc);
 }
 
 // Knob procedure
-LRESULT CALLBACK KnobProc(HWND hWnd, UINT uMsg,
-			  WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK KnobWndProc(HWND hWnd, UINT uMsg,
+                             WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     RECT rect;
@@ -523,19 +537,21 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
     {
 	// Scale
     case SCALE_ID:
-	DrawScale(hdc, rect, state);
+	return DrawScale(hdc, rect, state);
 	break;
 
 	// Display
     case DISPLAY_ID:
-	DrawDisplay(hdc, rect, state);
+	return DrawDisplay(hdc, rect, state);
 	break;
 
 	// Knob
     case KNOB_ID:
-	DrawKnob(hdc, rect, state);
+	return DrawKnob(hdc, rect, state);
 	break;
     }
+
+    return FALSE;
 }
 
 // Draw Scale
@@ -834,7 +850,7 @@ VOID KeyDown(WPARAM wParam, LPARAM lParam)
 }
 
 // Knob clicked
-void KnobClicked(HWND hwnd, WPARAM wParam, LPARAM lParam)
+VOID KnobClicked(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     switch(HIWORD(wParam))
     {
@@ -934,6 +950,182 @@ BOOL SliderChange(WPARAM wParam, LPARAM lParam)
 
     // Update
     UpdateValues();
+    return TRUE;
+}
+
+// Display exact
+VOID DisplayExact(WPARAM wParam, LPARAM lParam)
+{
+    WNDCLASS wc =
+        {CS_HREDRAW | CS_VREDRAW, ExactWndProc,
+         0, 0, hInst,
+         LoadIcon(hInst, "SigGen"),
+         LoadCursor(NULL, IDC_ARROW),
+         GetSysColorBrush(COLOR_WINDOW),
+         NULL, ECLASS};
+
+    // Register the window class.
+    RegisterClass(&wc);
+
+    // Get the main window rect
+    GetWindowRect(window.hwnd, &window.wind);
+
+    // Create the window, offset right
+    exact.hwnd =
+        CreateWindow(ECLASS, "Exact frequency",
+                     WS_VISIBLE | WS_POPUPWINDOW | WS_CAPTION,
+                     window.wind.left + OFFSET,
+                     window.wind.top + OFFSET,
+                     EXACT_WIDTH, EXACT_HEIGHT,
+                     window.hwnd, (HMENU)NULL, hInst, NULL);
+}
+
+// Exact Procedure
+LRESULT CALLBACK ExactWndProc(HWND hWnd, UINT uMsg,
+                              WPARAM wParam, LPARAM lParam)
+{
+    // Switch on message
+    switch (uMsg)
+    {
+    case WM_CREATE:
+        {
+            static TCHAR s[64];
+
+            // Get the window and client dimensions
+            GetWindowRect(hWnd, &exact.wind);
+            GetClientRect(hWnd, &exact.rect);
+
+            // Calculate desired window width and height
+            int border = (exact.wind.right - exact.wind.left) -
+                exact.rect.right;
+            int header = (exact.wind.bottom - exact.wind.top) -
+                exact.rect.bottom;
+            int width  = EXACT_WIDTH + border;
+            int height = EXACT_HEIGHT + header;
+
+            // Set new dimensions
+            SetWindowPos(hWnd, NULL, 0, 0,
+                         width, height,
+                         SWP_NOMOVE | SWP_NOZORDER);
+
+            // Get client dimensions
+            GetWindowRect(hWnd, &exact.wind);
+            GetClientRect(hWnd, &exact.rect);
+
+            width = exact.rect.right;
+            height = exact.rect.bottom;
+
+            // Create text
+            widgets.text.hwnd =
+                CreateWindow(WC_STATIC, "Enter exact frequency",
+                             WS_VISIBLE | WS_CHILD | SS_LEFT,
+                             exact.rect.left + MARGIN,
+                             exact.rect.top + MARGIN,
+                             TEXT_WIDTH, TEXT_HEIGHT, hWnd,
+                             (HMENU)TEXT_ID, hInst, NULL);
+            GetWindowRect(widgets.text.hwnd, &widgets.text.rect);
+            MapWindowPoints(NULL, hWnd, (POINT *)&widgets.text.rect, 2);
+
+            // Create edit control
+            sprintf(s, " %6.2lf", display.frequency);
+
+            widgets.edit.hwnd =
+                CreateWindow(WC_EDIT, s,
+                             WS_VISIBLE | WS_CHILD | WS_BORDER,
+                             widgets.text.rect.left,
+                             widgets.text.rect.bottom + SPACING,
+                             TEXT_WIDTH, TEXT_HEIGHT, hWnd,
+                             (HMENU)EDIT_ID, hInst, NULL);
+            GetWindowRect(widgets.edit.hwnd, &widgets.edit.rect);
+            MapWindowPoints(NULL, hWnd, (POINT *)&widgets.edit.rect, 2);
+
+            // Add edit to tooltip
+            tooltip.info.uId = (UINT_PTR)widgets.edit.hwnd;
+            tooltip.info.lpszText = (LPSTR)"Exact frequency";
+            SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
+                        (LPARAM) &tooltip.info);
+
+            // Create cancel button
+            widgets.cancel.hwnd =
+                CreateWindow(WC_BUTTON, "Cancel",
+                             WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                             widgets.edit.rect.left,
+                             widgets.edit.rect.bottom + SPACING,
+                             BUTTON_WIDTH, BUTTON_HEIGHT,
+                             hWnd, (HMENU)CANCEL_ID, hInst, NULL);
+            GetWindowRect(widgets.cancel.hwnd, &widgets.cancel.rect);
+            MapWindowPoints(NULL, hWnd, (POINT *)&widgets.cancel.rect, 2);
+
+            // Create OK button
+            widgets.ok.hwnd =
+                CreateWindow(WC_BUTTON, " OK ",
+                             WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                             widgets.cancel.rect.right + SPACING,
+                             widgets.edit.rect.bottom + SPACING,
+                             BUTTON_WIDTH, BUTTON_HEIGHT,
+                             hWnd, (HMENU)OK_ID, hInst, NULL);
+        }
+        break;
+
+    // Colour static text
+    case WM_CTLCOLORSTATIC:
+	return (LRESULT)GetSysColorBrush(COLOR_WINDOW);
+	break;
+
+	// Disable menus by capturing this message
+    case WM_INITMENU:
+	break;
+
+	// Capture system character key to stop pop up menus and other
+	// nonsense
+    case WM_SYSCHAR:
+	break;
+
+	// Buttons
+    case WM_COMMAND:
+	switch (LOWORD(wParam))
+	{
+	    // Cancel
+	case CANCEL_ID:
+            DestroyWindow(hWnd);
+	    break;
+
+	    // OK
+	case OK_ID:
+            ExactFrequency(wParam, lParam);
+            DestroyWindow(hWnd);
+            break;
+        }
+        break;
+
+        // Process other messages.
+    case WM_DESTROY:
+        exact.hwnd = NULL;
+	break;
+
+	// Everything else
+    default:
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    }
+
+    return 0;
+}
+
+// Exact frequency
+VOID ExactFrequency(WPARAM wParam, LPARAM lParam)
+{
+    static TCHAR s[64];
+
+    GetWindowText(widgets.edit.hwnd, s, sizeof(s));
+    float frequency = atof(s);
+    knob.value = log10(frequency / 10) * FREQ_SCALE;
+    if (knob.value < FREQ_MIN)
+        knob.value = FREQ_MIN;
+    if (knob.value > FREQ_MAX)
+        knob.value = FREQ_MAX;
+    scale.value = knob.value;
+    SendMessage(fine.hwnd, TBM_SETPOS, TRUE, FINE_REF);
+    UpdateValues();
 }
 
 // Update values
@@ -960,7 +1152,7 @@ VOID UpdateValues()
 }
 
 // Tooltip show
-void TooltipShow(WPARAM wParam, LPARAM lParam)
+VOID TooltipShow(WPARAM wParam, LPARAM lParam)
 {
     LPNMHDR pnmh = (LPNMHDR)lParam;
 
