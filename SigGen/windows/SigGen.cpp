@@ -1023,6 +1023,7 @@ LRESULT CALLBACK ExactWndProc(HWND hWnd, UINT uMsg,
                              exact.rect.top + MARGIN,
                              TEXT_WIDTH, TEXT_HEIGHT, hWnd,
                              (HMENU)TEXT_ID, hInst, NULL);
+
             GetWindowRect(widgets.text.hwnd, &widgets.text.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&widgets.text.rect, 2);
 
@@ -1036,6 +1037,7 @@ LRESULT CALLBACK ExactWndProc(HWND hWnd, UINT uMsg,
                              widgets.text.rect.bottom + SPACING,
                              TEXT_WIDTH, TEXT_HEIGHT, hWnd,
                              (HMENU)EDIT_ID, hInst, NULL);
+
             GetWindowRect(widgets.edit.hwnd, &widgets.edit.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&widgets.edit.rect, 2);
 
@@ -1053,6 +1055,7 @@ LRESULT CALLBACK ExactWndProc(HWND hWnd, UINT uMsg,
                              widgets.edit.rect.bottom + SPACING,
                              BUTTON_WIDTH, BUTTON_HEIGHT,
                              hWnd, (HMENU)CANCEL_ID, hInst, NULL);
+
             GetWindowRect(widgets.cancel.hwnd, &widgets.cancel.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&widgets.cancel.rect, 2);
 
