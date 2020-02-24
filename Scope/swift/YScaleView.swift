@@ -31,6 +31,17 @@ class YScaleView: NSView
         }
     }
 
+    override func mouseDown(with event: NSEvent)
+    {
+        if (event.type == .leftMouseDown)
+        {
+            let location = event.locationInWindow
+            let point = convert(location, from: nil)
+            yscale.index = point.y
+            needsDisplay = true;
+        }
+    }
+
     override func draw(_ rect: NSRect)
     {
         super.draw(rect)

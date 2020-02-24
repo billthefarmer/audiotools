@@ -22,6 +22,17 @@ import Cocoa
 
 class ScopeView: NSView
 {
+    override func mouseDown(with event: NSEvent)
+    {
+        if (event.type == .leftMouseDown)
+        {
+            let location = event.locationInWindow
+            let point = convert(location, from: nil)
+            scope.index = point.x
+            needsDisplay = true;
+        }
+    }
+
     override func draw(_ rect: NSRect)
     {
         super.draw(rect)
@@ -57,6 +68,10 @@ class ScopeView: NSView
         NSColor.green.set()
         NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), 0),
                                 to: NSMakePoint(NSMaxX(rect), 0))
+
+        NSColor.yellow.set()
+        NSBezierPath.strokeLine(from: NSMakePoint(scope.index, NSMinY(rect)),
+                                to: NSMakePoint(scope.index, NSMaxY(rect)))
 
         if (scope.data == nil)
         {
