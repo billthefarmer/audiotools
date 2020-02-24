@@ -439,11 +439,12 @@ void (^ProcessAudio)() = ^
     
         // Update display
         // HIViewSetNeedsDisplay(xscale.view, true);
+        xScaleView.needsDisplay = true;
     }
 
     // Update display
     // HIViewSetNeedsDisplay(scope.view, true);
-
+    scopeView.needsDisplay = true;
 };
 
 OSStatus DisplayAlert(CFStringRef error, CFStringRef explanation)

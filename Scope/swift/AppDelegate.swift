@@ -20,9 +20,9 @@
 
 import Cocoa
 
-var scopeView: ScopeView!
-var xScaleView: XScaleView!
-var yScaleView: YScaleView!
+// var scopeView: ScopeView!
+// var xScaleView: XScaleView!
+// var yScaleView: YScaleView!
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate

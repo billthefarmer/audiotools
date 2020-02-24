@@ -63,6 +63,10 @@ enum
     {kSamples = 262144,
      kFrames = 4096};
 
+ScopeView  *scopeView;
+XScaleView *xScaleView;
+YScaleView *yScaleView;
+
 typedef struct
 {
     float *data;
