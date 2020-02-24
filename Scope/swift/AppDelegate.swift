@@ -69,6 +69,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.contentView = stack
         window.makeKeyAndOrderFront(self)
         window.makeMain()
+
+        SetupAudio()
     }
 
     // DisplayAlert

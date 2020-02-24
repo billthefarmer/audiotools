@@ -36,8 +36,19 @@ class XScaleView: NSView
         super.draw(rect)
 
         // Drawing code here.
-        NSColor.yellow.set()
-        NSBezierPath.fill(rect)
-    }
-    
+
+        // Move the origin
+        let transform = AffineTransform(translationByX: CGFloat(kScaleWidth),
+                                        byY: 0)
+        (transform as NSAffineTransform).concat()
+        let context = NSGraphicsContext.current!
+        context.shouldAntialias = false
+
+        // Draw scale
+        for x in stride(from: 0, to: NSWidth(rect), by: 6)
+        {
+            NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) * 3 / 4),
+                                    to: NSMakePoint(x, NSMaxY(rect)))
+        }
+    }    
 }

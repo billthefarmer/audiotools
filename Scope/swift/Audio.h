@@ -134,6 +134,7 @@ Timebase timebase =
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
                    UInt32 inNumberFrames, AudioBufferList *ioData);
+OSStatus SetupAudio();
 void (^ProcessAudio)();
 char *AudioUnitErrString(OSStatus);
 

@@ -37,7 +37,7 @@ class ScopeView: NSView
         let transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
         (transform as NSAffineTransform).concat()
         let context = NSGraphicsContext.current!
-        context.shouldAntialias = false;
+        context.shouldAntialias = false
 
         // Draw graticule
         for x in stride(from: NSMinX(rect), to: NSMaxX(rect), by: 6)
@@ -53,6 +53,10 @@ class ScopeView: NSView
             NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), -y),
                                     to: NSMakePoint(NSMaxX(rect), -y))
         }
+
+        NSColor.green.set()
+        NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), 0),
+                                to: NSMakePoint(NSMaxX(rect), 0))
 
         if (scope.data == nil)
         {
