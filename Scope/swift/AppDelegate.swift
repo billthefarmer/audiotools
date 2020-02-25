@@ -20,6 +20,7 @@
 
 import Cocoa
 
+// AppDelegate
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
 {
@@ -100,11 +101,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
         return true
     }
 
+    // applicationWillTerminate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
     }
 
+    // ToolbarDelegate
     class ToolbarDelegate: NSObject, NSToolbarDelegate
     {
         let bright = NSToolbarItem.Identifier("bright")

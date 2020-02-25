@@ -20,11 +20,13 @@
 
 import Cocoa
 
+// ScopeView
 class ScopeView: NSView
 {
     var height = 0
     var width = 0
 
+    // mouseDown
     override func mouseDown(with event: NSEvent)
     {
         if (event.type == .leftMouseDown)

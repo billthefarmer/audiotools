@@ -20,8 +20,10 @@
 
 import Cocoa
 
+// XScaleView
 class XScaleView: NSView
 {
+    // intrinsicContentSize
     override var intrinsicContentSize: NSSize
     {
         get
@@ -31,6 +33,7 @@ class XScaleView: NSView
         }
     }
 
+    // draw
     override func draw(_ rect: NSRect)
     {
         super.draw(rect)
