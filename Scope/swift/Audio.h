@@ -97,7 +97,7 @@ XScale xscale;
 
 typedef struct
 {
-    float index;
+    int index;
 } YScale;
 YScale yscale;
 

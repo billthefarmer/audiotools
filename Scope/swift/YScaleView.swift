@@ -23,6 +23,9 @@ import Cocoa
 // YScaleView
 class YScaleView: NSView
 {
+    var height = 0
+
+    // intrinsicContentSize
     override var intrinsicContentSize: NSSize
     {
         get
@@ -39,7 +42,7 @@ class YScaleView: NSView
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            yscale.index = point.y
+            yscale.index = Int32(point.y)
             needsDisplay = true;
         }
     }
@@ -49,23 +52,23 @@ class YScaleView: NSView
     // keyDown
     override func keyDown(with event: NSEvent)
     {
-        let code = event.keyCode!
+        let code = event.keyCode
 
         switch code
         {
-        case kKeyboardUpKey:
-            yscale.index++
-            if yscale.index > NSHeight(rect) / 2
+        case UInt16(kKeyboardUpKey):
+            yscale.index += 1
+            if yscale.index > height / 2
             {
-                yscale.index = NSHeight(rect) / 2
+                yscale.index = Int32(height / 2)
             }
             needsDisplay = true;
             break
-        case kKeyboardDownKey:
-            yscale.index--
-            if yscale.index < -NSHeight(rect) / 2
+        case UInt16(kKeyboardDownKey):
+            yscale.index -= 1
+            if yscale.index < -height / 2
             {
-                yscale.index = -NSHeight(rect) / 2
+                yscale.index = -Int32(height / 2)
             }
             needsDisplay = true;
             break
@@ -81,9 +84,10 @@ class YScaleView: NSView
         super.draw(rect)
 
         // Drawing code here.
+        height = Int(NSHeight(rect))
 
         // Move the origin
-        let transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
+        var transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
         (transform as NSAffineTransform).concat()
         let context = NSGraphicsContext.current!
         context.shouldAntialias = false
@@ -109,9 +113,9 @@ class YScaleView: NSView
         // Transform
         let scale =
           AffineTransform(scale: NSWidth(rect) / NSWidth(thumb.bounds) * 2)
-        let transform =
+        transform =
           AffineTransform(translationByX: NSWidth(rect) / 2,
-                          byY: yscale.index)
+                          byY: CGFloat(yscale.index))
         thumb.transform(using: scale)
         thumb.transform(using: transform)
         if (yscale.index != 0)

@@ -68,6 +68,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         stack.spacing = 0
         window.contentView = stack
         window.makeKeyAndOrderFront(self)
+        window.makeFirstResponder(scopeView)
         window.makeMain()
 
         SetupAudio()

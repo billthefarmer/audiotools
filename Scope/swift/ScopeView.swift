@@ -22,13 +22,15 @@ import Cocoa
 
 class ScopeView: NSView
 {
+    var height = 0
+
     override func mouseDown(with event: NSEvent)
     {
         if (event.type == .leftMouseDown)
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            scope.index = point.x
+            scope.index = Int32(point.x)
             needsDisplay = true;
         }
     }
@@ -38,23 +40,23 @@ class ScopeView: NSView
     // keyDown
     override func keyDown(with event: NSEvent)
     {
-        let code = event.keyCode!
+        let code = event.keyCode
 
         switch code
         {
-        case kKeyboardRightKey:
-            scope.index++
-            if scope.index > NSHeight(rect) / 2
+        case UInt16(kKeyboardRightKey):
+            scope.index += 1
+            if scope.index > height / 2
             {
-                scope.index = NSHeight(rect) / 2
+                scope.index = Int32(height / 2)
             }
             needsDisplay = true;
             break
-        case kKeyboardLeftKey:
-            scope.index--
-            if scope.index < -NSHeight(rect) / 2
+        case UInt16(kKeyboardLeftKey):
+            scope.index -= 1
+            if scope.index < -height / 2
             {
-                scope.index = -NSHeight(rect) / 2
+                scope.index = -Int32(height / 2)
             }
             needsDisplay = true;
             break
@@ -102,8 +104,10 @@ class ScopeView: NSView
                                 to: NSMakePoint(NSMaxX(rect), 0))
 
         NSColor.yellow.set()
-        NSBezierPath.strokeLine(from: NSMakePoint(scope.index, NSMinY(rect)),
-                                to: NSMakePoint(scope.index, NSMaxY(rect)))
+        NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(scope.index),
+                                                  NSMinY(rect)),
+                                to: NSMakePoint(CGFloat(scope.index),
+                                                NSMaxY(rect)))
 
         if (scope.data == nil)
         {
