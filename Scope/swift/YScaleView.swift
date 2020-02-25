@@ -81,9 +81,9 @@ class YScaleView: NSView
 
         // Transform
         let scale =
-          AffineTransform(scale: NSWidth(rect) / (NSWidth(thumb.bounds) * 2))
+          AffineTransform(scale: NSWidth(rect) / (NSWidth(thumb.bounds) * 1.5))
         transform =
-          AffineTransform(translationByX: NSWidth(rect) / 3,
+          AffineTransform(translationByX: NSWidth(rect) / 2.5,
                           byY: CGFloat(yscale.index))
         thumb.transform(using: scale)
         thumb.transform(using: transform)
