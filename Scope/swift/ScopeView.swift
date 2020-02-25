@@ -23,6 +23,7 @@ import Cocoa
 class ScopeView: NSView
 {
     var height = 0
+    var width = 0
 
     override func mouseDown(with event: NSEvent)
     {
@@ -44,19 +45,35 @@ class ScopeView: NSView
 
         switch code
         {
+        case UInt16(kKeyboardUpKey):
+            yscale.index += 1
+            if yscale.index > height / 2
+            {
+                yscale.index = Int32(height / 2)
+            }
+            yScaleView.needsDisplay = true;
+            break
+        case UInt16(kKeyboardDownKey):
+            yscale.index -= 1
+            if yscale.index < -height / 2
+            {
+                yscale.index = -Int32(height / 2)
+            }
+            yScaleView.needsDisplay = true;
+            break
         case UInt16(kKeyboardRightKey):
             scope.index += 1
-            if scope.index > height / 2
+            if scope.index > width
             {
-                scope.index = Int32(height / 2)
+                scope.index = Int32(width)
             }
             needsDisplay = true;
             break
         case UInt16(kKeyboardLeftKey):
             scope.index -= 1
-            if scope.index < -height / 2
+            if scope.index < 0
             {
-                scope.index = -Int32(height / 2)
+                scope.index = 0
             }
             needsDisplay = true;
             break
@@ -72,6 +89,8 @@ class ScopeView: NSView
         super.draw(rect)
 
         // Drawing code here.
+        height = Int(NSHeight(rect))
+        width = Int(NSWidth(rect))
         NSBezierPath.fill(rect)
 
         // Dark green graticule
@@ -104,10 +123,13 @@ class ScopeView: NSView
                                 to: NSMakePoint(NSMaxX(rect), 0))
 
         NSColor.yellow.set()
-        NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(scope.index),
-                                                  NSMinY(rect)),
-                                to: NSMakePoint(CGFloat(scope.index),
-                                                NSMaxY(rect)))
+        if scope.index > 0
+        {
+            NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(scope.index),
+                                                      -NSMaxY(rect) / 2),
+                                    to: NSMakePoint(CGFloat(scope.index),
+                                                    NSMaxY(rect) / 2))
+        }
 
         if (scope.data == nil)
         {

@@ -42,39 +42,8 @@ class YScaleView: NSView
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            yscale.index = Int32(point.y)
+            yscale.index = Int32(point.y - height / 2)
             needsDisplay = true;
-        }
-    }
-
-    // This, IMHO is a kludge because you ought to be able to do this
-    // in AppDelegate rather than one of the views
-    // keyDown
-    override func keyDown(with event: NSEvent)
-    {
-        let code = event.keyCode
-
-        switch code
-        {
-        case UInt16(kKeyboardUpKey):
-            yscale.index += 1
-            if yscale.index > height / 2
-            {
-                yscale.index = Int32(height / 2)
-            }
-            needsDisplay = true;
-            break
-        case UInt16(kKeyboardDownKey):
-            yscale.index -= 1
-            if yscale.index < -height / 2
-            {
-                yscale.index = -Int32(height / 2)
-            }
-            needsDisplay = true;
-            break
-        default:
-            NSLog("Code %d", code)
-            break
         }
     }
 
@@ -112,9 +81,9 @@ class YScaleView: NSView
 
         // Transform
         let scale =
-          AffineTransform(scale: NSWidth(rect) / NSWidth(thumb.bounds) * 2)
+          AffineTransform(scale: NSWidth(rect) / (NSWidth(thumb.bounds) * 2))
         transform =
-          AffineTransform(translationByX: NSWidth(rect) / 2,
+          AffineTransform(translationByX: NSWidth(rect) / 3,
                           byY: CGFloat(yscale.index))
         thumb.transform(using: scale)
         thumb.transform(using: transform)
