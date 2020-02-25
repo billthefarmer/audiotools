@@ -222,7 +222,6 @@ SWIFT_CLASS("_TtC5Scope10YScaleView")
 @interface YScaleView : NSView
 @property (nonatomic, readonly) NSSize intrinsicContentSize;
 - (void)mouseDown:(NSEvent * _Nonnull)event;
-- (void)keyDown:(NSEvent * _Nonnull)event;
 - (void)drawRect:(NSRect)rect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;

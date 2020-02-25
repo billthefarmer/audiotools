@@ -42,7 +42,7 @@ class YScaleView: NSView
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            yscale.index = Int32(point.y - height / 2)
+            yscale.index = Int32(point.y) - Int32(height / 2)
             needsDisplay = true;
         }
     }
