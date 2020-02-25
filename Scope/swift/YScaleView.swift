@@ -20,6 +20,7 @@
 
 import Cocoa
 
+// YScaleView
 class YScaleView: NSView
 {
     override var intrinsicContentSize: NSSize
@@ -31,6 +32,7 @@ class YScaleView: NSView
         }
     }
 
+    // mouseDown
     override func mouseDown(with event: NSEvent)
     {
         if (event.type == .leftMouseDown)
@@ -42,6 +44,38 @@ class YScaleView: NSView
         }
     }
 
+    // This, IMHO is a kludge because you ought to be able to do this
+    // in AppDelegate rather than one of the views
+    // keyDown
+    override func keyDown(with event: NSEvent)
+    {
+        let code = event.keyCode!
+
+        switch code
+        {
+        case kKeyboardUpKey:
+            yscale.index++
+            if yscale.index > NSHeight(rect) / 2
+            {
+                yscale.index = NSHeight(rect) / 2
+            }
+            needsDisplay = true;
+            break
+        case kKeyboardDownKey:
+            yscale.index--
+            if yscale.index < -NSHeight(rect) / 2
+            {
+                yscale.index = -NSHeight(rect) / 2
+            }
+            needsDisplay = true;
+            break
+        default:
+            NSLog("Code %d", code)
+            break
+        }
+    }
+
+    // draw
     override func draw(_ rect: NSRect)
     {
         super.draw(rect)
@@ -61,6 +95,28 @@ class YScaleView: NSView
                                     to: NSMakePoint(NSMaxX(rect), y))
             NSBezierPath.strokeLine(from: NSMakePoint(NSMidX(rect), -y),
                                     to: NSMakePoint(NSMaxX(rect), -y))
+        }
+
+        // Thumb
+        let thumb = NSBezierPath()
+        thumb.move(to: NSMakePoint(-1, 1))
+        thumb.line(to: NSMakePoint(1, 1))
+        thumb.line(to: NSMakePoint(2, 0))
+        thumb.line(to: NSMakePoint(1, -1))
+        thumb.line(to: NSMakePoint(-1, -1))
+        thumb.close()
+
+        // Transform
+        let scale =
+          AffineTransform(scale: NSWidth(rect) / NSWidth(thumb.bounds) * 2)
+        let transform =
+          AffineTransform(translationByX: NSWidth(rect) / 2,
+                          byY: yscale.index)
+        thumb.transform(using: scale)
+        thumb.transform(using: transform)
+        if (yscale.index != 0)
+        {
+            thumb.fill()
         }
     }    
 }

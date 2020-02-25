@@ -33,6 +33,38 @@ class ScopeView: NSView
         }
     }
 
+    // This, IMHO is a kludge because you ought to be able to do this
+    // in AppDelegate rather than one of the views
+    // keyDown
+    override func keyDown(with event: NSEvent)
+    {
+        let code = event.keyCode!
+
+        switch code
+        {
+        case kKeyboardRightKey:
+            scope.index++
+            if scope.index > NSHeight(rect) / 2
+            {
+                scope.index = NSHeight(rect) / 2
+            }
+            needsDisplay = true;
+            break
+        case kKeyboardLeftKey:
+            scope.index--
+            if scope.index < -NSHeight(rect) / 2
+            {
+                scope.index = -NSHeight(rect) / 2
+            }
+            needsDisplay = true;
+            break
+        default:
+            NSLog("Code %d", code)
+            break
+        }
+    }
+
+    // draw
     override func draw(_ rect: NSRect)
     {
         super.draw(rect)
