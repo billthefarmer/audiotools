@@ -24,8 +24,8 @@ import Cocoa
 class ScopeView: NSView
 {
     var size = NSZeroSize
-    var bitmap: NSGraphicsContext = nil
-    var image: NSImage = nil
+    var bitmap: NSGraphicsContext = NSGraphicsContext()
+    var image: NSImage = NSImage()
 
     // mouseDown
     override func mouseDown(with event: NSEvent)
@@ -50,25 +50,25 @@ class ScopeView: NSView
         {
         case UInt16(kKeyboardUpKey):
             yscale.index += 1
-            if yscale.index > height / 2
+            if yscale.index > Int32(size.height / 2)
             {
-                yscale.index = Int32(height / 2)
+                yscale.index = Int32(size.height / 2)
             }
             yScaleView.needsDisplay = true;
             break
         case UInt16(kKeyboardDownKey):
             yscale.index -= 1
-            if yscale.index < -height / 2
+            if yscale.index < -Int32(size.height / 2)
             {
-                yscale.index = -Int32(height / 2)
+                yscale.index = -Int32(size.height / 2)
             }
             yScaleView.needsDisplay = true;
             break
         case UInt16(kKeyboardRightKey):
             scope.index += 1
-            if scope.index > width
+            if scope.index > Int32(size.width)
             {
-                scope.index = Int32(width)
+                scope.index = Int32(size.width)
             }
             needsDisplay = true;
             break
@@ -92,29 +92,36 @@ class ScopeView: NSView
         super.draw(rect)
 
         // Drawing code here.
-        var width = NSWidth(rect)
-        var height = NSHeight(rect)
+        let width = NSWidth(rect)
+        let height = NSHeight(rect)
 
-        let context = NSGraphicsContext.current
+        let context = NSGraphicsContext.current!
 
         if size.width != width || size.height != height
         {
             size = rect.size
 
-            let colour = CGColorSpace(kCGColorSpaceSRGB)
+            let colour = CGColorSpace(name: CGColorSpace.sRGB)!
             bitmap = NSGraphicsContext(
-              cgContext: CGContext(data: nil, width: width, height: height,
-                                   bitsPerComponent: 8, bytesPerRow: width * 4,
+              cgContext: CGContext(data: nil,
+                                   width: Int(width),
+                                   height: Int(height),
+                                   bitsPerComponent: 8,
+                                   bytesPerRow: Int(width * 4),
                                    space: colour,
-                                   bitmapInfo: kCGImageAlphaPremultipliedLast),
+                                   bitmapInfo:
+                                     CGImageAlphaInfo.premultipliedLast.rawValue)!,
               flipped: false)
-            graticule = NSGraphicsContext(
-              cgContext: CGContext(data: nil, width: width, height: height,
-                                   bitsPerComponent: 8, bytesPerRow: width * 4,
+            let graticule = NSGraphicsContext(
+              cgContext: CGContext(data: nil,
+                                   width: Int(width),
+                                   height: Int(height),
+                                   bitsPerComponent: 8,
+                                   bytesPerRow: Int(width * 4),
                                    space: colour,
-                                   bitmapInfo: kCGImageAlphaPremultipliedLast),
+                                   bitmapInfo:
+                                     CGImageAlphaInfo.premultipliedLast.rawValue)!,
               flipped: false)
-            CGColorSpaceRelease(colour)
         }
 
         NSBezierPath.fill(rect)
@@ -126,7 +133,6 @@ class ScopeView: NSView
         // Move the origin
         let transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
         (transform as NSAffineTransform).concat()
-        let context = NSGraphicsContext.current!
         context.shouldAntialias = false
 
         // Draw graticule
