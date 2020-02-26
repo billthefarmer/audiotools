@@ -39,6 +39,7 @@ class XScaleView: NSView
         super.draw(rect)
 
         // Drawing code here.
+        let kTextSize = height / 3
 
         // Move the origin
         let transform = AffineTransform(translationByX: CGFloat(kScaleWidth),
@@ -48,10 +49,48 @@ class XScaleView: NSView
         context.shouldAntialias = false
 
         // Draw scale
-        for x in stride(from: 0, to: NSWidth(rect), by: 6)
+        for x in stride(from: 0, to: NSWidth(rect), by: 50)
+        {
+            NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) * 2 / 3),
+                                    to: NSMakePoint(x, NSMaxY(rect)))
+        }
+
+        for x in stride(from: 0, to: NSWidth(rect), by: 10)
         {
             NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) * 3 / 4),
                                     to: NSMakePoint(x, NSMaxY(rect)))
         }
-    }    
+
+        context.shouldAntialias = true
+        let font = NSFont.systemFont(ofSize: kTextSize)
+        var attrs: [NSAttributedString.Key: Any] = [.font: font]
+
+        if xscale.scale < 100
+        {
+            var offset = "ms".size(withAttributes: attrs) / 2
+            "ms".draw(at: NSMakePoint(-offset, 4), withAttributes: attrs)
+
+            for x in stride(from: 100, to: NSWidth(rect), by: 100)
+            {
+                let s = String(format: "%0.1f",
+                               (xscale.start + (x * xscale.scale)) / 100.0)
+                offset = s.size(withAttributes: attrs) / 2
+                s.draw(at: NSMakePoint(x - offset, 4), withAttributes: attrs)
+            }
+        }
+
+        else
+        {
+            var offset = "sec".size(withAttributes: attrs) / 2
+            "sec".draw(at: NSMakePoint(-offset, 4), withAttributes: attrs)
+
+            for x in stride(from: 100, to: NSWidth(rect), by: 100)
+            {
+                let s = String(format: "%0.1f",
+                               (xscale.start + (x * xscale.scale)) / 100000.0)
+                offset = s.size(withAttributes: attrs) / 2
+                s.draw(at: NSMakePoint(x - offset, 4), withAttributes: attrs)
+            }
+        }
+    }
 }

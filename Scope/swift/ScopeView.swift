@@ -24,8 +24,8 @@ import Cocoa
 class ScopeView: NSView
 {
     var size = NSZeroSize
-    var bitmap: NSGraphicsContext = NSGraphicsContext()
-    var image: NSImage = NSImage()
+    var bitmap = NSGraphicsContext()
+    var image = NSImage()
 
     // mouseDown
     override func mouseDown(with event: NSEvent)
@@ -103,24 +103,26 @@ class ScopeView: NSView
 
             let colour = CGColorSpace(name: CGColorSpace.sRGB)!
             bitmap = NSGraphicsContext(
-              cgContext: CGContext(data: nil,
-                                   width: Int(width),
-                                   height: Int(height),
-                                   bitsPerComponent: 8,
-                                   bytesPerRow: Int(width * 4),
-                                   space: colour,
-                                   bitmapInfo:
-                                     CGImageAlphaInfo.premultipliedLast.rawValue)!,
+              cgContext:
+                CGContext(data: nil,
+                          width: Int(width),
+                          height: Int(height),
+                          bitsPerComponent: 8,
+                          bytesPerRow: Int(width * 4),
+                          space: colour,
+                          bitmapInfo:
+                            CGImageAlphaInfo.premultipliedLast.rawValue)!,
               flipped: false)
             let graticule = NSGraphicsContext(
-              cgContext: CGContext(data: nil,
-                                   width: Int(width),
-                                   height: Int(height),
-                                   bitsPerComponent: 8,
-                                   bytesPerRow: Int(width * 4),
-                                   space: colour,
-                                   bitmapInfo:
-                                     CGImageAlphaInfo.premultipliedLast.rawValue)!,
+              cgContext:
+                CGContext(data: nil,
+                          width: Int(width),
+                          height: Int(height),
+                          bitsPerComponent: 8,
+                          bytesPerRow: Int(width * 4),
+                          space: colour,
+                          bitmapInfo:
+                            CGImageAlphaInfo.premultipliedLast.rawValue)!,
               flipped: false)
         }
 
