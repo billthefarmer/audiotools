@@ -23,8 +23,9 @@ import Cocoa
 // ScopeView
 class ScopeView: NSView
 {
-    var height = 0
-    var width = 0
+    var size = NSZeroSize
+    var bitmap: NSGraphicsContext
+    var image: NSImage
 
     // mouseDown
     override func mouseDown(with event: NSEvent)
@@ -91,8 +92,31 @@ class ScopeView: NSView
         super.draw(rect)
 
         // Drawing code here.
-        height = Int(NSHeight(rect))
-        width = Int(NSWidth(rect))
+        var width = NSWidth(rect)
+        var height = NSHeight(rect)
+
+        let context = NSGraphicsContext.current
+
+        if size.width != width || size.height != height
+        {
+            size = rect.size
+
+            let colour = CGColorSpace(kCGColorSpaceSRGB)
+            bitmap = NSGraphicsContext(
+              cgContext: CGContext(data: nil, width: width, height: height,
+                                   bitsPerComponent: 8, bytesPerRow: width * 4,
+                                   space: colour,
+                                   bitmapInfo: kCGImageAlphaPremultipliedLast),
+              flipped: false)
+            graticule = NSGraphicsContext(
+              cgContext: CGContext(data: nil, width: width, height: height,
+                                   bitsPerComponent: 8, bytesPerRow: width * 4,
+                                   space: colour,
+                                   bitmapInfo: kCGImageAlphaPremultipliedLast),
+              flipped: false)
+            CGColorSpaceRelease(colour)
+        }
+
         NSBezierPath.fill(rect)
 
         // Dark green graticule
