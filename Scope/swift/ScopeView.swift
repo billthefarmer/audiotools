@@ -24,8 +24,8 @@ import Cocoa
 class ScopeView: NSView
 {
     var size = NSZeroSize
-    var bitmap: NSGraphicsContext
-    var image: NSImage
+    var bitmap: NSGraphicsContext = nil
+    var image: NSImage = nil
 
     // mouseDown
     override func mouseDown(with event: NSEvent)
