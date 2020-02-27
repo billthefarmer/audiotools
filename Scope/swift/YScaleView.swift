@@ -53,7 +53,7 @@ class YScaleView: NSView
         super.draw(rect)
 
         // Drawing code here.
-        size = NSSize(rect)
+        size = rect.size
 
         // Move the origin
         var transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
