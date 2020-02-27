@@ -23,7 +23,7 @@ import Cocoa
 // YScaleView
 class YScaleView: NSView
 {
-    var height = 0
+    var size = NSZeroSize
 
     // intrinsicContentSize
     override var intrinsicContentSize: NSSize
@@ -42,7 +42,7 @@ class YScaleView: NSView
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            yscale.index = Int32(point.y) - Int32(height / 2)
+            yscale.index = Int32(point.y - (size.height / 2))
             needsDisplay = true;
         }
     }
@@ -53,7 +53,7 @@ class YScaleView: NSView
         super.draw(rect)
 
         // Drawing code here.
-        height = Int(NSHeight(rect))
+        size = NSSize(rect)
 
         // Move the origin
         var transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
@@ -87,7 +87,7 @@ class YScaleView: NSView
         thumb.line(to: NSMakePoint(-1, -1))
         thumb.close()
 
-        // Transform
+        // Transform thumb
         let scale =
           AffineTransform(scale: NSWidth(rect) / (NSWidth(thumb.bounds) * 1.5))
         transform =
@@ -95,6 +95,8 @@ class YScaleView: NSView
                           byY: CGFloat(yscale.index))
         thumb.transform(using: scale)
         thumb.transform(using: transform)
+
+        // Draw thumb
         if (yscale.index != 0)
         {
             thumb.fill()

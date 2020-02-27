@@ -25,6 +25,7 @@ class ScopeView: NSView
 {
     var size = NSZeroSize
     var bitmap = NSGraphicsContext()
+    var graticule = NSGraphicsContext()
     var image = NSImage()
 
     // mouseDown
@@ -113,7 +114,7 @@ class ScopeView: NSView
                           bitmapInfo:
                             CGImageAlphaInfo.premultipliedLast.rawValue)!,
               flipped: false)
-            let graticule = NSGraphicsContext(
+            graticule = NSGraphicsContext(
               cgContext:
                 CGContext(data: nil,
                           width: Int(width),
@@ -124,7 +125,37 @@ class ScopeView: NSView
                           bitmapInfo:
                             CGImageAlphaInfo.premultipliedLast.rawValue)!,
               flipped: false)
+
+            NSGraphicsContext.current = graticule
+
+            NSBezierPath.fill(rect)
+
+            // Dark green graticule
+            let darkGreen = NSColor(red: 0, green: 0.125, blue: 0, alpha: 1.0)
+            darkGreen.set()
+
+            // Move the origin
+            let transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
+            (transform as NSAffineTransform).concat()
+            context.shouldAntialias = false
+
+            // Draw graticule
+            for x in stride(from: 0, to: NSWidth(rect), by: 10)
+            {
+                NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) / 2),
+                                        to: NSMakePoint(x, -NSMaxY(rect) / 2))
+            }
+
+            for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
+            {
+                NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), y),
+                                        to: NSMakePoint(NSMaxX(rect), y))
+                NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), -y),
+                                        to: NSMakePoint(NSMaxX(rect), -y))
+            }
         }
+
+        NSGraphicsContext.current = context
 
         NSBezierPath.fill(rect)
 
