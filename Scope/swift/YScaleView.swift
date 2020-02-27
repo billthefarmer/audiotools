@@ -62,7 +62,15 @@ class YScaleView: NSView
         context.shouldAntialias = false
 
         // Draw scale
-        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 6)
+        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
+        {
+            NSBezierPath.strokeLine(from: NSMakePoint(NSMaxX(rect) * 2 / 3, y),
+                                    to: NSMakePoint(NSMaxX(rect), y))
+            NSBezierPath.strokeLine(from: NSMakePoint(NSMaxX(rect) * 2 / 3, -y),
+                                    to: NSMakePoint(NSMaxX(rect), -y))
+        }
+
+        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 50)
         {
             NSBezierPath.strokeLine(from: NSMakePoint(NSMidX(rect), y),
                                     to: NSMakePoint(NSMaxX(rect), y))

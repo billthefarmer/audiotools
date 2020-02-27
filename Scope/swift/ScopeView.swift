@@ -97,7 +97,7 @@ class ScopeView: NSView
 
         let context = NSGraphicsContext.current!
 
-        if size.width != width || size.height != height
+        if (size.width != width || size.height != height)
         {
             size = rect.size
 
@@ -138,13 +138,13 @@ class ScopeView: NSView
         context.shouldAntialias = false
 
         // Draw graticule
-        for x in stride(from: NSMinX(rect), to: NSMaxX(rect), by: 6)
+        for x in stride(from: 0, to: NSWidth(rect), by: 10)
         {
             NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) / 2),
                                     to: NSMakePoint(x, -NSMaxY(rect) / 2))
         }
 
-        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 6)
+        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
         {
             NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), y),
                                     to: NSMakePoint(NSMaxX(rect), y))
@@ -153,8 +153,8 @@ class ScopeView: NSView
         }
 
         NSColor.green.set()
-        NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), 0),
-                                to: NSMakePoint(NSMaxX(rect), 0))
+        NSBezierPath.strokeLine(from: NSMakePoint(0, 0),
+                                to: NSMakePoint(NSWidth(rect), 0))
 
         NSColor.yellow.set()
         if scope.index > 0
