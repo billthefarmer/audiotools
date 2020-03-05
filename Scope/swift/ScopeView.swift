@@ -135,7 +135,8 @@ class ScopeView: NSView
             darkGreen.set()
 
             // Move the origin
-            let transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
+            let transform = AffineTransform(translationByX: 0,
+                                            byY: NSMidY(rect))
             (transform as NSAffineTransform).concat()
             context.shouldAntialias = false
 

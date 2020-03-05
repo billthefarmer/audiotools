@@ -79,6 +79,7 @@ class YScaleView: NSView
         }
 
         // Thumb
+        context.shouldAntialias = true
         let thumb = NSBezierPath()
         thumb.move(to: NSMakePoint(-1, 1))
         thumb.line(to: NSMakePoint(1, 1))

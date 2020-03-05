@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb">
 <head>
-  <meta name="generator" content="Hugo 0.55.6" />
+  <meta name="generator" content="Hugo 0.66.0" />
 
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -18,16 +18,24 @@
 <body>
 
 <div class="sidebar sidebar-cyan">
-    <div class="navigation">
-        <div>
+  <div class="navigation">
+    <div>
+  <a href="https://github.com/billthefarmer/audiotools">
     <img src="images/Icon.png" style="max-width: 20%" />
+  </a>
+  <a href="">
+    <img src="" />
+  </a>
+  <a href="https://github.com/billthefarmer/audiotools/releases">
+    <img src="https://img.shields.io/github/v/release/billthefarmer/ctuner.svg?logo=github" />
+  </a>
 </div>
 
-        <h1 class="site-title"><a href="https://billthefarmer.github.io/audiotools/">Audiotools</a></h1>
+    <h1 class="site-title"><a href="https://billthefarmer.github.io/audiotools/">Audiotools</a></h1>
 
 
-        <nav class="internal">
-            <ul>
+    <nav class="internal">
+      <ul>
     
         
             
@@ -43,14 +51,15 @@
         <a href="#tools">Tools</a>
         <ul>
             
-            
-                <li><a href="#siggen">Signal Generator</a></li>
-            
-                <li><a href="#scope">Oscilloscope</a></li>
-            
-                <li><a href="#lms">LMS</a></li>
-            
-                <li><a href="#slms">SLMS</a></li>
+                
+                    <li><a href="#siggen">Signal Generator</a></li>
+                
+                    <li><a href="#scope">Oscilloscope</a></li>
+                
+                    <li><a href="#lms">LMS</a></li>
+                
+                    <li><a href="#slms">SLMS</a></li>
+                
             
         </ul>
     </li>
@@ -61,17 +70,20 @@
     
 </ul>
 
-        </nav>
+    </nav>
 
-        <nav class="external">
-            <div class="external-title"></div>
-            
-        </nav>
-    </div>
+    <nav class="external">
+      <div class="external-title"></div>
+      
+    </nav>
+  </div>
 
-    <div class="version">
-            generated on May 24, 2019
-    </div>
+  <div class="version">
+    <p>
+  Copyright &copy; 2019 Bill Farmer
+</p>
+
+  </div>
 </div>
 
 <div class="content">
@@ -79,14 +91,15 @@
         
             
     <section class="page" id="introduction">
-    <h1>
+    
+    <h3>
         <a href="#introduction">Introduction</a>
-    </h1>
+    </h3>
+    
     <div class="content">
         <p><a href="https://github.com/billthefarmer/audiotools" title="https://github.com/billthefarmer/audiotools">Audiotools</a> is a set of audio testing tools for use on a Windows
 or Linux PC, Mac or Android device. See also <a href="https://billthefarmer.github.io/ctuner" title="https://billthefarmer.github.io/ctuner">Tuner</a>.</p>
-
-<p><img src="images/Audiotools.png" alt="Screenshot" /></p>
+<p><img src="images/Audiotools.png" alt="Screenshot"></p>
 
     </div>
 </section>
@@ -97,14 +110,13 @@ or Linux PC, Mac or Android device. See also <a href="https://billthefarmer.gith
         
             
     <section class="page" id="tools">
+    
     <h1>
         <a href="#tools">Tools</a>
     </h1>
+    
     <div class="content">
-        
-
-<h3 id="downloads">Downloads</h3>
-
+        <h3 id="downloads">Downloads</h3>
 <p>Windows and Mac versions <a href="https://github.com/billthefarmer/audiotools/releases" title="https://github.com/billthefarmer/audiotools/releases">here</a>.</p>
 
     </div>
@@ -113,30 +125,30 @@ or Linux PC, Mac or Android device. See also <a href="https://billthefarmer.gith
     
             
                 <section class="page" id="siggen">
-    <h1>
+    
+    <h3>
         <a href="#siggen">Signal Generator</a>
-    </h1>
+    </h3>
+    
     <div class="content">
-        
-
-<table>
+        <table>
 <thead>
 <tr>
 <th></th>
 <th></th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-<td><img src="images/SigGen.png" alt="SigGen" /></td>
-<td><img src="images/SigGen-swift.png" alt="SigGen-swift" /></td>
+<td><img src="images/SigGen.png" alt="SigGen"></td>
+<td><img src="images/SigGen-swift.png" alt="SigGen-swift"></td>
+</tr>
+<tr>
+<td><img src="images/SigGen-android.png" alt="SigGen-android"></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-
-<p><img src="images/SigGen-android.png" alt="SigGen-android" /></p>
-
 <ul>
 <li>Frequency range 10Hz - 25KHz</li>
 <li>Level range 0dB - -80dB</li>
@@ -147,9 +159,7 @@ or Linux PC, Mac or Android device. See also <a href="https://billthefarmer.gith
 <li>Mute control</li>
 <li>Set exact frequency</li>
 </ul>
-
 <p>Keyboard navigation keys</p>
-
 <ul>
 <li>Left - frequency knob down</li>
 <li>Right - frequency knob up</li>
@@ -158,17 +168,13 @@ or Linux PC, Mac or Android device. See also <a href="https://billthefarmer.gith
 <li>Page Up - level up</li>
 <li>Page Down - level down</li>
 </ul>
-
 <h3 id="using">Using</h3>
-
 <p>The frequency knob responds to mouse dragging. The fine frequency and
 level sliders allow for fine adjustments of frequency and output
 level. The frequency knob is also adjustable using the left and right
 arrow keys. The fine frequency slider is adjustable using the up and
 down arrow keys, the level slider using the page up and down keys.</p>
-
 <h3 id="downloads">Downloads</h3>
-
 <p>Windows and Mac versions <a href="https://github.com/billthefarmer/audiotools/releases" title="https://github.com/billthefarmer/audiotools/releases">here</a>, Android version <a href="https://github.com/billthefarmer/sig-gen/releases" title="https://github.com/billthefarmer/sig-gen/releases">here</a>.</p>
 
     </div>
@@ -176,55 +182,49 @@ down arrow keys, the level slider using the page up and down keys.</p>
 
             
                 <section class="page" id="scope">
-    <h1>
+    
+    <h3>
         <a href="#scope">Oscilloscope</a>
-    </h1>
+    </h3>
+    
     <div class="content">
-        
-
-<table>
+        <table>
 <thead>
 <tr>
 <th></th>
 <th></th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-<td><img src="images/Scope.png" alt="Scope" /></td>
-<td><img src="images/Scope-android.png" alt="Scope-android" /></td>
+<td><img src="images/Scope.png" alt="Scope"></td>
+<td><img src="images/Scope-android.png" alt="Scope-android"></td>
 </tr>
 </tbody>
 </table>
-
 <ul>
-<li>Timebase 0.1ms &ndash; 0.5sec</li>
+<li>Timebase 0.1ms – 0.5sec</li>
 <li>Resolution 0.022ms @ 44100 samples/sec</li>
 <li>Single shot</li>
 <li>Adjustable sync level</li>
 <li>Storage</li>
 <li>Index</li>
 </ul>
-
 <p>The icons on the toolbar are, from left to right:</p>
-
 <ul>
-<li><strong>Bright line</strong> &ndash; Defeats the sync and single shot</li>
-<li><strong>Single shot</strong> &ndash; Click the trigger icon to get a trace</li>
-<li><strong>Trigger</strong> &ndash; Click for a trace</li>
-<li><strong>Timebase</strong> &ndash; Drops a submenu of timebase timings</li>
-<li><strong>Storage</strong> &ndash; Does not clear the display between traces</li>
-<li><strong>Clear</strong> &ndash; Clears the display</li>
-<li><strong>Left</strong> &ndash; Moves the trace to the left</li>
-<li><strong>Right</strong> &ndash; Moves the trace to the right</li>
-<li><strong>Start</strong> &ndash; Moves the trace to the start</li>
-<li><strong>End</strong> &ndash; Moves the trace to the end</li>
-<li><strong>Reset</strong> &ndash; Resets to default settings</li>
+<li><strong>Bright line</strong> – Defeats the sync and single shot</li>
+<li><strong>Single shot</strong> – Click the trigger icon to get a trace</li>
+<li><strong>Trigger</strong> – Click for a trace</li>
+<li><strong>Timebase</strong> – Drops a submenu of timebase timings</li>
+<li><strong>Storage</strong> – Does not clear the display between traces</li>
+<li><strong>Clear</strong> – Clears the display</li>
+<li><strong>Left</strong> – Moves the trace to the left</li>
+<li><strong>Right</strong> – Moves the trace to the right</li>
+<li><strong>Start</strong> – Moves the trace to the start</li>
+<li><strong>End</strong> – Moves the trace to the end</li>
+<li><strong>Reset</strong> – Resets to default settings</li>
 </ul>
-
 <h3 id="using">Using</h3>
-
 <p>Use the toolbar buttons to access functionality. Clicking on the left
 Y scale turns on the sync level control.  Clicking on the scope
 display turns on the cursor line, which may be shifted left and right
@@ -233,9 +233,7 @@ from the start of the trace in current timebase units, and the nominal
 trace value at that point. There is no calibration because of the
 various level controls in the audio system. The move to start and
 reset toolbar buttons clear the sync level and the cursor.</p>
-
 <h3 id="downloads">Downloads</h3>
-
 <p>Windows and Mac versions <a href="https://github.com/billthefarmer/audiotools/releases" title="https://github.com/billthefarmer/audiotools/releases">here</a>, Android version <a href="https://github.com/billthefarmer/scope/releases" title="https://github.com/billthefarmer/scope/releases">here</a>.</p>
 
     </div>
@@ -243,30 +241,24 @@ reset toolbar buttons clear the sync level and the cursor.</p>
 
             
                 <section class="page" id="lms">
-    <h1>
+    
+    <h3>
         <a href="#lms">LMS</a>
-    </h1>
+    </h3>
+    
     <div class="content">
-        
-
-<p><img src="images/LMS.png" alt="LMS" /></p>
-
+        <p><img src="images/LMS.png" alt="LMS"></p>
 <ul>
-<li>Level -80dB &ndash; +3dB</li>
+<li>Level -80dB – +3dB</li>
 </ul>
-
 <p>Audio level measuring set. Measures frequency and relative level with
 a frequency spectrum display. Absolute level is not possible because
 of all the variables in the sound system.</p>
-
 <h3 id="using">Using</h3>
-
 <p>The level measuring set displays frequency and relative level with a
 frequency spectrum display. Input is from the currently selected audio
 input.</p>
-
 <h3 id="downloads">Downloads</h3>
-
 <p>Windows and Mac versions <a href="https://github.com/billthefarmer/audiotools/releases" title="https://github.com/billthefarmer/audiotools/releases">here</a>.</p>
 
     </div>
@@ -274,38 +266,33 @@ input.</p>
 
             
                 <section class="page" id="slms">
-    <h1>
+    
+    <h3>
         <a href="#slms">SLMS</a>
-    </h1>
+    </h3>
+    
     <div class="content">
-        
-
-<p><img src="images/SLMS.png" alt="SLMS" /></p>
-
+        <p><img src="images/SLMS.png" alt="SLMS"></p>
 <ul>
 <li>Frequency range 10Hz - 25KHz</li>
-<li>Level -80dB &ndash; +3dB</li>
+<li>Level -80dB – +3dB</li>
 </ul>
-
 <p>Audio selective level measuring set. Measures relative level at
 selected frequency with a frequency spectrum display. Absolute level
 is not possible because of all the variables in the sound system.</p>
-
 <h3 id="using">Using</h3>
-
 <p>The selective level measuring set displays selected frequency and
 relative level with a frequency spectrum display. Use mouse to turn
 knob, or left and right keys to adjust selected frequency. Input is
 from the currently selected audio input.</p>
-
 <h3 id="downloads">Downloads</h3>
-
 <p>Windows and Mac versions <a href="https://github.com/billthefarmer/audiotools/releases" title="https://github.com/billthefarmer/audiotools/releases">here</a>.</p>
 
     </div>
 </section>
 
             
+    
 
 
 
