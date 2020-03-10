@@ -172,6 +172,16 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_time")
                 item.image = image
+                let view = NSPopUpButton()
+                view.pullsDown = false
+                for title in timebase.strings
+                {
+                    view.addItem(withTitle: title)
+                }
+                view.target = self
+                view.action = #selector(timebaseChanged)
+                view.selectItem(at: timebase.index)
+                item.view = view
                 return item
 
             case storage:
@@ -362,6 +372,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
             default:
                 break
             }
+        }
+
+        @objc func timebaseChanged(sender: NSPopUpButton)
+        {
+            timebase.index = sender.indexOfSelectedItem
+            scope.scale = timebase.values[timebase.index]
+	    xscale.scale = timebase.values[timebase.index]
+	    xscale.step = 500 * xscale.scale
+            xScaleView.needsDisplay = true
         }
     }
 }
