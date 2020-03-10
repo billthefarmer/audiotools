@@ -74,7 +74,8 @@ class XScaleView: NSView
             {
                 let s =
                   String(format: "%0.1f",
-                         (xscale.start + (Float(x) * xscale.scale)) / 100.0)
+                         (Float(xscale.start) +
+                            (Float(x) * xscale.scale)) / 100.0)
                 offset = s.size(withAttributes: attrs).width / 2
                 s.draw(at: NSMakePoint(x - offset, 4), withAttributes: attrs)
             }
@@ -89,7 +90,8 @@ class XScaleView: NSView
             {
                 let s =
                   String(format: "%0.1f",
-                         (xscale.start + (Float(x) * xscale.scale)) / 100000.0)
+                         (Float(xscale.start) +
+                            (Float(x) * xscale.scale)) / 100000.0)
                 offset = s.size(withAttributes: attrs).width / 2
                 s.draw(at: NSMakePoint(x - offset, 4), withAttributes: attrs)
             }

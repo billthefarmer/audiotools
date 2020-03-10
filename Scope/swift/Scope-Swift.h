@@ -191,6 +191,7 @@ SWIFT_CLASS("_TtC5Scope11AppDelegate")
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 @property (nonatomic, weak) IBOutlet NSWindow * _Null_unspecified window;
 - (void)applicationDidFinishLaunching:(NSNotification * _Nonnull)aNotification;
+- (void)printWithSender:(id _Nonnull)sender;
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication * _Nonnull)sender SWIFT_WARN_UNUSED_RESULT;
 - (void)applicationWillTerminate:(NSNotification * _Nonnull)aNotification;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;

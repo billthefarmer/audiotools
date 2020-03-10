@@ -78,20 +78,20 @@ typedef struct
     int index;
     int start;
     int length;
-    Boolean bright;
-    Boolean single;
-    Boolean trigger;
-    // Boolean polarity;
-    Boolean storage;
-    Boolean clear;
+    bool bright;
+    bool single;
+    bool trigger;
+    // bool polarity;
+    bool storage;
+    bool clear;
 } Scope;
 Scope scope;
 
 typedef struct
 {
     float scale;
-    float start;
-    float step;
+    int start;
+    int step;
 } XScale;
 XScale xscale;
 

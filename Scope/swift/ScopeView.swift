@@ -24,9 +24,9 @@ import Cocoa
 class ScopeView: NSView
 {
     var size = NSZeroSize
-    var bitmap = CGContext()
-    var graticule = CGContext()
-    var image = CGImage()
+    var bitmap: CGContext!
+    var graticule: CGContext!
+    var image: CGImage!
 
     // mouseDown
     override func mouseDown(with event: NSEvent)
@@ -146,7 +146,7 @@ class ScopeView: NSView
             {
                 graticule.move(to: NSMakePoint(NSMinX(rect), y))
                 graticule.addLine(to: NSMakePoint(NSMaxX(rect), y))
-                graticule.move(from: NSMakePoint(NSMinX(rect), -y))
+                graticule.move(to: NSMakePoint(NSMinX(rect), -y))
                 graticule.addLine(to: NSMakePoint(NSMaxX(rect), -y))
             }
         }
