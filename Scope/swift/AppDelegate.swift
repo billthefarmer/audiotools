@@ -77,7 +77,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         // Toolbar
         toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))
-        delegate = ToolbarDelegate()
+        delegate = ToolbarDelegate(self)
         toolbar.delegate = delegate
         toolbar.displayMode = .iconOnly
         window.toolbar = toolbar
@@ -156,6 +156,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
         let start = NSToolbarItem.Identifier("start")
         let end = NSToolbarItem.Identifier("end")
         let reset = NSToolbarItem.Identifier("reset")
+
+        var app: AppDelegate!
+
+        // init
+        init(_ app: AppDelegate)
+        {
+            self.app = app
+        }
 
         // toolbar
         func toolbar(_ toolbar: NSToolbar, 
