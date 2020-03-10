@@ -414,8 +414,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.isEnabled = true
             }
 
-            let location = window.mouseLocationOutsideOfEventStream
-            menu.popUp(positioning: nil, at: location, in: window.contentView!)
+            let location = app.window.mouseLocationOutsideOfEventStream
+            menu.popUp(positioning: nil, at: location,
+                       in: app.window.contentView!)
         }
 
         // timebaseChanged
