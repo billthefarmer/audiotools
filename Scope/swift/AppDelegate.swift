@@ -164,7 +164,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                      willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem?
         {
             let item = NSToolbarItem(itemIdentifier: itemIdentifier)
-            NSLog("Toolbar item")
+            // NSLog("Toolbar item")
             switch itemIdentifier
             {
             case bright:
@@ -399,11 +399,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
             let menu = NSMenu(title: "Timebase")
             for string in timebase.strings
             {
-                menu.addItem(withTitle: string,
-                             action: #selector(timebaseChanged),
-                             keyEquivalent: "")
+                let item = menu.addItem(withTitle: string,
+                                        action: #selector(timebaseChanged),
+                                        keyEquivalent: "")
+                item.target = self
+                item.isEnabled = true
             }
 
+            NSLog("Sender", sender.view)
             menu.popUp(positioning: nil, at: NSZeroPoint, in: sender.view)
         }
 
