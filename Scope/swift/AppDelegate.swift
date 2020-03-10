@@ -20,6 +20,35 @@
 
 import Cocoa
 
+struct Timebase Equatable, Hashable
+{
+    var index: Int
+    let values: [Float]
+    let strings: [String]
+    let counts: [Int]
+
+    init(_ index: Int,_ values: [Float],_ strings: [String],_ counts: [Int])
+    {
+        self.index = index
+        self.values = values
+        self.strings = strings
+        self.counts = counts
+    }
+}
+
+let timebase =
+  Timebase(3,
+           [0.1, 0.2, 0.5, 1.0,
+            2.0, 5.0, 10.0, 20.0,
+            50.0, 100.0, 200.0, 500.0],
+           ["0.1 ms", "0.2 ms", "0.5 ms",
+            "1.0 ms", "2.0 ms", "5.0 ms",
+            "10 ms", "20 ms", "50 ms",
+            "0.1 sec", "0.2 sec", "0.5 sec"],
+           [128, 256, 512, 1024,
+            2048, 4096, 8192, 16384,
+            32768, 65536, 131072, 262144])
+  
 // AppDelegate
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
@@ -119,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         let bright = NSToolbarItem.Identifier("bright")
         let single = NSToolbarItem.Identifier("single")
         let trigger = NSToolbarItem.Identifier("trigger")
-        let timebase = NSToolbarItem.Identifier("timebase")
+        let time = NSToolbarItem.Identifier("timebase")
         let storage = NSToolbarItem.Identifier("storage")
         let clear = NSToolbarItem.Identifier("clear")
         let left = NSToolbarItem.Identifier("left")
@@ -165,7 +194,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.image = image
                 return item
 
-            case timebase:
+            case time:
                 item.label = "Timebase"
                 item.toolTip = "Timebase"
                 item.target = self
@@ -259,7 +288,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
           [NSToolbarItem.Identifier]
         {
             NSLog("Allowed")
-            return [bright, single, trigger, timebase,
+            return [bright, single, trigger, time,
                     storage, clear, left, right, start,
                     end, reset]
         }
@@ -269,7 +298,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
           [NSToolbarItem.Identifier]
         {
             NSLog("Default")
-            return [bright, single, trigger, timebase,
+            return [bright, single, trigger, time,
                     storage, clear, left, right, start,
                     end, reset]
         }
@@ -374,7 +403,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             }
         }
 
-        @objc func timebaseChanged(sender: NSPopUpButton)
+        // iterate
+        @objc func iterate(sender: NSPopUpButton)
         {
             timebase.index = sender.indexOfSelectedItem
             scope.scale = timebase.values[timebase.index]
