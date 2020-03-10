@@ -198,19 +198,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.label = "Timebase"
                 item.toolTip = "Timebase"
                 item.target = self
-                item.action = #selector(toolbarClicked)
+                item.action = #selector(timebaseClicked)
                 let image = getImage("ic_action_time")
                 item.image = image
-                let view = NSPopUpButton()
-                view.pullsDown = false
-                for title in timebase.strings
-                {
-                    view.addItem(withTitle: title)
-                }
-                view.target = self
-                view.action = #selector(timebaseChanged)
-                view.selectItem(at: timebase.index)
-                item.view = view
                 return item
 
             case storage:
@@ -403,10 +393,24 @@ class AppDelegate: NSObject, NSApplicationDelegate
             }
         }
 
-        // iterate
-        @objc func timebaseChanged(sender: NSPopUpButton)
+        // timebaseClicked
+        @objc func timebaseClicked(sender: NSToolbarItem)
         {
-            timebase.index = Int(sender.indexOfSelectedItem)
+            let menu = NSMenu("Timebase")
+            for string in timebase.strings
+            {
+                menu.addItem(withTitle: string,
+                             action: #selector(timebaseChanged),
+                             keyEquivalent: "")
+            }
+
+            menu.popup(positioning: nil, at: NSZeroPoint, in: sender)
+        }
+
+        // timebaseChanged
+        @objc func timebaseChanged(sender: NSMenuItem)
+        {
+            timebase.index = Int(sender.menu.index(of: sender))
             scope.scale = timebase.values[timebase.index]
 	    xscale.scale = timebase.values[timebase.index]
 	    xscale.step = Int32(500 * xscale.scale)
