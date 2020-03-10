@@ -396,7 +396,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // timebaseClicked
         @objc func timebaseClicked(sender: NSToolbarItem)
         {
-            let menu = NSMenu("Timebase")
+            let menu = NSMenu(title: "Timebase")
             for string in timebase.strings
             {
                 menu.addItem(withTitle: string,
@@ -404,13 +404,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
                              keyEquivalent: "")
             }
 
-            menu.popup(positioning: nil, at: NSZeroPoint, in: sender)
+            menu.popUp(positioning: nil, at: NSZeroPoint, in: sender.view)
         }
 
         // timebaseChanged
         @objc func timebaseChanged(sender: NSMenuItem)
         {
-            timebase.index = Int(sender.menu.index(of: sender))
+            timebase.index = Int(sender.menu!.index(of: sender))
             scope.scale = timebase.values[timebase.index]
 	    xscale.scale = timebase.values[timebase.index]
 	    xscale.step = Int32(500 * xscale.scale)
