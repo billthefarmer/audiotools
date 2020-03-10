@@ -20,7 +20,7 @@
 
 import Cocoa
 
-struct Timebase: Equatable, Hashable
+struct TimebaseData: Equatable, Hashable
 {
     var index: Int
     let values: [Float]
@@ -36,18 +36,18 @@ struct Timebase: Equatable, Hashable
     }
 }
 
-var timebase =
-  Timebase(3,
-           [0.1, 0.2, 0.5, 1.0,
-            2.0, 5.0, 10.0, 20.0,
-            50.0, 100.0, 200.0, 500.0],
-           ["0.1 ms", "0.2 ms", "0.5 ms",
-            "1.0 ms", "2.0 ms", "5.0 ms",
-            "10 ms", "20 ms", "50 ms",
-            "0.1 sec", "0.2 sec", "0.5 sec"],
-           [128, 256, 512, 1024,
-            2048, 4096, 8192, 16384,
-            32768, 65536, 131072, 262144])
+var timebaseData =
+  TimebaseData(3,
+               [0.1, 0.2, 0.5, 1.0,
+                2.0, 5.0, 10.0, 20.0,
+                50.0, 100.0, 200.0, 500.0],
+               ["0.1 ms", "0.2 ms", "0.5 ms",
+                "1.0 ms", "2.0 ms", "5.0 ms",
+                "10 ms", "20 ms", "50 ms",
+                "0.1 sec", "0.2 sec", "0.5 sec"],
+               [128, 256, 512, 1024,
+                2048, 4096, 8192, 16384,
+                32768, 65536, 131072, 262144])
   
 // AppDelegate
 @NSApplicationMain
@@ -405,7 +405,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         @objc func timebaseClicked(sender: NSToolbarItem)
         {
             let menu = NSMenu(title: "Timebase")
-            for string in timebase.strings
+            for string in timebaseData.strings
             {
                 let item = menu.addItem(withTitle: string,
                                         action: #selector(timebaseChanged),
@@ -422,9 +422,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // timebaseChanged
         @objc func timebaseChanged(sender: NSMenuItem)
         {
-            timebase.index = Int(sender.menu!.index(of: sender))
-            scope.scale = timebase.values[timebase.index]
-	    xscale.scale = timebase.values[timebase.index]
+            timebaseData.index = Int(sender.menu!.index(of: sender))
+            timebase.index = timebaseData.index
+            scope.scale = timebaseData.values[timebaseData.index]
+	    xscale.scale = timebaseData.values[timebaseData.index]
 	    xscale.step = Int32(500 * xscale.scale)
             xScaleView.needsDisplay = true
         }
