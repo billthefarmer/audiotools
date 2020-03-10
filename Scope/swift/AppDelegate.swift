@@ -20,7 +20,7 @@
 
 import Cocoa
 
-struct Timebase Equatable, Hashable
+struct Timebase: Equatable, Hashable
 {
     var index: Int
     let values: [Float]
@@ -36,7 +36,7 @@ struct Timebase Equatable, Hashable
     }
 }
 
-let timebase =
+var timebase =
   Timebase(3,
            [0.1, 0.2, 0.5, 1.0,
             2.0, 5.0, 10.0, 20.0,
@@ -404,12 +404,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
         }
 
         // iterate
-        @objc func iterate(sender: NSPopUpButton)
+        @objc func timebaseChanged(sender: NSPopUpButton)
         {
-            timebase.index = sender.indexOfSelectedItem
+            timebase.index = Int(sender.indexOfSelectedItem)
             scope.scale = timebase.values[timebase.index]
 	    xscale.scale = timebase.values[timebase.index]
-	    xscale.step = 500 * xscale.scale
+	    xscale.step = Int32(500 * xscale.scale)
             xScaleView.needsDisplay = true
         }
     }
