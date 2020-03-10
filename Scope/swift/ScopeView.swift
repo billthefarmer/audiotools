@@ -24,9 +24,9 @@ import Cocoa
 class ScopeView: NSView
 {
     var size = NSZeroSize
-    var bitmap = NSGraphicsContext()
-    var graticule = NSGraphicsContext()
-    var image = NSImage()
+    var bitmap = CGContext()
+    var graticule = CGContext()
+    var image = CGImage()
 
     // mouseDown
     override func mouseDown(with event: NSEvent)
@@ -103,61 +103,54 @@ class ScopeView: NSView
             size = rect.size
 
             let colour = CGColorSpace(name: CGColorSpace.sRGB)!
-            bitmap = NSGraphicsContext(
-              cgContext:
-                CGContext(data: nil,
-                          width: Int(width),
-                          height: Int(height),
-                          bitsPerComponent: 8,
-                          bytesPerRow: Int(width * 4),
-                          space: colour,
-                          bitmapInfo:
-                            CGImageAlphaInfo.premultipliedLast.rawValue)!,
-              flipped: false)
-            graticule = NSGraphicsContext(
-              cgContext:
-                CGContext(data: nil,
-                          width: Int(width),
-                          height: Int(height),
-                          bitsPerComponent: 8,
-                          bytesPerRow: Int(width * 4),
-                          space: colour,
-                          bitmapInfo:
-                            CGImageAlphaInfo.premultipliedLast.rawValue)!,
-              flipped: false)
+            bitmap =
+              CGContext(data: nil,
+                        width: Int(width),
+                        height: Int(height),
+                        bitsPerComponent: 8,
+                        bytesPerRow: Int(width * 4),
+                        space: colour,
+                        bitmapInfo:
+                          CGImageAlphaInfo.premultipliedLast.rawValue)!
 
-            NSGraphicsContext.current = graticule
+            graticule =
+              CGContext(data: nil,
+                        width: Int(width),
+                        height: Int(height),
+                        bitsPerComponent: 8,
+                        bytesPerRow: Int(width * 4),
+                        space: colour,
+                        bitmapInfo:
+                          CGImageAlphaInfo.premultipliedLast.rawValue)!
 
-            NSBezierPath.fill(rect)
+            graticule.setFillColor(CGColor.black)
+            graticule.fill(rect)
 
             // Dark green graticule
-            let darkGreen = NSColor(red: 0, green: 0.125, blue: 0, alpha: 1.0)
-            darkGreen.set()
+            let darkGreen = CGColor(red: 0, green: 0.125, blue: 0, alpha: 1.0)
+            graticule.setStrokeColor(darkGreen)
 
             // Move the origin
-            let transform = AffineTransform(translationByX: 0,
-                                            byY: NSMidY(rect))
-            (transform as NSAffineTransform).concat()
-            context.shouldAntialias = false
+            graticule.translateBy(x: 0, y: NSMidY(rect))
+            graticule.setShouldAntialias(false)
 
             // Draw graticule
+            graticule.beginPath()
             for x in stride(from: 0, to: NSWidth(rect), by: 10)
             {
-                NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) / 2),
-                                        to: NSMakePoint(x, -NSMaxY(rect) / 2))
+                graticule.move(to: NSMakePoint(x, NSMaxY(rect) / 2))
+                graticule.addLine(to: NSMakePoint(x, -NSMaxY(rect) / 2))
             }
 
             for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
             {
-                NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), y),
-                                        to: NSMakePoint(NSMaxX(rect), y))
-                NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), -y),
-                                        to: NSMakePoint(NSMaxX(rect), -y))
+                graticule.move(to: NSMakePoint(NSMinX(rect), y))
+                graticule.addLine(to: NSMakePoint(NSMaxX(rect), y))
+                graticule.move(from: NSMakePoint(NSMinX(rect), -y))
+                graticule.addLine(to: NSMakePoint(NSMaxX(rect), -y))
             }
         }
-
-        NSGraphicsContext.current = context
-
+ 
         NSBezierPath.fill(rect)
 
         // Dark green graticule

@@ -47,8 +47,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         menu = NSApp.mainMenu
 
         // Toolbar
-        let toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))
-        delegate = ToolbarDelegate(self)
+        toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))
+        delegate = ToolbarDelegate()
         toolbar.delegate = delegate
         toolbar.displayMode = .iconOnly
         window.toolbar = toolbar
@@ -93,6 +93,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
         alert.runModal()
     }
 
+    // print
+    @objc func print(sender: Any)
+    {
+        window.printWindow(sender)
+    }
+
     // applicationShouldTerminateAfterLastWindowClosed
     func
       applicationShouldTerminateAfterLastWindowClosed(_ sender:
@@ -122,13 +128,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         let end = NSToolbarItem.Identifier("end")
         let reset = NSToolbarItem.Identifier("reset")
 
-        var app: AppDelegate!
-
-        init(_ app: AppDelegate)
-        {
-            self.app = app
-        }
-
         // toolbar
         func toolbar(_ toolbar: NSToolbar, 
                      itemForItemIdentifier itemIdentifier:
@@ -142,6 +141,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case bright:
                 item.label = "Bright line"
                 item.toolTip = "Bright line"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_important")
                 item.image = image
                 return item
@@ -149,6 +150,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case single:
                 item.label = "Single shot"
                 item.toolTip = "Single shot"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_flash_on")
                 item.image = image
                 return item
@@ -156,6 +159,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case trigger:
                 item.label = "Trigger"
                 item.toolTip = "Trigger"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_repeat")
                 item.image = image
                 return item
@@ -163,6 +168,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case timebase:
                 item.label = "Timebase"
                 item.toolTip = "Timebase"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_time")
                 item.image = image
                 return item
@@ -170,6 +177,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case storage:
                 item.label = "Storage"
                 item.toolTip = "Storage"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_storage")
                 item.image = image
                 return item
@@ -177,6 +186,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case clear:
                 item.label = "Clear"
                 item.toolTip = "Clear"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_refresh")
                 item.image = image
                 return item
@@ -184,6 +195,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case left:
                 item.label = "Left"
                 item.toolTip = "Left"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_previous_item")
                 item.image = image
                 return item
@@ -191,6 +204,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case right:
                 item.label = "Right"
                 item.toolTip = "Right"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_next_item")
                 item.image = image
                 return item
@@ -198,6 +213,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case start:
                 item.label = "Start"
                 item.toolTip = "Start"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_back")
                 item.image = image
                 return item
@@ -205,6 +222,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case end:
                 item.label = "End"
                 item.toolTip = "End"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_forward")
                 item.image = image
                 return item
@@ -212,6 +231,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             case reset:
                 item.label = "Reset"
                 item.toolTip = "Reset"
+                item.target = self
+                item.action = #selector(toolbarClicked)
                 let image = getImage("ic_action_undo")
                 item.image = image
                 return item
@@ -247,9 +268,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
         func toolbarSelectableItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
+            NSLog("Selectable")
             return [bright, single, storage]
         }
 
+        // getImage
         func getImage(_ image: String) -> NSImage?
         {
             let main = Bundle.main
@@ -258,6 +281,87 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                subdirectory: "Icons")
             return NSImage(contentsOf: url ??
                              URL(fileReferenceLiteralResourceName: ""))
+        }
+
+        // toolbarClicked
+        @objc func toolbarClicked(sender: NSToolbarItem)
+        {
+            switch sender.itemIdentifier
+            {
+            case bright:
+                scope.bright = !scope.bright
+                break
+            case single:
+                scope.single = !scope.single
+                break
+            case trigger:
+                scope.trigger = true
+                break
+            case storage:
+                scope.storage = !scope.storage
+                break
+            case clear:
+                scope.clear = true
+                break
+
+            case left:
+                scope.start -= xscale.step
+                if (scope.start < 0)
+                {
+                    scope.start = 0
+                }
+                xscale.start = scope.start
+                xScaleView.needsDisplay = true
+                break
+
+            case right:
+                scope.start += xscale.step
+                if (scope.start >= scope.length)
+                {
+                    scope.start -= xscale.step
+                }
+                xscale.start = scope.start
+                xScaleView.needsDisplay = true
+                break
+
+            case start:
+	        scope.start = 0
+	        scope.index = 0
+	        xscale.start = 0
+	        yscale.index = 0
+
+                xScaleView.needsDisplay = true
+                yScaleView.needsDisplay = true
+                break
+
+            case end:
+                while (scope.start < scope.length)
+                {
+		    scope.start += xscale.step
+                }
+	        scope.start -= xscale.step
+	        xscale.start = scope.start
+                xScaleView.needsDisplay = true
+                break
+
+            case reset:
+                scope.index = 0
+	        scope.start = 0
+
+	        scope.bright = false
+	        scope.single = false
+	        scope.storage = false
+
+	        xscale.start = 0
+	        yscale.index = 0
+
+                xScaleView.needsDisplay = true
+                yScaleView.needsDisplay = true
+                break
+
+            default:
+                break
+            }
         }
     }
 }
