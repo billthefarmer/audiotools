@@ -431,19 +431,17 @@ void (^ProcessAudio)() = ^
     }
 
     // Check timebase
-    if (scope.scale != timebase.values[timebase.index])
+    if (scope.scale != timebase.values[xscale.index])
     {
-        scope.scale = timebase.values[timebase.index];
-        xscale.scale = timebase.values[timebase.index];
-        xscale.step = 500 * xscale.scale;
-    
-        // Update display
-        // HIViewSetNeedsDisplay(xscale.view, true);
+	scope.scale = timebase.values[xscale.index];
+	xscale.scale = scope.scale;
+	xscale.step = 500 * xscale.scale;
+
+	// Update display
         xScaleView.needsDisplay = true;
     }
 
     // Update display
-    // HIViewSetNeedsDisplay(scope.view, true);
     scopeView.needsDisplay = true;
 };
 

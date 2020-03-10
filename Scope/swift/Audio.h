@@ -89,10 +89,12 @@ Scope scope;
 typedef struct
 {
     float scale;
+    int index;
     int start;
     int step;
 } XScale;
-XScale xscale;
+XScale xscale =
+    {0, 3};
 
 typedef struct
 {
@@ -111,15 +113,12 @@ Audio audio;
 
 typedef struct
 {
-    int index;
     float values[12];
     char *strings[12];
     int counts[12];
 } Timebase;
-
 Timebase timebase =
-    {3,
-     {0.1, 0.2, 0.5, 1.0,
+    {{0.1, 0.2, 0.5, 1.0,
       2.0, 5.0, 10.0, 20.0,
       50.0, 100.0, 200.0, 500.0},
      {"0.1 ms", "0.2 ms", "0.5 ms",

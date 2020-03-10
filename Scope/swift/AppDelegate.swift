@@ -22,14 +22,12 @@ import Cocoa
 
 struct TimebaseData: Equatable, Hashable
 {
-    var index: Int
     let values: [Float]
     let strings: [String]
     let counts: [Int]
 
-    init(_ index: Int,_ values: [Float],_ strings: [String],_ counts: [Int])
+    init(_ values: [Float],_ strings: [String],_ counts: [Int])
     {
-        self.index = index
         self.values = values
         self.strings = strings
         self.counts = counts
@@ -37,8 +35,7 @@ struct TimebaseData: Equatable, Hashable
 }
 
 var timebaseData =
-  TimebaseData(3,
-               [0.1, 0.2, 0.5, 1.0,
+  TimebaseData([0.1, 0.2, 0.5, 1.0,
                 2.0, 5.0, 10.0, 20.0,
                 50.0, 100.0, 200.0, 500.0],
                ["0.1 ms", "0.2 ms", "0.5 ms",
@@ -81,7 +78,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         toolbar.delegate = delegate
         toolbar.displayMode = .iconOnly
         window.toolbar = toolbar
-        NSLog("Items", toolbar.items);
 
         // Views
         scopeView = ScopeView()
@@ -172,7 +168,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
                      willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem?
         {
             let item = NSToolbarItem(itemIdentifier: itemIdentifier)
-            // NSLog("Toolbar item")
             switch itemIdentifier
             {
             case bright:
@@ -285,7 +280,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            NSLog("Allowed")
             return [bright, single, trigger, time,
                     storage, clear, left, right, start,
                     end, reset]
@@ -295,7 +289,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            NSLog("Default")
             return [bright, single, trigger, time,
                     storage, clear, left, right, start,
                     end, reset]
@@ -305,8 +298,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         func toolbarSelectableItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            NSLog("Selectable")
-            return [bright, single, storage]
+            return []
         }
 
         // getImage
@@ -411,23 +403,31 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                         action: #selector(timebaseChanged),
                                         keyEquivalent: "")
                 item.target = self
-                item.isEnabled = true
+                if (menu.index(of: item) == xscale.index)
+                {
+                    item.state = .on
+                }
+
+                else
+                {
+                    item.state = .off
+                }
             }
 
-            let location = app.window.mouseLocationOutsideOfEventStream
-            menu.popUp(positioning: nil, at: location,
-                       in: app.window.contentView!)
+            let window = app.window
+            let location = window.mouseLocationOutsideOfEventStream
+            let view = window.contentView!
+            menu.popUp(positioning: nil, at: location, in: view)
         }
 
         // timebaseChanged
         @objc func timebaseChanged(sender: NSMenuItem)
         {
-            NSLog("timebaseChanged")
-            timebaseData.index = Int(sender.menu!.index(of: sender))
-            // timebase.index = Int32(timebaseData.index)
-            scope.scale = timebaseData.values[timebaseData.index]
-	    xscale.scale = timebaseData.values[timebaseData.index]
-	    xscale.step = Int32(500 * xscale.scale)
+            let menu = sender.menu!
+            xscale.index = menu.index(of: sender)
+            scope.scale = timebaseData.values[Int(xscale.index)]
+            xscale.scale = scope.scale
+            xscale.step = Int32(500 * xscale.scale)
             xScaleView.needsDisplay = true
         }
     }
