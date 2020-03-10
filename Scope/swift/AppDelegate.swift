@@ -422,8 +422,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // timebaseChanged
         @objc func timebaseChanged(sender: NSMenuItem)
         {
+            NSLog("timebaseChanged")
             timebaseData.index = Int(sender.menu!.index(of: sender))
-            timebase.index = timebaseData.index
+            // timebase.index = Int32(timebaseData.index)
             scope.scale = timebaseData.values[timebaseData.index]
 	    xscale.scale = timebaseData.values[timebaseData.index]
 	    xscale.step = Int32(500 * xscale.scale)
