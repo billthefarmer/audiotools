@@ -26,8 +26,6 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
-#import "Scope-Swift.h"
-
 // Window dimensions
 enum
     {kMinimumWidth  = 640,
@@ -66,9 +64,9 @@ enum
     {kSamples = 262144,
      kFrames = 4096};
 
-ScopeView  *scopeView;
-XScaleView *xScaleView;
-YScaleView *yScaleView;
+NSView  *scopeView;
+NSView *xScaleView;
+NSView *yScaleView;
 
 typedef struct
 {
@@ -89,12 +87,10 @@ Scope scope;
 typedef struct
 {
     float scale;
-    int index;
     int start;
     int step;
 } XScale;
-XScale xscale =
-    {0, 3};
+XScale xscale;
 
 typedef struct
 {
@@ -128,6 +124,8 @@ Timebase timebase =
      {128, 256, 512, 1024,
       2048, 4096, 8192, 16384,
       32768, 65536, 131072, 262144}};
+
+int timebaseIndex;
 
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,

@@ -45,7 +45,7 @@ var timebaseData =
                [128, 256, 512, 1024,
                 2048, 4096, 8192, 16384,
                 32768, 65536, 131072, 262144])
-  
+
 // AppDelegate
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate
@@ -97,6 +97,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeFirstResponder(scopeView)
         window.makeMain()
 
+        // Timebase
+        timebaseIndex = 3;
+
+        // Audio
         SetupAudio()
     }
 
@@ -403,7 +407,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                         action: #selector(timebaseChanged),
                                         keyEquivalent: "")
                 item.target = self
-                if (menu.index(of: item) == xscale.index)
+                if (menu.index(of: item) == timebaseIndex)
                 {
                     item.state = .on
                 }
@@ -414,7 +418,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 }
             }
 
-            let window = app.window
+            let window = app.window!
             let location = window.mouseLocationOutsideOfEventStream
             let view = window.contentView!
             menu.popUp(positioning: nil, at: location, in: view)
@@ -424,8 +428,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         @objc func timebaseChanged(sender: NSMenuItem)
         {
             let menu = sender.menu!
-            xscale.index = menu.index(of: sender)
-            scope.scale = timebaseData.values[Int(xscale.index)]
+            timebaseIndex = Int32(menu.index(of: sender))
+            scope.scale = timebaseData.values[Int(timebaseIndex)]
             xscale.scale = scope.scale
             xscale.step = Int32(500 * xscale.scale)
             xScaleView.needsDisplay = true

@@ -310,7 +310,7 @@ void (^ProcessAudio)() = ^
     if (scope.data == nil)
     {
         scope.data = buffer;
-        scope.length = timebase.counts[timebase.index];
+        scope.length = timebase.counts[timebaseIndex];
     }
 
     // Copy the input data
@@ -386,7 +386,7 @@ void (^ProcessAudio)() = ^
     case FIRST:
 
         // Update count
-        count = timebase.counts[timebase.index];
+        count = timebase.counts[timebaseIndex];
         scope.length = count;
 
         // Copy data
@@ -431,9 +431,9 @@ void (^ProcessAudio)() = ^
     }
 
     // Check timebase
-    if (scope.scale != timebase.values[xscale.index])
+    if (scope.scale != timebase.values[timebaseIndex])
     {
-	scope.scale = timebase.values[xscale.index];
+	scope.scale = timebase.values[timebaseIndex];
 	xscale.scale = scope.scale;
 	xscale.step = 500 * xscale.scale;
 
