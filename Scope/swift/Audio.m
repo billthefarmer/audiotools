@@ -430,17 +430,6 @@ void (^ProcessAudio)() = ^
         break;
     }
 
-    // Check timebase
-    if (scope.scale != timebase.values[timebaseIndex])
-    {
-	scope.scale = timebase.values[timebaseIndex];
-	xscale.scale = scope.scale;
-	xscale.step = 500 * xscale.scale;
-
-	// Update display
-        xScaleView.needsDisplay = true;
-    }
-
     // Update display
     scopeView.needsDisplay = true;
 };

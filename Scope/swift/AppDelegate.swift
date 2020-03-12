@@ -34,7 +34,7 @@ struct TimebaseData: Equatable, Hashable
     }
 }
 
-var timebaseData =
+let timebaseData =
   TimebaseData([0.1, 0.2, 0.5, 1.0,
                 2.0, 5.0, 10.0, 20.0,
                 50.0, 100.0, 200.0, 500.0],
@@ -98,7 +98,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeMain()
 
         // Timebase
-        timebaseIndex = 3;
+        updateTimebase(3)
 
         // Audio
         SetupAudio()
@@ -120,6 +120,16 @@ class AppDelegate: NSObject, NSApplicationDelegate
           " (" + String(status) + ")"
 
         alert.runModal()
+    }
+
+    // updateTimebase
+    func updateTimebase(_ index: Int)
+    {
+        timebaseIndex = Int32(index)
+        scope.scale = timebaseData.values[index]
+        xscale.scale = scope.scale
+        xscale.step = Int32(500 * xscale.scale)
+        xScaleView.needsDisplay = true
     }
 
     // print
@@ -428,11 +438,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         @objc func timebaseChanged(sender: NSMenuItem)
         {
             let menu = sender.menu!
-            timebaseIndex = Int32(menu.index(of: sender))
-            scope.scale = timebaseData.values[Int(timebaseIndex)]
-            xscale.scale = scope.scale
-            xscale.step = Int32(500 * xscale.scale)
-            xScaleView.needsDisplay = true
+            app.updateTimebase(menu.index(of: sender))
         }
     }
 }
