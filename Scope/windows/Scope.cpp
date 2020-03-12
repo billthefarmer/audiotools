@@ -524,6 +524,8 @@ BOOL AddToolbarBitmap(HWND control, LPCTSTR name)
 	{NULL, (UINT_PTR)hbm};
 
     SendMessage(control, TB_ADDBITMAP, 14, (LPARAM)&bitmap);
+
+    return TRUE;
 }
 
 BOOL AddToolbarButtons(HWND control)
@@ -562,6 +564,8 @@ BOOL AddToolbarButtons(HWND control)
     // Add to toolbar
     SendMessage(control, TB_ADDBUTTONS,
 		Length(buttons), (LPARAM)&buttons);
+
+    return TRUE;
 }
 
 // Window resizing
@@ -615,6 +619,8 @@ BOOL DisplayTimebaseMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
     TrackPopupMenu(menu, TPM_LEFTALIGN | TPM_RIGHTBUTTON,
 		   rect.left, rect.bottom,
 		   0, hWnd, NULL);
+
+    return TRUE;
 }
 
 // Scope clicked
@@ -626,6 +632,8 @@ BOOL ScopeClicked(WPARAM wParam, LPARAM lParam)
     MapWindowPoints(HWND_DESKTOP, (HWND)lParam, &point, 1);
 
     scope.index = point.x;
+
+    return TRUE;
 }
 
 // Y scale clicked
@@ -638,6 +646,8 @@ BOOL YScaleClicked(WPARAM wParam, LPARAM lParam)
 
     yscale.index = point.y - yscale.height / 2;;
     InvalidateRgn(yscale.hwnd, NULL, TRUE);
+
+    return TRUE;
 }
 
 // Key pressed
@@ -710,6 +720,8 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
 	return DrawScope(hdc, rect);
 	break;
     }
+
+    return FALSE;
 }
 
 // Draw X scale
@@ -790,6 +802,8 @@ BOOL DrawXScale(HDC hdc, RECT rect)
 	    TextOut(hdc, x, height, s, strlen(s));
 	}
     }
+
+    return TRUE;
 }
 
 // Draw Y scale
@@ -839,6 +853,8 @@ BOOL DrawYScale(HDC hdc, RECT rect)
 	SelectObject(hdc, GetStockObject(DKGRAY_BRUSH));
 	Polygon(hdc, points, Length(points));
     }
+
+    return TRUE;
 }
 
 // Draw scope
