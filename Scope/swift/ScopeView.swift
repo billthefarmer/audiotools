@@ -149,8 +149,39 @@ class ScopeView: NSView
                 graticule.move(to: NSMakePoint(NSMinX(rect), -y))
                 graticule.addLine(to: NSMakePoint(NSMaxX(rect), -y))
             }
+
+            graticule.strokePath()
+            image = graticule.makeImage()
+            scope.clear = true
         }
  
+        // No trace if no data
+        if (scope.data == nil)
+        {
+	    context.cgContext.draw(image, in: rect)
+	    return;
+        }
+
+        // Erase background
+        if (!scope.storage || scope.clear)
+        {
+	    // Draw graticule image
+	    bitmap.draw(image, in: rect)
+
+	    scope.clear = false
+        }
+
+        // Calculate scale etc
+        let xscale = 1.0 / ((audio.sample / 100000.0) * scope.scale)
+        let xstart = Int(scope.start)
+        let xstep = round(1.0 / Float(xscale))
+        var xstop = round(Float(xstart) + (Float(width) / xscale))
+
+        if (xstop > scope.length)
+        {
+	    xstop = scope.length
+        }
+
         NSBezierPath.fill(rect)
 
         // Dark green graticule
