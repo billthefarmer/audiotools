@@ -51,6 +51,7 @@ let timebaseData =
 class AppDelegate: NSObject, NSApplicationDelegate
 {
     let kToolbar = "toolbar"
+    let kDefaultTimebase = 3
 
     @IBOutlet weak var window: NSWindow!
 
@@ -98,7 +99,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeMain()
 
         // Timebase
-        updateTimebase(3)
+        updateTimebase(kDefaultTimebase)
 
         // Audio
         let status = SetupAudio()
@@ -194,7 +195,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Bright line"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_important")
+                let image = getImage("ic_dehaze_black_36dp")
                 item.image = image
                 return item
 
@@ -203,7 +204,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Single shot"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_flash_on")
+                let image = getImage("ic_looks_one_black_36dp")
                 item.image = image
                 return item
 
@@ -212,7 +213,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Trigger"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_repeat")
+                let image = getImage("ic_repeat_one_black_36dp")
                 item.image = image
                 return item
 
@@ -221,7 +222,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Timebase"
                 item.target = self
                 item.action = #selector(timebaseClicked)
-                let image = getImage("ic_action_time")
+                let image = getImage("ic_access_time_black_36dp")
                 item.image = image
                 return item
 
@@ -230,7 +231,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Storage"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_storage")
+                let image = getImage("ic_storage_black_36dp")
                 item.image = image
                 return item
 
@@ -239,7 +240,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Clear"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_refresh")
+                let image = getImage("ic_clear_black_36dp")
                 item.image = image
                 return item
 
@@ -248,7 +249,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Left"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_previous_item")
+                let image = getImage("ic_keyboard_arrow_left_black_36dp")
                 item.image = image
                 return item
 
@@ -257,7 +258,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Right"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_next_item")
+                let image = getImage("ic_keyboard_arrow_right_black_36dp")
                 item.image = image
                 return item
 
@@ -266,7 +267,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Start"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_back")
+                let image = getImage("ic_first_page_black_36dp")
                 item.image = image
                 return item
 
@@ -275,7 +276,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "End"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_forward")
+                let image = getImage("ic_last_page_black_36dp")
                 item.image = image
                 return item
 
@@ -284,7 +285,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Reset"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_action_undo")
+                let image = getImage("ic_undo_black_36dp")
                 item.image = image
                 return item
 
