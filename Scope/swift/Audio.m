@@ -269,6 +269,15 @@ OSStatus SetupAudio()
     return status;
 }
 
+// ShutdownAudio
+OSStatus ShutdownAudio()
+{
+    AudioOutputUnitStop(audio.output);
+    AudioUnitUninitialize(audio.output);
+
+    return noErr;
+}
+
 // Input proc
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,

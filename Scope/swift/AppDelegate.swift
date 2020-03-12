@@ -101,7 +101,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
         updateTimebase(3)
 
         // Audio
-        SetupAudio()
+        let status = SetupAudio()
+        if (status != noErr)
+        {
+            displayAlert("Tuner", "Audio initialisation failed", status)
+        }
     }
 
     // DisplayAlert
@@ -150,6 +154,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
+        ShutdownAudio()
     }
 
     // ToolbarDelegate
@@ -158,7 +163,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         let bright = NSToolbarItem.Identifier("bright")
         let single = NSToolbarItem.Identifier("single")
         let trigger = NSToolbarItem.Identifier("trigger")
-        let time = NSToolbarItem.Identifier("timebase")
+        let timebase = NSToolbarItem.Identifier("timebase")
         let storage = NSToolbarItem.Identifier("storage")
         let clear = NSToolbarItem.Identifier("clear")
         let left = NSToolbarItem.Identifier("left")
@@ -211,7 +216,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.image = image
                 return item
 
-            case time:
+            case timebase:
                 item.label = "Timebase"
                 item.toolTip = "Timebase"
                 item.target = self
@@ -294,7 +299,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            return [bright, single, trigger, time,
+            return [bright, single, trigger, timebase,
                     storage, clear, left, right, start,
                     end, reset]
         }
@@ -303,7 +308,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            return [bright, single, trigger, time,
+            return [bright, single, trigger, timebase,
                     storage, clear, left, right, start,
                     end, reset]
         }
