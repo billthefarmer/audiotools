@@ -131,6 +131,7 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
                    UInt32 inNumberFrames, AudioBufferList *ioData);
 OSStatus SetupAudio();
+OSStatus ShutdownAudio();
 void (^ProcessAudio)();
 char *AudioUnitErrString(OSStatus);
 
