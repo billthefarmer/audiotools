@@ -173,9 +173,9 @@ class ScopeView: NSView
 
         // Calculate scale etc
         let xscale = 1.0 / ((audio.sample / 100000.0) * scope.scale)
-        let xstart = Int(scope.start)
-        let xstep = round(1.0 / Float(xscale))
-        var xstop = round(Float(xstart) + (Float(width) / xscale))
+        let xstart = scope.start
+        let xstep = Int32(1.0 / Float(xscale))
+        var xstop = Int32(Float(xstart) + (Float(width) / xscale))
 
         if (xstop > scope.length)
         {
