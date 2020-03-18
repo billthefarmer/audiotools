@@ -302,16 +302,16 @@ class AppDelegate: NSObject, NSApplicationDelegate
         {
             return [bright, single, trigger, timebase,
                     storage, clear, left, right, start,
-                    end, reset]
+                    end, reset, .space]
         }
 
         // toolbarDefaultItemIdentifiers
         func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) ->
           [NSToolbarItem.Identifier]
         {
-            return [bright, single, trigger, timebase,
-                    storage, clear, left, right, start,
-                    end, reset]
+            return [bright, .spece, single, trigger, .space, timebase,
+                    .space, storage, clear, .space, left, right, start,
+                    end, .space, reset]
         }
 
         // toolbarSelectableItemIdentifiers
