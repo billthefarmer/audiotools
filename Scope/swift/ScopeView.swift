@@ -269,51 +269,5 @@ class ScopeView: NSView
         bitmap.translateBy(x: 0, y: -NSMidY(rect))
         let content = bitmap.makeImage()!
         context.cgContext.draw(content, in: rect)
-        /*
-        NSBezierPath.fill(rect)
-
-        // Dark green graticule
-        let darkGreen = NSColor(red: 0, green: 0.125, blue: 0, alpha: 1.0)
-        darkGreen.set()
-
-        // Move the origin
-        let transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
-        (transform as NSAffineTransform).concat()
-        context.shouldAntialias = false
-
-        // Draw graticule
-        for x in stride(from: 0, to: NSWidth(rect), by: 10)
-        {
-            NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) / 2),
-                                    to: NSMakePoint(x, -NSMaxY(rect) / 2))
-        }
-
-        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
-        {
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), y),
-                                    to: NSMakePoint(NSMaxX(rect), y))
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), -y),
-                                    to: NSMakePoint(NSMaxX(rect), -y))
-        }
-
-        NSColor.green.set()
-        NSBezierPath.strokeLine(from: NSMakePoint(0, 0),
-                                to: NSMakePoint(NSWidth(rect), 0))
-
-        NSColor.yellow.set()
-        if scope.index > 0
-        {
-            NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(scope.index),
-                                                      -NSMaxY(rect) / 2),
-                                    to: NSMakePoint(CGFloat(scope.index),
-                                                    NSMaxY(rect) / 2))
-        }
-
-        if (scope.data == nil)
-        {
-            return
-        }
-         */
     }
-
 }

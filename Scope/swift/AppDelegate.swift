@@ -341,15 +341,21 @@ class AppDelegate: NSObject, NSApplicationDelegate
             {
             case bright:
                 scope.bright = !scope.bright
+                sender.image.backgroundColor = scope.bright ?
+                  NSColor.systemBlue : NSColor.clear
                 break
             case single:
                 scope.single = !scope.single
+                sender.image.backgroundColor = scope.single ?
+                  NSColor.systemBlue : NSColor.clear
                 break
             case trigger:
                 scope.trigger = true
                 break
             case storage:
                 scope.storage = !scope.storage
+                sender.image.backgroundColor = scope.storage ?
+                  NSColor.systemBlue : NSColor.clear
                 break
             case clear:
                 scope.clear = true
