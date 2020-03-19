@@ -223,7 +223,7 @@ class ScopeView: NSView
 
         else
         {
-            for i in 0 ..< xstop - xstart
+            for i in 0 ... xstop - xstart
             {
                 if (scope.max < abs(scope.data[xstart + i]))
                 {
@@ -242,7 +242,7 @@ class ScopeView: NSView
 	// Draw points at maximum resolution
 	if (timebase.index == 0)
 	{
-	    for i in 0 ..<  xstop - xstart
+	    for i in 0 ...  xstop - xstart
 	    {
                 let x = CGFloat(Float(i) * xscale)
                 let y = -CGFloat(scope.data[xstart + i] / scope.yscale)
