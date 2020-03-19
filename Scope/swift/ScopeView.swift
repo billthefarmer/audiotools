@@ -28,6 +28,8 @@ class ScopeView: NSView
     var graticule: CGContext!
     var image: CGImage!
 
+    let kMaxMax = 0.125
+
     // mouseDown
     override func mouseDown(with event: NSEvent)
     {
@@ -138,16 +140,16 @@ class ScopeView: NSView
             graticule.beginPath()
             for x in stride(from: 0, to: NSWidth(rect), by: 10)
             {
-                graticule.move(to: NSMakePoint(x, NSMaxY(rect) / 2))
-                graticule.addLine(to: NSMakePoint(x, -NSMaxY(rect) / 2))
+                graticule.move(to: CGPointMake(x, NSMaxY(rect) / 2))
+                graticule.addLine(to: CGPointMake(x, -NSMaxY(rect) / 2))
             }
 
             for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
             {
-                graticule.move(to: NSMakePoint(NSMinX(rect), y))
-                graticule.addLine(to: NSMakePoint(NSMaxX(rect), y))
-                graticule.move(to: NSMakePoint(NSMinX(rect), -y))
-                graticule.addLine(to: NSMakePoint(NSMaxX(rect), -y))
+                graticule.move(to: CGPointMake(NSMinX(rect), y))
+                graticule.addLine(to: CGPointMake(NSMaxX(rect), y))
+                graticule.move(to: CGPointMake(NSMinX(rect), -y))
+                graticule.addLine(to: CGPointMake(NSMaxX(rect), -y))
             }
 
             graticule.strokePath()
@@ -182,6 +184,90 @@ class ScopeView: NSView
 	    xstop = scope.length
         }
 
+        // Calculate scale
+        if (scope.max < kMaxMax)
+        {
+	    scope.max = kMaxMax
+        }
+
+        scope.yscale = scope.max / (height / 2)
+        scope.max = 0
+
+        // Move the origin
+        bitmap.translateBy(x: 0, y: NSMidY(rect))
+
+        // Green trace
+        bitmap.setStrokeColor(CGColor.green)
+
+        // Draw the trace
+        bitmap.beginPath()
+        bitmap.move(to: .zero)
+
+        if (xscale < 1.0)
+        {
+            for i in stride(from: 0, to: xstop, by: xstep)
+            {
+                if (scope.max < abs(scope.data[xstart + i]))
+                {
+                    scope.max = abs(scope.data[xstart + i])
+                }
+
+                let x = i * xscale
+                let y = -scope.data[xstart + i] / scope.yscale
+
+                bitmap.addLine(to: CGPointMake(x, y))
+            }
+
+            bitmap.strokePath()
+        }
+
+        else
+        {
+            for i in 0 ..< xstop - xstart
+            {
+                if (scope.max < abs(scope.data[xstart + i]))
+                {
+                    scope.max = abs(scope.data[xstart + i])
+                }
+
+                let x = i * xscale
+                let y = -scope.data[xstart + i] / scope.yscale
+
+                bitmap.addLine(to: CGPointMake(x, y))
+            }
+
+            bitmap.strokePath()
+        }
+
+	// Draw points at maximum resolution
+	if (timebase.index == 0)
+	{
+	    for i in 0 ..<  xstop - xstart
+	    {
+                let x = i * xscale
+                let y = -scope.data[xstart + i] / scope.yscale
+
+		bitmap.stroke(CGRectMake(x - 2, y - 2, 4, 4))
+	    }
+	}
+
+        if (scope.index > 0)
+        {
+
+            // Yellow trace
+            bitmap.setStrokeColor(CGColor.yellow)
+
+            // Draw cursor
+            bitmap.strokeLineSegments(between:
+                                        [CGPointMake(scope.index, -height / 2),
+                                         CGPointMake(scope.index, height / 2)])
+        }                                     
+
+        // Move the origin
+        bitmap.translateBy(x: 0, y: -NSMidY(rect))
+        let content = bitmap.makeImage()
+        context.cgContext.draw(context, in: rect)
+        /*
         NSBezierPath.fill(rect)
 
         // Dark green graticule
@@ -196,28 +282,28 @@ class ScopeView: NSView
         // Draw graticule
         for x in stride(from: 0, to: NSWidth(rect), by: 10)
         {
-            NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) / 2),
-                                    to: NSMakePoint(x, -NSMaxY(rect) / 2))
+            NSBezierPath.strokeLine(from: CGPointMake(x, NSMaxY(rect) / 2),
+                                    to: CGPointMake(x, -NSMaxY(rect) / 2))
         }
 
         for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
         {
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), y),
-                                    to: NSMakePoint(NSMaxX(rect), y))
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMinX(rect), -y),
-                                    to: NSMakePoint(NSMaxX(rect), -y))
+            NSBezierPath.strokeLine(from: CGPointMake(NSMinX(rect), y),
+                                    to: CGPointMake(NSMaxX(rect), y))
+            NSBezierPath.strokeLine(from: CGPointMake(NSMinX(rect), -y),
+                                    to: CGPointMake(NSMaxX(rect), -y))
         }
 
         NSColor.green.set()
-        NSBezierPath.strokeLine(from: NSMakePoint(0, 0),
-                                to: NSMakePoint(NSWidth(rect), 0))
+        NSBezierPath.strokeLine(from: CGPointMake(0, 0),
+                                to: CGPointMake(NSWidth(rect), 0))
 
         NSColor.yellow.set()
         if scope.index > 0
         {
-            NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(scope.index),
+            NSBezierPath.strokeLine(from: CGPointMake(CGFloat(scope.index),
                                                       -NSMaxY(rect) / 2),
-                                    to: NSMakePoint(CGFloat(scope.index),
+                                    to: CGPointMake(CGFloat(scope.index),
                                                     NSMaxY(rect) / 2))
         }
 
@@ -225,6 +311,7 @@ class ScopeView: NSView
         {
             return
         }
+         */
     }
 
 }

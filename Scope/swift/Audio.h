@@ -73,6 +73,7 @@ typedef struct
     float *data;
     float scale;
     float yscale;
+    float max;
     int index;
     int start;
     int length;

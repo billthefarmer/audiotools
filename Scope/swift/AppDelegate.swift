@@ -25,6 +25,7 @@ struct Timebase: Equatable, Hashable
     let values: [Float]
     let strings: [String]
     let counts: [Int]
+    var index: Int!
 
     init(_ values: [Float],_ strings: [String],_ counts: [Int])
     {
@@ -130,6 +131,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // updateTimebase
     func updateTimebase(_ index: Int)
     {
+        timebase.index = index
         scope.count = Int32(timebase.counts[index])
         scope.scale = timebase.values[index]
         xscale.scale = scope.scale
