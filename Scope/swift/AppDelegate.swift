@@ -341,21 +341,24 @@ class AppDelegate: NSObject, NSApplicationDelegate
             {
             case bright:
                 scope.bright = !scope.bright
-                sender.image.backgroundColor = scope.bright ?
-                  NSColor.systemBlue : NSColor.clear
+                let image = getImage(scope.bright ? "ic_dehaze_blue_36dp" :
+                                       "ic_dehaze_black_36dp")
+                sender.image = image
                 break
             case single:
                 scope.single = !scope.single
-                sender.image.backgroundColor = scope.single ?
-                  NSColor.systemBlue : NSColor.clear
+                let image = getImage(scope.single ? "ic_looks_one_blue_36dp" :
+                                       "ic_looks_one_black_36dp")
+                sender.image = image
                 break
             case trigger:
                 scope.trigger = true
                 break
             case storage:
                 scope.storage = !scope.storage
-                sender.image.backgroundColor = scope.storage ?
-                  NSColor.systemBlue : NSColor.clear
+                let image = getImage(scope.storage ? "ic_storage_blue_36dp" :
+                                       "ic_storage_black_36dp")
+                sender.image = image
                 break
             case clear:
                 scope.clear = true
