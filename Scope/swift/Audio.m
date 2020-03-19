@@ -319,7 +319,7 @@ void (^ProcessAudio)() = ^
     if (scope.data == nil)
     {
         scope.data = buffer;
-        scope.length = timebase.counts[timebaseIndex];
+        scope.length = scope.count;
     }
 
     // Copy the input data
@@ -395,7 +395,7 @@ void (^ProcessAudio)() = ^
     case FIRST:
 
         // Update count
-        count = timebase.counts[timebaseIndex];
+        count = scope.count;
         scope.length = count;
 
         // Copy data
@@ -412,7 +412,7 @@ void (^ProcessAudio)() = ^
             state++;
         break;
 
-        // NEXT: Subsequent chunks of dat
+        // NEXT: Subsequent chunks of data
     case NEXT:
 
         // Copy data

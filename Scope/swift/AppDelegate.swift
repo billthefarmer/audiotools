@@ -20,7 +20,7 @@
 
 import Cocoa
 
-struct TimebaseData: Equatable, Hashable
+struct Timebase: Equatable, Hashable
 {
     let values: [Float]
     let strings: [String]
@@ -34,8 +34,8 @@ struct TimebaseData: Equatable, Hashable
     }
 }
 
-let timebaseData =
-  TimebaseData([0.1, 0.2, 0.5, 1.0,
+let timebase =
+  Timebase([0.1, 0.2, 0.5, 1.0,
                 2.0, 5.0, 10.0, 20.0,
                 50.0, 100.0, 200.0, 500.0],
                ["0.1 ms", "0.2 ms", "0.5 ms",
@@ -130,8 +130,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // updateTimebase
     func updateTimebase(_ index: Int)
     {
-        timebaseIndex = Int32(index)
-        scope.scale = timebaseData.values[index]
+        scope.count = Int32(timebase.counts[index])
+        scope.scale = timebase.values[index]
         xscale.scale = scope.scale
         xscale.step = Int32(500 * xscale.scale)
         xScaleView.needsDisplay = true
@@ -417,7 +417,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         @objc func timebaseClicked(sender: NSToolbarItem)
         {
             let menu = NSMenu(title: "Timebase")
-            for string in timebaseData.strings
+            for string in timebase.strings
             {
                 let item = menu.addItem(withTitle: string,
                                         action: #selector(timebaseChanged),
