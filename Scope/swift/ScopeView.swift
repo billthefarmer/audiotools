@@ -266,7 +266,8 @@ class ScopeView: NSView
             let context = NSGraphicsContext(cgContext: bitmap, flipped: false)
             NSGraphicsContext.current = context;
             let font = NSFont.boldSystemFont(ofSize: kTextSize)
-            let attrs: [NSAttributedString.Key: Any] = [.font: font]
+            let attrs: [NSAttributedString.Key: Any] =
+              [.font: font, .foregroundColor: NSColor.yellow]
             let i = Int(Float(scope.index) / xscale)
             let s = String(format: "%0.3f", scope.data[xstart + i])
             let size = s.size(withAttributes: attrs)
