@@ -178,7 +178,7 @@ class ScopeView: NSView
         let xscale = 1.0 / ((audio.sample / 100000.0) * scope.scale)
         let xstart = Int(scope.start)
         let xstep = Int(1.0 / Float(xscale))
-        var xstop = Int(Float(xstart) + (Float(width) / xscale))
+        var xstop = Int(round(Float(xstart) + (Float(width) / xscale)))
 
         if (xstop > Int(scope.length))
         {
@@ -243,7 +243,7 @@ class ScopeView: NSView
 	// Draw points at maximum resolution
 	if (timebase.index == 0)
 	{
-	    for i in 0 ...  xstop - xstart
+	    for i in 0 ... xstop - xstart
 	    {
                 let x = CGFloat(Float(i) * xscale)
                 let y = CGFloat(scope.data[xstart + i] / scope.yscale)
@@ -254,17 +254,16 @@ class ScopeView: NSView
 
         if (scope.index > 0 && !scope.storage)
         {
-            // Yellow trace
-            bitmap.setStrokeColor(CGColor(red: 1, green: 1, blue: 0, alpha: 1))
-            // Draw cursor
-            bitmap.strokeLineSegments(between:
-                                        [NSMakePoint(CGFloat(scope.index),
-                                                     -height / 2),
-                                         NSMakePoint(CGFloat(scope.index),
-                                                     height / 2)])
-
             let context = NSGraphicsContext(cgContext: bitmap, flipped: false)
             NSGraphicsContext.current = context;
+            // Yellow trace
+            NSColor.yellow.set()
+            // Draw cursor
+            NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(scope.index),
+                                                     -height / 2),
+                                    to: NSMakePoint(CGFloat(scope.index),
+                                                     height / 2))
+            // Yellow text
             let font = NSFont.boldSystemFont(ofSize: kTextSize)
             let attrs: [NSAttributedString.Key: Any] =
               [.font: font, .foregroundColor: NSColor.yellow]
