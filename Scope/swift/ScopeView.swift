@@ -269,19 +269,21 @@ class ScopeView: NSView
             let attrs: [NSAttributedString.Key: Any] = [.font: font]
             let i = Int(Float(scope.index) / xscale)
             let s = String(format: "%0.3f", scope.data[xstart + i])
-            let dx = s.size(withAttributes: attrs)
+            let size = s.size(withAttributes: attrs)
             let y = -CGFloat(scope.data[xstart + i] / scope.yscale)
-            s.draw(at: NSMakePoint(scope.index - dx / 2, y),
+            s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2, y),
                    withAttributes: attrs)
             if (scope.scale < 100)
             {
                 let s = String(format: (scope.scale < 1) ? "%0.3f": 
 		    (scope.scale < 10.0) ? "%0.2f": "%0.1f",
-		    ((scope.start * xscale) +
-		     (scope.index * scope.scale)) / 100.0)
-                s.draw(at: NSMakePoint(scope.index - dx / 2, height / 2),
+		               ((Float(scope.start) * xscale) +
+		                  (Float(scope.index) * scope.scale)) / 100.0)
+                s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2,
+                                       height / 2),
                        withAttributes: attrs)
             }
+        }
 
         // Move the origin
         bitmap.translateBy(x: 0, y: -NSMidY(rect))

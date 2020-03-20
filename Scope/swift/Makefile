@@ -55,7 +55,7 @@ SFLAGS = -g -target x86_64-apple-macosx10.10 \
 CFLAGS = -g -target x86_64-apple-macosx10.10
 
 
-$(APPBUNDLE): $(APPNAME) $(APPNAME).icns
+$(APPBUNDLE): $(APPNAME) $(APPNAME).icns Icons
 	$(RM) -rf $(APPBUNDLE)
 	$(MD) $(APPBUNDLE)
 	$(MD) $(APPBUNDLECONTENTS)

@@ -419,8 +419,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 yScaleView.needsDisplay = true
 
                 // Reset toolbar icons
-                let toolbar = sender.toolbar
-                for (item in toolbar.items)
+                let toolbar = sender.toolbar!
+                for item in toolbar.items
                 {
                     switch item.itemIdentifier
                     {
