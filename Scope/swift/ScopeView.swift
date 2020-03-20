@@ -273,6 +273,7 @@ class ScopeView: NSView
             let y = CGFloat(scope.data[xstart + i] / scope.yscale)
             s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2, y),
                    withAttributes: attrs)
+
             if (scope.scale < 100)
             {
                 let s = String(format: (scope.scale < 1) ? "%0.3f": 
@@ -284,6 +285,17 @@ class ScopeView: NSView
                                        -height / 2),
                        withAttributes: attrs)
             }
+
+            else
+            {
+                let s = String(format: "%0.3f",
+		               ((Float(scope.start) * xscale) +
+		                  (Float(scope.index) * scope.scale)) /
+                                 100000.0)
+                let size = s.size(withAttributes: attrs)
+                s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2,
+                                       -height / 2),
+                       withAttributes: attrs)
         }
 
         // Move the origin
