@@ -342,7 +342,7 @@ void (^ProcessAudio)() = ^
                 break;
 
             // Calculate sync level
-            float level = -yscale.index * scope.yscale;
+            float level = yscale.index * scope.yscale;
 
             // Initialise sync
             float dx = 0.0;

@@ -214,7 +214,7 @@ class ScopeView: NSView
                 }
 
                 let x = CGFloat(Float(i) * xscale)
-                let y = -CGFloat(scope.data![xstart + i] / scope.yscale)
+                let y = CGFloat(scope.data![xstart + i] / scope.yscale)
 
                 bitmap.addLine(to: NSMakePoint(x, y))
             }
@@ -232,7 +232,7 @@ class ScopeView: NSView
                 }
 
                 let x = CGFloat(Float(i) * xscale)
-                let y = -CGFloat(scope.data[xstart + i] / scope.yscale)
+                let y = CGFloat(scope.data[xstart + i] / scope.yscale)
 
                 bitmap.addLine(to: NSMakePoint(x, y))
             }
@@ -246,7 +246,7 @@ class ScopeView: NSView
 	    for i in 0 ...  xstop - xstart
 	    {
                 let x = CGFloat(Float(i) * xscale)
-                let y = -CGFloat(scope.data[xstart + i] / scope.yscale)
+                let y = CGFloat(scope.data[xstart + i] / scope.yscale)
 
 		bitmap.stroke(NSMakeRect(x - 2, y - 2, 4, 4))
 	    }
@@ -271,7 +271,7 @@ class ScopeView: NSView
             let i = Int(Float(scope.index) / xscale)
             let s = String(format: "%0.3f", scope.data[xstart + i])
             let size = s.size(withAttributes: attrs)
-            let y = -CGFloat(scope.data[xstart + i] / scope.yscale)
+            let y = CGFloat(scope.data[xstart + i] / scope.yscale)
             s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2, y),
                    withAttributes: attrs)
             if (scope.scale < 100)
@@ -280,8 +280,9 @@ class ScopeView: NSView
 		    (scope.scale < 10.0) ? "%0.2f": "%0.1f",
 		               ((Float(scope.start) * xscale) +
 		                  (Float(scope.index) * scope.scale)) / 100.0)
+                let size = s.size(withAttributes: attrs)
                 s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2,
-                                       height / 2),
+                                       -height / 2),
                        withAttributes: attrs)
             }
         }
