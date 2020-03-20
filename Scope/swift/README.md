@@ -1,5 +1,7 @@
 # Audio Oscilloscope
 
+![Scope](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/Scope-swift.png)
+
  * Timebase 0.1ms - 0.5sec
  * Resolution 0.022ms @ 44100 samples/sec
  * Single shot
