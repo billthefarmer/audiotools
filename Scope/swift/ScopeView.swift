@@ -28,7 +28,8 @@ class ScopeView: NSView
     var graticule: CGContext!
     var image: CGImage!
 
-    let kMaxMax: Float = 0.125
+    let kMinMax: Float = 0.125
+    let kTextSize: CGFloat = 8
 
     // mouseDown
     override func mouseDown(with event: NSEvent)
@@ -185,9 +186,9 @@ class ScopeView: NSView
         }
 
         // Calculate scale
-        if (scope.max < kMaxMax)
+        if (scope.max < kMinMax)
         {
-	    scope.max = kMaxMax
+	    scope.max = kMinMax
         }
 
         scope.yscale = scope.max / Float(height / 2)
@@ -251,19 +252,36 @@ class ScopeView: NSView
 	    }
 	}
 
-        if (scope.index > 0)
+        if (scope.index > 0 && !scope.storage)
         {
-
             // Yellow trace
             bitmap.setStrokeColor(CGColor(red: 1, green: 1, blue: 0, alpha: 1))
-
             // Draw cursor
             bitmap.strokeLineSegments(between:
                                         [NSMakePoint(CGFloat(scope.index),
                                                      -height / 2),
                                          NSMakePoint(CGFloat(scope.index),
                                                      height / 2)])
-        }                                     
+
+            let context = NSGraphicsContext(cgContext: bitmap, flipped: false)
+            NSGraphicsContext.current = context;
+            let font = NSFont.boldSystemFont(ofSize: kTextSize)
+            let attrs: [NSAttributedString.Key: Any] = [.font: font]
+            let i = Int(Float(scope.index) / xscale)
+            let s = String(format: "%0.3f", scope.data[xstart + i])
+            let dx = s.size(withAttributes: attrs)
+            let y = -CGFloat(scope.data[xstart + i] / scope.yscale)
+            s.draw(at: NSMakePoint(scope.index - dx / 2, y),
+                   withAttributes: attrs)
+            if (scope.scale < 100)
+            {
+                let s = String(format: (scope.scale < 1) ? "%0.3f": 
+		    (scope.scale < 10.0) ? "%0.2f": "%0.1f",
+		    ((scope.start * xscale) +
+		     (scope.index * scope.scale)) / 100.0)
+                s.draw(at: NSMakePoint(scope.index - dx / 2, height / 2),
+                       withAttributes: attrs)
+            }
 
         // Move the origin
         bitmap.translateBy(x: 0, y: -NSMidY(rect))

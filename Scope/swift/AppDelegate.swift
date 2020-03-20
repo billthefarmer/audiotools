@@ -197,7 +197,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 item.toolTip = "Bright line"
                 item.target = self
                 item.action = #selector(toolbarClicked)
-                let image = getImage("ic_dehaze_black_36dp")
+                let image = getImage("ic_sub_black_36dp")
                 item.image = image
                 return item
 
@@ -341,8 +341,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
             {
             case bright:
                 scope.bright = !scope.bright
-                let image = getImage(scope.bright ? "ic_dehaze_blue_36dp" :
-                                       "ic_dehaze_black_36dp")
+                let image = getImage(scope.bright ? "ic_sub_blue_36dp" :
+                                       "ic_sub_black_36dp")
                 sender.image = image
                 break
             case single:
@@ -417,6 +417,32 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
                 xScaleView.needsDisplay = true
                 yScaleView.needsDisplay = true
+
+                // Reset toolbar icons
+                let toolbar = sender.toolbar
+                for (item in toolbar.items)
+                {
+                    switch item.itemIdentifier
+                    {
+                    case bright:
+                        let image = getImage("ic_sub_black_36dp")
+                        item.image = image
+                        break
+
+                    case single:
+                        let image = getImage("ic_looks_one_black_36dp")
+                        item.image = image
+                        break
+
+                    case storage:
+                        let image = getImage("ic_storage_black_36dp")
+                        item.image = image
+                        break
+
+                    default:
+                        break
+                    }
+                }
                 break
 
             default:
