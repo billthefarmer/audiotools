@@ -42,10 +42,8 @@ class XScaleView: NSView
         let kTextSize = NSHeight(rect) / 2
 
         // Move the origin
-        let transform = AffineTransform(translationByX: CGFloat(kScaleWidth),
-                                        byY: 0)
-        (transform as NSAffineTransform).concat()
         let context = NSGraphicsContext.current!
+        context.cgContext.translateBy(x: CGFloat(kScaleWidth), y: 0)
         context.shouldAntialias = false
 
         // Draw scale

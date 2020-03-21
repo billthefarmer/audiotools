@@ -56,9 +56,8 @@ class YScaleView: NSView
         size = rect.size
 
         // Move the origin
-        var transform = AffineTransform(translationByX: 0, byY: NSMidY(rect))
-        (transform as NSAffineTransform).concat()
         let context = NSGraphicsContext.current!
+        context.cgContext.translateBy(x: 0, y: NSMidY(rect))
         context.shouldAntialias = false
 
         // Draw scale
@@ -91,11 +90,11 @@ class YScaleView: NSView
         // Transform thumb
         let scale =
           AffineTransform(scale: NSWidth(rect) / (NSWidth(thumb.bounds) * 1.5))
-        transform =
+        let translate =
           AffineTransform(translationByX: NSWidth(rect) / 2.5,
                           byY: CGFloat(yscale.index))
         thumb.transform(using: scale)
-        thumb.transform(using: transform)
+        thumb.transform(using: translate)
 
         // Draw thumb
         if (yscale.index != 0)
