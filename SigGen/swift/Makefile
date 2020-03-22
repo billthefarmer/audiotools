@@ -65,11 +65,13 @@ $(APPBUNDLE): $(APPNAME) $(APPNAME).icns
 	$(CP) -r Frameworks $(APPBUNDLECONTENTS)/
 	$(CP) $(APPNAME).icns $(APPBUNDLERESOURCES)/
 	$(CP) MainMenu.nib $(APPBUNDLERESOURCES)/
+	$(CP) $(APPNAME).entitlements $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME) $(APPBUNDLEMACOS)/
 
 $(APPNAME): $(SOURCES)
 	$(SWIFTC) $(SOURCES) -o $(APPNAME) $(SFLAGS)
 
+$(AUDIO).o: $(AUDIO).m $(AUDIO).h Makefile
 
 $(APPNAME).icns: $(APPNAME).png
 	$(RM) -rf $(APPNAME).iconset
