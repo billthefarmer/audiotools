@@ -60,8 +60,8 @@ class DisplayView: SigGenView
             attribs = [.font: font, .expansion: expansion]
         }
 
-        let x = NSMinX(rect) + 2
-        var y = NSMaxY(rect) - textSize - 2
+        let x = rect.minX + 2
+        var y = rect.maxY - textSize - 2
 
         // Draw frequency
         let freq = String(format: "%1.2fHz", frequency)

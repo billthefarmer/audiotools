@@ -47,27 +47,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         // Insert code here to initialize your application
 
-        // Find a window
-        if (NSApp.mainWindow != nil)
-        {
-            window = NSApp.mainWindow
-        }
-
-        else if (NSApp.keyWindow != nil)
-        {
-            window = NSApp.keyWindow
-        }
-
-        else if (NSApp.windows.count > 0)
-        {
-            window = NSApp.windows[0]
-        }
-
-        if (window == nil)
-        {
-            return
-        }
-
         window.contentMinSize = NSMakeSize(340, 260)
         window.contentAspectRatio = NSMakeSize(340, 260)
         window.collectionBehavior.insert(.fullScreenNone)
@@ -90,7 +69,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         knobView.layerContentsRedrawPolicy = .onSetNeedsDisplay
         scaleView.layerContentsRedrawPolicy = .onSetNeedsDisplay
         displayView.layerContentsRedrawPolicy = .onSetNeedsDisplay
-
 
         let lStack = NSStackView(views: [scaleView, knobView])
 

@@ -40,7 +40,6 @@ class ScaleView: SigGenView
 
         let kTextSize = height / 3
         let kFreqScale = width
-        let context = NSGraphicsContext.current!
 
         let font = NSFont.systemFont(ofSize: kTextSize)
         var attribs: [NSAttributedString.Key: Any] = [.font: font]
@@ -55,10 +54,8 @@ class ScaleView: SigGenView
 
         // Drawing code here.
         NSEraseRect(rect)
-
-        let transform = AffineTransform(translationByX: NSMidX(rect),
-                                        byY: NSMidY(rect))
-        (transform as NSAffineTransform).concat()
+        let context = NSGraphicsContext.current!
+        context.cgContext.translateBy(x: rect.midX, y: rect.midY)
 
         let a = [1, 2, 3, 4, 6, 8]
         for i in a

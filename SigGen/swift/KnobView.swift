@@ -112,26 +112,23 @@ class KnobView: NSControl
         path.fill()
 
         // Translate to centre
-        let centre = AffineTransform(translationByX: NSMidX(dirtyRect),
-                                     byY: NSMidY(dirtyRect))
-        (centre as NSAffineTransform).concat()
+        let context = NSGraphicsContext.current!
+        context.cgContext.translateBy(x: dirtyRect.midX, y: dirtyRect.midY)
 
         // Path for indent
-        let indentSize = NSMaxX(dirtyRect) / 32
+        let indentSize = dirtyRect.maxX / 32
         let indent = NSMakeRect(-indentSize / 2, -indentSize / 2,
                                 indentSize, indentSize)
         let indentPath = NSBezierPath(ovalIn: indent)
 
         // Translate for indent
-        let indentRadius = NSMidY(inset) * 0.8
+        let indentRadius = inset.midY * 0.8
         let x = sin(value * .pi) * indentRadius
         let y = cos(value * .pi) * indentRadius
-        let transform = AffineTransform(translationByX: x, byY: y)
-        // (transform as NSAffineTransform).concat()
-        indentPath.transform(using: transform)
+        let translate = AffineTransform(translationByX: x, byY: y)
+        indentPath.translate(using: transform)
 
         // Draw indent
         gradient.draw(in: indentPath, angle: 135)
     }
-    
 }

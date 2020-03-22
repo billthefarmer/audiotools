@@ -34,8 +34,8 @@ class SigGenView: NSView
 
         // Drawing code here.
         rect = DrawEdge(dirtyRect)
-        width = NSWidth(rect)
-        height = NSHeight(rect)
+        width = rect.width
+        height = rect.height
     }
 
     // DrawEdge
