@@ -39,7 +39,7 @@ class XScaleView: NSView
         super.draw(rect)
 
         // Drawing code here.
-        let kTextSize = NSHeight(rect) / 2
+        let kTextSize = rect.height / 2
 
         // Move the origin
         let context = NSGraphicsContext.current!
@@ -47,16 +47,16 @@ class XScaleView: NSView
         context.shouldAntialias = false
 
         // Draw scale
-        for x in stride(from: 0, to: NSWidth(rect), by: 50)
+        for x in stride(from: 0, to: rect.width, by: 50)
         {
-            NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) * 2 / 3),
-                                    to: NSMakePoint(x, NSMaxY(rect)))
+            NSBezierPath.strokeLine(from: NSMakePoint(x, rect.maxY * 2 / 3),
+                                    to: NSMakePoint(x, rect.maxY))
         }
 
-        for x in stride(from: 0, to: NSWidth(rect), by: 10)
+        for x in stride(from: 0, to: rect.width, by: 10)
         {
-            NSBezierPath.strokeLine(from: NSMakePoint(x, NSMaxY(rect) * 3 / 4),
-                                    to: NSMakePoint(x, NSMaxY(rect)))
+            NSBezierPath.strokeLine(from: NSMakePoint(x, rect.maxY * 3 / 4),
+                                    to: NSMakePoint(x, rect.maxY))
         }
 
         context.shouldAntialias = true
@@ -68,7 +68,7 @@ class XScaleView: NSView
             var offset = "ms".size(withAttributes: attrs).width / 2
             "ms".draw(at: NSMakePoint(-offset, 4), withAttributes: attrs)
 
-            for x in stride(from: 100, to: NSWidth(rect), by: 100)
+            for x in stride(from: 100, to: rect.width, by: 100)
             {
                 let s =
                   String(format: "%0.1f",
@@ -84,7 +84,7 @@ class XScaleView: NSView
             var offset = "sec".size(withAttributes: attrs).width / 2
             "sec".draw(at: NSMakePoint(-offset, 4), withAttributes: attrs)
 
-            for x in stride(from: 100, to: NSWidth(rect), by: 100)
+            for x in stride(from: 100, to: rect.width, by: 100)
             {
                 let s =
                   String(format: "%0.1f",

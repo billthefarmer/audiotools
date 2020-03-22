@@ -96,8 +96,8 @@ class ScopeView: NSView
         super.draw(rect)
 
         // Drawing code here.
-        let width = NSWidth(rect)
-        let height = NSHeight(rect)
+        let width = rect.width
+        let height = rect.height
 
         let context = NSGraphicsContext.current!
 
@@ -134,23 +134,23 @@ class ScopeView: NSView
             graticule.setStrokeColor(darkGreen)
 
             // Move the origin
-            graticule.translateBy(x: 0, y: NSMidY(rect))
+            graticule.translateBy(x: 0, y: rect.midY)
             graticule.setShouldAntialias(false)
 
             // Draw graticule
             graticule.beginPath()
-            for x in stride(from: 0, to: NSWidth(rect), by: 10)
+            for x in stride(from: 0, to: rect.width, by: 10)
             {
-                graticule.move(to: NSMakePoint(x, NSMaxY(rect) / 2))
-                graticule.addLine(to: NSMakePoint(x, -NSMaxY(rect) / 2))
+                graticule.move(to: NSMakePoint(x, rect.maxY / 2))
+                graticule.addLine(to: NSMakePoint(x, -rect.maxY / 2))
             }
 
-            for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
+            for y in stride(from: 0, to: rect.height / 2, by: 10)
             {
-                graticule.move(to: NSMakePoint(NSMinX(rect), y))
-                graticule.addLine(to: NSMakePoint(NSMaxX(rect), y))
-                graticule.move(to: NSMakePoint(NSMinX(rect), -y))
-                graticule.addLine(to: NSMakePoint(NSMaxX(rect), -y))
+                graticule.move(to: NSMakePoint(rect.minX, y))
+                graticule.addLine(to: NSMakePoint(rect.maxX, y))
+                graticule.move(to: NSMakePoint(rect.minX, -y))
+                graticule.addLine(to: NSMakePoint(rect.maxX, -y))
             }
 
             graticule.strokePath()
@@ -195,7 +195,7 @@ class ScopeView: NSView
         scope.max = 0
 
         // Move the origin
-        bitmap.translateBy(x: 0, y: NSMidY(rect))
+        bitmap.translateBy(x: 0, y: rect.midY)
 
         // Green trace
         bitmap.setStrokeColor(CGColor(red: 0, green: 1, blue: 0, alpha: 1))
@@ -300,7 +300,7 @@ class ScopeView: NSView
         }
 
         // Move the origin
-        bitmap.translateBy(x: 0, y: -NSMidY(rect))
+        bitmap.translateBy(x: 0, y: -rect.midY)
         let content = bitmap.makeImage()!
         context.cgContext.draw(content, in: rect)
     }

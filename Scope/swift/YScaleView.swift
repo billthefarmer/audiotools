@@ -57,24 +57,24 @@ class YScaleView: NSView
 
         // Move the origin
         let context = NSGraphicsContext.current!
-        context.cgContext.translateBy(x: 0, y: NSMidY(rect))
+        context.cgContext.translateBy(x: 0, y: rect.midY)
         context.shouldAntialias = false
 
         // Draw scale
-        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 10)
+        for y in stride(from: 0, to: rect.height / 2, by: 10)
         {
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMaxX(rect) * 2 / 3, y),
-                                    to: NSMakePoint(NSMaxX(rect), y))
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMaxX(rect) * 2 / 3, -y),
-                                    to: NSMakePoint(NSMaxX(rect), -y))
+            NSBezierPath.strokeLine(from: NSMakePoint(rect.maxX * 2 / 3, y),
+                                    to: NSMakePoint(rect.maxX, y))
+            NSBezierPath.strokeLine(from: NSMakePoint(rect.maxX * 2 / 3, -y),
+                                    to: NSMakePoint(rect.maxX, -y))
         }
 
-        for y in stride(from: 0, to: NSHeight(rect) / 2, by: 50)
+        for y in stride(from: 0, to: rect.height / 2, by: 50)
         {
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMidX(rect), y),
-                                    to: NSMakePoint(NSMaxX(rect), y))
-            NSBezierPath.strokeLine(from: NSMakePoint(NSMidX(rect), -y),
-                                    to: NSMakePoint(NSMaxX(rect), -y))
+            NSBezierPath.strokeLine(from: NSMakePoint(rect.midX, y),
+                                    to: NSMakePoint(rect.maxX, y))
+            NSBezierPath.strokeLine(from: NSMakePoint(rect.midX, -y),
+                                    to: NSMakePoint(rect.maxX, -y))
         }
 
         // Thumb
@@ -89,9 +89,9 @@ class YScaleView: NSView
 
         // Transform thumb
         let scale =
-          AffineTransform(scale: NSWidth(rect) / (NSWidth(thumb.bounds) * 1.5))
+          AffineTransform(scale: rect.width / (thumb.bounds.width * 1.5))
         let translate =
-          AffineTransform(translationByX: NSWidth(rect) / 2.5,
+          AffineTransform(translationByX: rect.width / 2.5,
                           byY: CGFloat(yscale.index))
         thumb.transform(using: scale)
         thumb.transform(using: translate)
