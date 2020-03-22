@@ -126,7 +126,7 @@ class KnobView: NSControl
         let x = sin(value * .pi) * indentRadius
         let y = cos(value * .pi) * indentRadius
         let translate = AffineTransform(translationByX: x, byY: y)
-        indentPath.translate(using: transform)
+        indentPath.transform(using: translate)
 
         // Draw indent
         gradient.draw(in: indentPath, angle: 135)
