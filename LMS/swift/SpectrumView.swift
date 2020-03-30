@@ -25,13 +25,48 @@ import Cocoa
 
 class SpectrumView: LMSView
 {
+    var max: Float = 0
 
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
 
         // Drawing code here.
-        NSEraseRect(rect)
+        NSBezierPath.fill(rect)
+
+        let darkGreen = NSColor(red: 0, green: 0.25, blue: 0, alpha: 1.0)
+        darkGreen.set()
+
+        let context = NSGraphicsContext.current!
+        context.shouldAntialias = false;
+
+        for x in stride(from: rect.minX, to: rect.maxX, by: 6)
+        {
+            NSBezierPath.strokeLine(from: NSMakePoint(x, rect.minY),
+                                    to: NSMakePoint(x, rect.maxY))
+        }
+
+        for y in stride(from: rect.minY, to: rect.maxY, by: 6)
+        {
+            NSBezierPath.strokeLine(from: NSMakePoint(rect.minX, y),
+                                    to: NSMakePoint(rect.maxX, y))
+        }
+
+        if (spectrum.data == nil)
+        {
+            return
+        }
+
+        if (max < 1)
+        {
+	    max = 1
+        }
+
+        // Calculate the scaling
+        let yscale = height / max
+        max = 0
+
+        // Green trace
+        NSColor.green.set()
     }
-    
 }
