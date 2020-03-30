@@ -26,12 +26,11 @@ import Cocoa
 
 class DisplayView: LMSView
 {
+    let textSize = height / 2
 
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
-
-        let textSize = height / 2
 
         // Drawing code here.
         NSEraseRect(rect)
@@ -52,14 +51,14 @@ class DisplayView: LMSView
 
         // Draw frequency
         let freq = String(format: "%1.2fHz", disp.frequency)
-        var x = NSMaxX(rect) - freq.size(withAttributes: attribs).width - 2
+        var x = rect.maxX - freq.size(withAttributes: attribs).width - 2
         freq.draw(at: NSMakePoint(x, y), withAttributes: attribs)
 
         y -= textSize
 
         // Draw decibels
         let db = String(format: "%+1.2fdB", disp.level)
-        x = NSMaxX(rect) - db.size(withAttributes: attribs).width - 2
+        x = rect.maxX - db.size(withAttributes: attribs).width - 2
         db.draw(at: NSMakePoint(x, y), withAttributes: attribs)
     }
     
