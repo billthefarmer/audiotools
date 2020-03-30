@@ -30,36 +30,34 @@ class DisplayView: LMSView
     {
         super.draw(dirtyRect)
 
-        let textSize = height / 2
+        let kTextSize = height / 2
+        let kMargin = width / 32
 
         // Drawing code here.
         NSEraseRect(rect)
 
 	// Select font, scale text
-        let font = NSFont.boldSystemFont(ofSize: textSize)
+        let font = NSFont.boldSystemFont(ofSize: kTextSize)
         var attribs: [NSAttributedString.Key: Any] = [.font: font]
 
         // Scale text if necessary
         let dx = "25000.00Hz".size(withAttributes: attribs).width
-        if (dx >= width)
+        if (dx >= width / 2)
         {
-            let expansion = log((width) / dx)
+            let expansion = log((width / 2)  / dx)
             attribs = [.font: font, .expansion: expansion]
         }
 
-        var y = NSMaxY(rect) - textSize - 2
+        let y = rect.midY - kTextSize / 2
 
         // Draw frequency
         let freq = String(format: "%1.2fHz", disp.frequency)
-        var x = rect.maxX - freq.size(withAttributes: attribs).width - 2
+        var x = rect.minX + kMargin
         freq.draw(at: NSMakePoint(x, y), withAttributes: attribs)
-
-        y -= textSize
 
         // Draw decibels
         let db = String(format: "%+1.2fdB", disp.level)
-        x = rect.maxX - db.size(withAttributes: attribs).width - 2
+        x = rect.maxX - db.size(withAttributes: attribs).width - kMargin
         db.draw(at: NSMakePoint(x, y), withAttributes: attribs)
     }
-    
 }
