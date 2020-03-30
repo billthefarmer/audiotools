@@ -24,32 +24,33 @@ import Cocoa
 
 class MeterView: LMSView
 {
-    let textSize = height / 2
-
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
 
+        let textSize = height / 4
+
         // Drawing code here.
         NSEraseRect(rect)
 
-        let as: [CGFloat] =
+        let av: [CGFloat] =
           [-40, -20, -14, -10, -8, -7, -6, -5,
            -4, -3, -2, -1, 0, 1, 2, 3]
 
-        let context = NSGraphicsContext.default!
+        let context = NSGraphicsContext.current!
 
         let font = NSFont.systemFont(ofSize: textSize)
         let attribs: [NSAttributedString.Key: Any] = [.font: font]
-        for v in as
+        for v in av
         {
-            let s = String(format: "%d", v)
+            let s = String(format: "%0.0f", abs(v))
             var x = pow(10, (v + 20) / 20) / 10
             x /= pow(10, 23 / 20) / 10
             x *= width - 24
             x += 11
             let dx = s.size(withAttributes: attribs).width
             x -= dx / 2
+            let y = height / 2
             s.draw(at: NSMakePoint(x, y), withAttributes: attribs)
         }
 

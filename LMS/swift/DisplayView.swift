@@ -26,11 +26,11 @@ import Cocoa
 
 class DisplayView: LMSView
 {
-    let textSize = height / 2
-
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
+
+        let textSize = height / 2
 
         // Drawing code here.
         NSEraseRect(rect)
