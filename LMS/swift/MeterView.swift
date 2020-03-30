@@ -28,7 +28,7 @@ class MeterView: LMSView
     {
         super.draw(dirtyRect)
 
-        let kTtextSize = height / 4
+        let kTextSize = height / 4
         let kMargin = width / 32
 
         // Drawing code here.
@@ -40,8 +40,17 @@ class MeterView: LMSView
 
         let context = NSGraphicsContext.current!
 
-        let font = NSFont.systemFont(ofSize: textSize)
-        let attribs: [NSAttributedString.Key: Any] = [.font: font]
+        let font = NSFont.systemFont(ofSize: kTextSize)
+        var attribs: [NSAttributedString.Key: Any] = [.font: font]
+
+        // Scale text if necessary
+        let dx = "0".size(withAttributes: attribs).width
+        if (dx >= (width - (kMargin * 2)) / 32)
+        {
+            let expansion = log(((width - (kMargin * 2)) / 32)  / dx)
+            attribs = [.font: font, .expansion: expansion]
+        }
+
         for v in av
         {
             let s = String(format: "%0.0f", abs(v))
