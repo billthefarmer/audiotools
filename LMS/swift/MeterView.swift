@@ -28,7 +28,8 @@ class MeterView: LMSView
     {
         super.draw(dirtyRect)
 
-        let textSize = height / 4
+        let kTtextSize = height / 4
+        let kMargin = width / 32
 
         // Drawing code here.
         NSEraseRect(rect)
@@ -46,8 +47,8 @@ class MeterView: LMSView
             let s = String(format: "%0.0f", abs(v))
             var x = pow(10, (v + 20) / 20) / 10
             x /= pow(10, 23 / 20) / 10
-            x *= width - 24
-            x += 11
+            x *= width - (kMargin * 2)
+            x += kMargin
             let dx = s.size(withAttributes: attribs).width
             x -= dx / 2
             let y = height / 2
@@ -64,8 +65,8 @@ class MeterView: LMSView
         {
             var x = pow(10, v / 10) / 10
             x /= pow(10, 23 / 20) / 10
-            x *= width - 24
-            x += 10
+            x *= width - (kMargin * 2)
+            x += kMargin
             NSBezierPath.strokeLine(from: NSMakePoint(x, height * 5 / 16),
                                     to: NSMakePoint(x, height / 2))
         }
