@@ -51,6 +51,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.contentAspectRatio = NSMakeSize(340, 260)
         window.collectionBehavior.insert(.fullScreenNone)
 
+        window.title = "Signal Generator"
+
         // Find the menu
         menu = NSApp.mainMenu
 

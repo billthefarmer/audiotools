@@ -92,9 +92,9 @@ class MeterView: LMSView
                                     to: NSMakePoint(x, height / 2))
         }
 
-        for i in stride(from: 17, to: 48, by: 2)
+        for i in stride(from: 9, to: 48, by: 2)
         {
-            var x = pow(10, (CGFloat(i) / 20)) / 10
+            var x = pow(10, (CGFloat(i) / 40)) / 10
             x /= pow(10, 23 / 20) / 10
             x *= width - (kMargin * 2)
             x += kMargin

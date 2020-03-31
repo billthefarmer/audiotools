@@ -64,6 +64,8 @@ class SpectrumView: LMSView
 
         // Calculate the scaling
         let yscale = height / max
+        let xscale = CGFloat(spectrum.length) / width;
+
         max = 0
 
         // Green trace

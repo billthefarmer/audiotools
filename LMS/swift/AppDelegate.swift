@@ -39,6 +39,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                                CGFloat(kMinHeight))
         window.collectionBehavior.insert(.fullScreenNone)
 
+        window.title = "Level Measuring Set"
+
         // Views
         displayView = DisplayView()
         meterView = MeterView()

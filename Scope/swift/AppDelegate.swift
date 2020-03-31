@@ -71,6 +71,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                            CGFloat(kMaximumHeight))
         window.collectionBehavior.insert(.fullScreenNone)
 
+        window.title = "Oscilloscope"
+
         // Find the menu
         menu = NSApp.mainMenu
 
