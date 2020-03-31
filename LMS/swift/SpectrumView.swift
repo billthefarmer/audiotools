@@ -69,6 +69,42 @@ class SpectrumView: LMSView
         max = 0
 
         // Green trace
-        NSColor.green.set()
+        NSColor.green.setStroke()
+        // Transparent green fill
+        NSColor(red: 0, green: 1, blue: 0, alpha: 0.25).setFill()
+
+        var last = 1
+        let path = NSBezierPath()
+        path.move(to: NSPoint.zero)
+        for x in 0 ... width
+        {
+            value: CGFloat = 0
+
+            let index = Int(round(pow(CGFloat.e, x * xscale)))
+            for i in last ... index
+            {
+                if (i > 0 && i <spectrum.length)
+                {
+                    if (value < spectrum.data[i])
+                    {
+                        value = spectrum.data[i]
+                    }
+                }
+            }
+
+	    // Update last index
+	    last = index;
+
+	    if (max < value)
+	    max = value;
+
+            let y = value * yscale
+            path.line(to: NSMakePoint(x, y))
+        }
+
+        path.stroke()
+        path.line(to: NSMakePoint(width, 0))
+        path.close()
+        path.fill()
     }
 }

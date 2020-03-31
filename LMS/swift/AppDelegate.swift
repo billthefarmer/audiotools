@@ -72,6 +72,37 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.contentView = stack
         window.makeKeyAndOrderFront(self)
         window.makeMain()
+
+        // Audio
+        let status = SetupAudio()
+        if (status != noErr)
+        {
+            displayAlert("Tuner", "Audio initialisation failed", status)
+        }
+    }
+
+    // DisplayAlert
+    func displayAlert(_ message: String, _ informativeText: String,
+                      _ status: OSStatus)
+    {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = message
+
+        let error = (status > 0) ? UTCreateStringForOSType(OSType(status))
+          .takeRetainedValue() as String :
+          String(utf8String: AudioUnitErrString(status))!
+
+        alert.informativeText = informativeText + ": " + error +
+          " (" + String(status) + ")"
+
+        alert.runModal()
+    }
+
+    // print
+    @objc func print(sender: Any)
+    {
+        window.printWindow(sender)
     }
 
     // applicationShouldTerminateAfterLastWindowClosed
@@ -85,6 +116,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
+        ShutdownAudio()
     }
 
 

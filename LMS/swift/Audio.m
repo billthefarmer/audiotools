@@ -271,8 +271,16 @@ OSStatus SetupAudio()
     return status;
 }
 
-// Input proc
+// ShutdownAudio
+OSStatus ShutdownAudio()
+{
+    AudioOutputUnitStop(audio.output);
+    AudioUnitUninitialize(audio.output);
 
+    return noErr;
+}
+
+// Input proc
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 		   const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,
 		   UInt32 inNumberFrames, AudioBufferList *ioData)
@@ -439,21 +447,21 @@ void (^ProcessAudio)() = ^
 
     float f = xf[imax];
 
-    static long n1;
+    static long n;
 
     if (max > kMin)
     {
 	disp.frequency = f;
-	n1 = 0;
+	n = 0;
     }
 
     else
     {
-	if (n1 == 64)
+	if (n == 64)
             disp.frequency = 0.0;
     }
 
-    n1++;
+    n++;
 
     float dB = log10f(level * 3.0) * 20.0;
 
@@ -464,19 +472,19 @@ void (^ProcessAudio)() = ^
 
     meter.level = level * 3.0 / powf(10.0, 0.15);
 
-    static long n2;
+    static long m;
 
     // Update display
-    if ((n2 % 4) == 0)
+    if ((m % 4) == 0)
     {
         spectrumView.needsDisplay = true;
         meterView.needsDisplay = true;
     }
 
-    if ((n2 % 16) == 0)
+    if ((m % 16) == 0)
         displayView.needsDisplay = true;
 
-    n2++;
+    m++;
 };
 
 // AudioUnitErrString
