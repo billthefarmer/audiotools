@@ -34,10 +34,6 @@ class MeterView: LMSView
         // Drawing code here.
         NSEraseRect(rect)
 
-        let av: [CGFloat] =
-          [-40, -20, -14, -10, -8, -7, -6, -5,
-           -4, -3, -2, -1, 0, 1, 2, 3]
-
         let context = NSGraphicsContext.current!
 
         let font = NSFont.systemFont(ofSize: kTextSize)
@@ -50,6 +46,10 @@ class MeterView: LMSView
             let expansion = log(((width - (kMargin * 2)) / 32)  / dx)
             attribs = [.font: font, .expansion: expansion]
         }
+
+        let av: [CGFloat] =
+          [-40, -20, -14, -10, -8, -7, -6, -5,
+           -4, -3, -2, -1, 0, 1, 2, 3]
 
         for v in av
         {
