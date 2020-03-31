@@ -50,11 +50,11 @@ SWIFTH = LMS-Swift.h
 SOURCES = AppDelegate.swift DisplayView.swift MeterView.swift \
 		SpectrumView.swift LMSView.swift Audio.o
 
-SFLAGS = -g -target x86_64-apple-macosx10.9 \
+SFLAGS = -g -target x86_64-apple-macosx10.10 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
 	-Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -w
 
-CFLAGS = -g -target x86_64-apple-macosx10.9
+CFLAGS = -g -target x86_64-apple-macosx10.10
 
 
 $(APPBUNDLE): $(APPNAME) $(APPNAME).icns

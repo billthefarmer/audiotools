@@ -82,7 +82,7 @@ class MeterView: LMSView
                                     to: NSMakePoint(x, height / 2))
         }
 
-        for i in stride(from: 1, to: 26, step: 2)
+        for i in stride(from: 1, to: 26, by: 2)
         {
             var x = pow(10, (CGFloat(i) / 20)) / 10
             x /= pow(10, 23 / 20) / 10
@@ -92,7 +92,7 @@ class MeterView: LMSView
                                     to: NSMakePoint(x, height / 2))
         }
 
-        for i in stride(from: 17, to: 48, step: 2)
+        for i in stride(from: 17, to: 48, by: 2)
         {
             var x = pow(10, (CGFloat(i) / 20)) / 10
             x /= pow(10, 23 / 20) / 10
@@ -108,7 +108,7 @@ class MeterView: LMSView
 
         // Draw bar
         NSBezierPath.fill(NSMakeRect(kMargin, -height / 32,
-                                       width - kMargin, height / 32))
+                                     width - (kMargin * 2), height / 32))
         // Gradient
         let gradient = NSGradient(colors: [NSColor.gray,
                                            NSColor.white,
