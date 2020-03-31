@@ -33,7 +33,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         // Insert code here to initialize your application
 
-        window.contentMinSize = NSMakeSize(340, 260)
+        window.contentMinSize = NSMakeSize(CGFloat(kMinWidth),
+                                           CGFloat(kMinHeight))
+        window.contentAspectRatio = NSMakeSize(CGFloat(kMinWidth),
+                                               CGFloat(kMinHeight))
         window.collectionBehavior.insert(.fullScreenNone)
 
         // Views

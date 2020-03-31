@@ -36,6 +36,11 @@
 #define kScale   1024.0
 #define kTimerDelay 0.1
 
+// Size
+enum
+  {kMinWidth = 340,
+   kMinHeight = 240};
+
 // Audio in values
 enum
     {kSampleRate       = 44100,

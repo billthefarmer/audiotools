@@ -60,7 +60,7 @@ class MeterView: LMSView
             x += kMargin
             let dx = s.size(withAttributes: attribs).width
             x -= dx / 2
-            let y = height / 2
+            let y = rect.maxY - kTextSize - rect.maxY / 16
             s.draw(at: NSMakePoint(x, y), withAttributes: attribs)
         }
 
@@ -76,8 +76,8 @@ class MeterView: LMSView
             x /= pow(10, 23 / 20) / 10
             x *= width - (kMargin * 2)
             x += kMargin
-            NSBezierPath.strokeLine(from: NSMakePoint(x, height * 5 / 16),
-                                    to: NSMakePoint(x, height / 2))
+            NSBezierPath.strokeLine(from: NSMakePoint(x, rect.maxY * 11 / 16),
+                                    to: NSMakePoint(x, rect.maxY / 2))
         }
     }
 }
