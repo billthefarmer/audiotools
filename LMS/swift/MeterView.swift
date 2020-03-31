@@ -24,6 +24,8 @@ import Cocoa
 
 class MeterView: LMSView
 {
+    var level: Float = 0
+
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
@@ -60,7 +62,7 @@ class MeterView: LMSView
             x += kMargin
             let dx = s.size(withAttributes: attribs).width
             x -= dx / 2
-            let y = rect.maxY - kTextSize - rect.maxY / 16
+            let y = height - kTextSize - height / 16
             s.draw(at: NSMakePoint(x, y), withAttributes: attribs)
         }
 
@@ -76,8 +78,62 @@ class MeterView: LMSView
             x /= pow(10, 23 / 20) / 10
             x *= width - (kMargin * 2)
             x += kMargin
-            NSBezierPath.strokeLine(from: NSMakePoint(x, rect.maxY * 11 / 16),
-                                    to: NSMakePoint(x, rect.maxY / 2))
+            NSBezierPath.strokeLine(from: NSMakePoint(x, height * 11 / 16),
+                                    to: NSMakePoint(x, height / 2))
         }
+
+        for i in stride(from: 1, to: 26, step: 2)
+        {
+            var x = pow(10, (CGFloat(i) / 20)) / 10
+            x /= pow(10, 23 / 20) / 10
+            x *= width - (kMargin * 2)
+            x += kMargin
+            NSBezierPath.strokeLine(from: NSMakePoint(x, height * 10 / 16),
+                                    to: NSMakePoint(x, height / 2))
+        }
+
+        for i in stride(from: 17, to: 48, step: 2)
+        {
+            var x = pow(10, (CGFloat(i) / 20)) / 10
+            x /= pow(10, 23 / 20) / 10
+            x *= width - (kMargin * 2)
+            x += kMargin
+            NSBezierPath.strokeLine(from: NSMakePoint(x, height * 9 / 16),
+                                    to: NSMakePoint(x, height / 2))
+        }
+
+        // Move the origin
+        context.cgContext.translateBy(x: 0, y: height / 4)
+        NSColor.gray.set()
+
+        // Draw bar
+        NSBezierPath.fill(NSMakeRect(kMargin, -height / 32,
+                                       width - kMargin, height / 32))
+        // Gradient
+        let gradient = NSGradient(colors: [NSColor.gray,
+                                           NSColor.white,
+                                           NSColor.gray])!
+        // Thumb
+        let thumb = NSBezierPath()
+        thumb.move(to: NSMakePoint(0, 2))
+        thumb.line(to: NSMakePoint(1, 1))
+        thumb.line(to: NSMakePoint(1, -2))
+        thumb.line(to: NSMakePoint(-1, -2))
+        thumb.line(to: NSMakePoint(-1, 1))
+        thumb.close()
+
+        // Do calculation
+        level = ((level * 7) + meter.level) / 8
+
+        // Transform
+        let scale = AffineTransform(scale: height / 16)
+        let translate =
+          AffineTransform(translationByX: kMargin + CGFloat(level) *
+                            (width - kMargin * 2), byY: 0)
+        thumb.transform(using: scale)
+        thumb.transform(using: translate)
+        context.shouldAntialias = true;
+        gradient.draw(in: thumb, angle: 90)
+        thumb.stroke()
     }
 }
