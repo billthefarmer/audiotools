@@ -33,6 +33,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         // Insert code here to initialize your application
 
+        window.contentMinSize = NSMakeSize(340, 260)
+        window.collectionBehavior.insert(.fullScreenNone)
+
         // Views
         displayView = DisplayView()
         meterView = MeterView()
