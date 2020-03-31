@@ -74,11 +74,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeMain()
 
         // Audio
-        let status = SetupAudio()
+/*        let status = SetupAudio()
         if (status != noErr)
         {
             displayAlert("Tuner", "Audio initialisation failed", status)
-        }
+        } */
     }
 
     // DisplayAlert

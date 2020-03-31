@@ -25,7 +25,7 @@ import Cocoa
 
 class SpectrumView: LMSView
 {
-    var max: CGFloat = 0
+    var max: Float = 0
 
     override func draw(_ dirtyRect: NSRect)
     {
@@ -63,7 +63,7 @@ class SpectrumView: LMSView
         }
 
         // Calculate the scaling
-        let yscale = height / max
+        let yscale = height / CGFloat(max)
         let xscale = CGFloat(spectrum.length) / width;
 
         max = 0
@@ -76,14 +76,14 @@ class SpectrumView: LMSView
         var last = 1
         let path = NSBezierPath()
         path.move(to: NSPoint.zero)
-        for x in 0 ... width
+        for x in 0 ... Int(width)
         {
-            value: CGFloat = 0
+            var value: Float = 0
 
-            let index = Int(round(pow(CGFloat.e, x * xscale)))
+            let index = Int(round(pow(CGFloat(M_E), CGFloat(x) * xscale)))
             for i in last ... index
             {
-                if (i > 0 && i <spectrum.length)
+                if (i > 0 && i < spectrum.length)
                 {
                     if (value < spectrum.data[i])
                     {
@@ -96,10 +96,12 @@ class SpectrumView: LMSView
 	    last = index;
 
 	    if (max < value)
-	    max = value;
+            {
+	        max = value
+            }
 
-            let y = value * yscale
-            path.line(to: NSMakePoint(x, y))
+            let y = CGFloat(value) * yscale
+            path.line(to: NSMakePoint(CGFloat(x), y))
         }
 
         path.stroke()

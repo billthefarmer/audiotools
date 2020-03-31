@@ -103,7 +103,7 @@ class MeterView: LMSView
         }
 
         // Move the origin
-        context.cgContext.translateBy(x: 0, y: height / 4)
+        context.cgContext.translateBy(x: 0, y: height / 3)
         NSColor.gray.set()
 
         // Draw bar
