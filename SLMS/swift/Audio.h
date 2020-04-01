@@ -108,6 +108,8 @@ typedef struct
 } Audio;
 Audio audio;
 
+NSView *scaleView;
+NSControl *knobView;
 NSView *displayView;
 NSView *meterView;
 NSView *spectrumView;

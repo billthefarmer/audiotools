@@ -32,7 +32,7 @@ PLB = /usr/libexec/PlistBuddy
 AUDIO = Audio
 AUDIOOBJ = $(AUDIO).o
 
-APPNAME = LMS
+APPNAME = SLMS
 APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)
 
 APPBUNDLE = $(APPNAME).app
@@ -44,11 +44,11 @@ APPBUNDLEICON = $(APPBUNDLECONTENTS)/Resources
 APPDMG = $(APPNAME).dmg
 APPVDMG = $(APPNAME)-$(APPVERSION).dmg
 
-HEADER = LMS-Bridging-Header.h
-SWIFTH = LMS-Swift.h
+HEADER = SLMS-Bridging-Header.h
+SWIFTH = SLMS-Swift.h
 
-SOURCES = AppDelegate.swift DisplayView.swift MeterView.swift \
-		SpectrumView.swift LMSView.swift Audio.o
+SOURCES = AppDelegate.swift ScaleView.swift DisplayView.swift MeterView.swift \
+		KnobView.swift SpectrumView.swift SLMSView.swift Audio.o
 
 SFLAGS = -g -target x86_64-apple-macosx10.10 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
