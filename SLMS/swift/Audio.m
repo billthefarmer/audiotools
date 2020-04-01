@@ -322,26 +322,19 @@ void (^ProcessAudio)() = ^
 {
     // Arrays for processing input
     static float xa[kRange];
-    static float xp[kRange];
-    static float xq[kRange];
-    static float xf[kRange];
 
-    static float dxa[kRange];
-    static float dxp[kRange];
+    static float window[kStep];
+    static float input[kStep];
 
-    static float window[kSamples];
-    static float input[kSamples];
-
-    static float re[kSamples2];
-    static float im[kSamples2];
+    static float re[kStep / 2];
+    static float im[kStep / 2];
 
     static DSPSplitComplex x =
 	{re, im};
 
     static FFTSetup setup;
 
-    static float fps;
-    static float expect;
+    static float K;
 
     // Initialise structures
     if (spectrum.data == nil)
@@ -349,8 +342,7 @@ void (^ProcessAudio)() = ^
 	spectrum.data = xa;
 	spectrum.length = kRange;
 
-	fps = audio.sample / (float)kSamples;
-	expect = 2.0 * M_PI * (float)kStep / (float)kSamples;
+	K = 2.0 * M_PI / audio.sample;
 
 	// Init Hamming window
 	vDSP_hamm_window(window, kSamples, 0);
@@ -401,67 +393,31 @@ void (^ProcessAudio)() = ^
     // Magnitude
     vDSP_vdist(x.realp, 1, x.imagp, 1, xa, 1, kRange);
 
-    // Phase
-    vDSP_zvphas(&x, 1, xq, 1, kRange);
+    // Do cross correlation
+    float imag = 0.0;
+    float real = 0.0;
 
-    // Phase difference
-    vDSP_vsub(xp, 1, xq, 1, dxp, 1, kRange);
-
-    for (int i = 1; i < kRange; i++)
+    for (int i = 0; i < kSamples; i++)
     {
-	// Do frequency calculation
-	float dp = dxp[i];
+	float window =
+	    (0.5 - 0.5 * cosf(2.0 * M_PI * i / kSamples));
 
-	// Calculate phase difference
-	dp -= (float)i * expect;
-
-	int qpd = dp / M_PI;
-
-	if (qpd >= 0)
-	    qpd += qpd & 1;
-
-	else
-	    qpd -= qpd & 1;
-
-	dp -=  M_PI * (float)qpd;
-
-	// Calculate frequency difference
-	float df = kOversample * dp / (2.0 * M_PI);
-
-	// Calculate actual frequency from slot frequency plus
-	// frequency difference
-	xf[i] = i * fps + df * fps;
-
-	// Calculate differences for finding maxima
-	dxa[i] = xa[i] - xa[i - 1];
+	imag += audio.buffer[i] * window * sin(i * audio.frequency * K);
+	real += audio.buffer[i] * window * cos(i * audio.frequency * K);
     }
 
-    // Copy phase vector
-    memmove(xp, xq, kRange * sizeof(float));
+    float level = hypotf(real, imag);
 
-    // Maximum FFT output
-    float  max;
-    vDSP_Length imax;
+    level = level / (kSamples / (4.0 * sqrtf(2.0)));
 
-    vDSP_maxmgvi(xa, 1, &max, &imax, kRange);
+    float dB = log10f(level * 1.5) * 20.0;
 
-    float f = xf[imax];
+    if (dB < -80.0)
+	dB = -80.0;
 
-    static long n;
+    display.level = dB;
 
-    if (max > kMin)
-    {
-	disp.frequency = f;
-	n = 0;
-    }
-
-    else
-    {
-	if (n == 64)
-            disp.frequency = 0.0;
-    }
-
-    n++;
+    meter.level = level * 1.5 / powf(10.0, 0.15);
 
     float dB = log10f(level * 3.0) * 20.0;
 
@@ -472,19 +428,19 @@ void (^ProcessAudio)() = ^
 
     meter.level = level * 3.0 / powf(10.0, 0.15);
 
-    static long m;
+    static long n;
 
     // Update display
-    if ((m % 4) == 0)
+    if ((n % 4) == 0)
     {
         spectrumView.needsDisplay = true;
         meterView.needsDisplay = true;
     }
 
-    if ((m % 16) == 0)
+    if ((n % 16) == 0)
         displayView.needsDisplay = true;
 
-    m++;
+    n++;
 };
 
 // AudioUnitErrString

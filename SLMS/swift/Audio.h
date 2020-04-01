@@ -64,10 +64,13 @@ enum
 enum
     {kOversample = 4,
      kSamples = 4096,
-     kLog2Samples = 12,
-     kSamples2 = kSamples / 2,
-     kRange = kSamples * 7 / 16,
+     kLog2Step = 10,
+     kRange = kSamples * 7 / 64,
      kStep = kSamples / kOversample};
+
+// Tags
+enum
+    {kTagFreq   = 'Freq'};
 
 // Keycodes
 enum
@@ -105,6 +108,7 @@ typedef struct
     float *buffer;
     int frames;
     float sample;
+    float frequency;
 } Audio;
 Audio audio;
 

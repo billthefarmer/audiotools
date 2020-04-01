@@ -140,6 +140,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
         alert.runModal()
     }
 
+    // knobChange
+    @objc func knobChange(sender: KnobView)
+    {
+        let value = sender.value
+        scaleView.value = sender.value / 2.0
+        let frequency = pow(10, value / 2) * 10
+        audio.frequency = frequency
+    }
+
     // print
     @objc func print(sender: Any)
     {
