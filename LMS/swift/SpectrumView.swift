@@ -64,7 +64,7 @@ class SpectrumView: LMSView
 
         // Calculate the scaling
         let yscale = height / CGFloat(max)
-        let xscale = CGFloat(spectrum.length) / width;
+        let xscale = log(CGFloat(spectrum.length)) / width
 
         max = 0
 
