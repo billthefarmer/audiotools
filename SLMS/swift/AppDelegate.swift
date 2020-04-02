@@ -147,6 +147,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
         scaleView.value = sender.value / 2.0
         let frequency = pow(10, value / 2) * 10
         audio.frequency = frequency
+        display.frequency = frequency
+        let fps = audio.sample / kStep
+        spectrum.slot = frequency / fps
     }
 
     // print
@@ -168,7 +171,5 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // Insert code here to tear down your application
         ShutdownAudio()
     }
-
-
 }
 

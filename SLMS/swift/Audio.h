@@ -29,6 +29,8 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
+#import "SLMS-Swift.h"
+
 // Size
 enum
   {kMinWidth = 340,
@@ -86,6 +88,7 @@ typedef struct
 {
     int length;
     float *data;
+    float slot;
 } Spectrum;
 Spectrum spectrum;
 
