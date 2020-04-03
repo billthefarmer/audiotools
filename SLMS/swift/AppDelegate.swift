@@ -97,17 +97,17 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                             relatedBy: .equal,
                                             toItem: rStack,
                                             attribute: .width,
-                                            multiplier: 1,
+                                            multiplier: 2,
                                             constant: 0)
         stack.addConstraint(stackWidth)
-        let scaleHeight = NSLayoutConstraint(item: scaleView,
-                                             attribute: .height,
-                                             relatedBy: .equal,
-                                             toItem: displayView,
-                                             attribute: .height,
-                                             multiplier: 1,
-                                             constant: 0)
-        stack.addConstraint(scaleHeight)
+//        let scaleHeight = NSLayoutConstraint(item: scaleView,
+//                                             attribute: .height,
+//                                             relatedBy: .equal,
+//                                             toItem: displayView,
+//                                             attribute: .height,
+//                                             multiplier: 1,
+//                                             constant: 0)
+//        stack.addConstraint(scaleHeight)
 
         // Window
         window.contentView = stack

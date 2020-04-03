@@ -26,7 +26,7 @@ let kScaleRef: CGFloat = 2.0
 class ScaleView: SLMSView
 {
 
-    var value = kScaleRef
+    @objc var value = kScaleRef
     {
         didSet
         {
