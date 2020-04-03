@@ -34,7 +34,7 @@
 // Size
 enum
   {kMinWidth = 340,
-   kMinHeight = 240};
+   kMinHeight = 176};
 
 // Macros
 #define Length(a) (sizeof(a) / sizeof(a[0]))
@@ -66,11 +66,10 @@ enum
 enum
     {kOversample = 4,
      kSamples = 4096,
-     kLog2Samples = 12,
      kLog2Step = 10,
-     kSamples2 = kSamples / 2,
      kRange = kSamples * 7 / 64,
-     kStep = kSamples / kOversample};
+     kStep = kSamples / kOversample,
+     kStep2 = kStep /2};
 
 // Tags
 enum

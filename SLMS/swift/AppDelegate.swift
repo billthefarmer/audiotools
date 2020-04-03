@@ -35,8 +35,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         window.contentMinSize = NSMakeSize(CGFloat(kMinWidth),
                                            CGFloat(kMinHeight))
-        window.contentAspectRatio = NSMakeSize(CGFloat(kMinWidth),
-                                               CGFloat(kMinHeight))
+        window.contentAspectRatio = NSMakeSize(CGFloat(1936),
+                                               CGFloat(1000))
         window.collectionBehavior.insert(.fullScreenNone)
 
         window.title = "Selective Level Measuring Set"
@@ -97,17 +97,17 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                             relatedBy: .equal,
                                             toItem: rStack,
                                             attribute: .width,
-                                            multiplier: 2,
+                                            multiplier: 0.5,
                                             constant: 0)
         stack.addConstraint(stackWidth)
-//        let scaleHeight = NSLayoutConstraint(item: scaleView,
-//                                             attribute: .height,
-//                                             relatedBy: .equal,
-//                                             toItem: displayView,
-//                                             attribute: .height,
-//                                             multiplier: 1,
-//                                             constant: 0)
-//        stack.addConstraint(scaleHeight)
+        let scaleHeight = NSLayoutConstraint(item: scaleView,
+                                             attribute: .height,
+                                             relatedBy: .equal,
+                                             toItem: displayView,
+                                             attribute: .height,
+                                             multiplier: 1,
+                                             constant: 0)
+        stack.addConstraint(scaleHeight)
 
         // Window
         window.contentView = stack

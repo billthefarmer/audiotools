@@ -345,16 +345,11 @@ void (^ProcessAudio)() = ^
 	K = 2.0 * M_PI / audio.sample;
 
 	// Init Hamming window
-	vDSP_hamm_window(window, kSamples, 0);
+	vDSP_hamm_window(window, kStep, 0);
 
 	// Init FFT
-	setup = vDSP_create_fftsetup(kLog2Samples, kFFTRadix2);
+	setup = vDSP_create_fftsetup(kLog2Step, kFFTRadix2);
     }
-
-    // Get RMS
-    // float level;
-
-    // vDSP_rmsqv(audio.buffer, 1, &level, kSamples);
 
     // Maximum data value
     static float dmax;
@@ -366,19 +361,19 @@ void (^ProcessAudio)() = ^
     float norm = dmax;
 
     // Get max magitude
-    vDSP_maxmgv(audio.buffer, 1, &dmax, kSamples);
+    vDSP_maxmgv(audio.buffer, 1, &dmax, kStep);
 
     // Divide by normalisation
-    vDSP_vsdiv(audio.buffer, 1, &norm, input, 1, kSamples);
+    vDSP_vsdiv(audio.buffer, 1, &norm, input, 1, kStep);
 
     // Multiply by window
-    vDSP_vmul(input, 1, window, 1, input, 1, kSamples);
+    vDSP_vmul(input, 1, window, 1, input, 1, kStep);
 
     // Copy input to split complex vector
-    vDSP_ctoz((COMPLEX *)input, 2, &x, 1, kSamples2);
+    vDSP_ctoz((COMPLEX *)input, 2, &x, 1, kStep2);
 
     // Do FFT
-    vDSP_fft_zrip(setup, &x, 1, kLog2Samples, kFFTDirection_Forward);
+    vDSP_fft_zrip(setup, &x, 1, kLog2Step, kFFTDirection_Forward);
 
     // Zero the zeroth part
     x.realp[0] = 0.0;
@@ -387,8 +382,8 @@ void (^ProcessAudio)() = ^
     // Scale the output
     float scale = kScale;
 
-    vDSP_vsdiv(x.realp, 1, &scale, x.realp, 1, kSamples2);
-    vDSP_vsdiv(x.imagp, 1, &scale, x.imagp, 1, kSamples2);
+    vDSP_vsdiv(x.realp, 1, &scale, x.realp, 1, kStep / 2);
+    vDSP_vsdiv(x.imagp, 1, &scale, x.imagp, 1, kStep / 2);
 
     // Magnitude
     vDSP_vdist(x.realp, 1, x.imagp, 1, xa, 1, kRange);
@@ -417,16 +412,7 @@ void (^ProcessAudio)() = ^
 
     disp.level = dB;
 
-    // meter.level = level * 1.5 / powf(10.0, 0.15);
-
-    // float dB = log10f(level * 3.0) * 20.0;
-
-    // if (dB < -80.0)
-    // 	dB = -80.0;
-
-    // disp.level = dB;
-
-    // meter.level = level * 3.0 / powf(10.0, 0.15);
+    meter.level = level * 1.5 / powf(10.0, 0.15);
 
     static long n;
 
