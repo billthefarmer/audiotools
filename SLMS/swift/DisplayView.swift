@@ -23,6 +23,21 @@ import Cocoa
 
 class DisplayView: SLMSView
 {
+    @objc var frequency = Float(0)
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+    @objc var level = Float(0)
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
     override func draw(_ dirtyRect: NSRect)
     {
         super.draw(dirtyRect)
