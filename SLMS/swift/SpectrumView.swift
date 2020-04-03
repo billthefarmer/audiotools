@@ -111,7 +111,7 @@ class SpectrumView: SLMSView
 
         // Yellow trace
         NSColor.yellow.setStroke()
-        let x = log(spectrum.slot * 4) / xscale
+        let x = CGFloat(log(spectrum.slot * 4)) / xscale
         NSBezierPath.strokeLine(from: NSMakePoint(x, rect.minY),
                                 to: NSMakePoint(x, rect.maxY))
     }

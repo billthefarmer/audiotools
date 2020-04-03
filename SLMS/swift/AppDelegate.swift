@@ -144,11 +144,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
     @objc func knobChange(sender: KnobView)
     {
         let value = sender.value
-        scaleView.value = sender.value / 2.0
-        let frequency = pow(10, value / 2) * 10
+//        scaleView.value = sender.value / 2.0
+        let frequency = Float(pow(10, value / 2) * 10)
         audio.frequency = frequency
-        display.frequency = frequency
-        let fps = audio.sample / kStep
+        disp.frequency = frequency
+        let fps = audio.sample / Float(kStep)
         spectrum.slot = frequency / fps
     }
 

@@ -352,9 +352,9 @@ void (^ProcessAudio)() = ^
     }
 
     // Get RMS
-    float level;
+    // float level;
 
-    vDSP_rmsqv(audio.buffer, 1, &level, kSamples);
+    // vDSP_rmsqv(audio.buffer, 1, &level, kSamples);
 
     // Maximum data value
     static float dmax;
@@ -415,18 +415,18 @@ void (^ProcessAudio)() = ^
     if (dB < -80.0)
 	dB = -80.0;
 
-    display.level = dB;
-
-    meter.level = level * 1.5 / powf(10.0, 0.15);
-
-    float dB = log10f(level * 3.0) * 20.0;
-
-    if (dB < -80.0)
-	dB = -80.0;
-
     disp.level = dB;
 
-    meter.level = level * 3.0 / powf(10.0, 0.15);
+    // meter.level = level * 1.5 / powf(10.0, 0.15);
+
+    // float dB = log10f(level * 3.0) * 20.0;
+
+    // if (dB < -80.0)
+    // 	dB = -80.0;
+
+    // disp.level = dB;
+
+    // meter.level = level * 3.0 / powf(10.0, 0.15);
 
     static long n;
 

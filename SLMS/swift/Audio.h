@@ -66,7 +66,9 @@ enum
 enum
     {kOversample = 4,
      kSamples = 4096,
+     kLog2Samples = 12,
      kLog2Step = 10,
+     kSamples2 = kSamples / 2,
      kRange = kSamples * 7 / 64,
      kStep = kSamples / kOversample};
 
