@@ -33,8 +33,10 @@
 
 // Size
 enum
-  {kMinWidth = 340,
-   kMinHeight = 176};
+    {kWidth = 620,
+     kHeight = 320,
+     kMinWidth = 340,
+     kMinHeight = 176};
 
 // Macros
 #define Length(a) (sizeof(a) / sizeof(a[0]))
@@ -116,11 +118,11 @@ typedef struct
 } Audio;
 Audio audio;
 
-NSView *scaleView;
-NSControl *knobView;
-NSView *displayView;
-NSView *meterView;
-NSView *spectrumView;
+ScaleView *scaleView;
+KnobView *knobView;
+DisplayView *displayView;
+MeterView *meterView;
+SpectrumView *spectrumView;
 
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,

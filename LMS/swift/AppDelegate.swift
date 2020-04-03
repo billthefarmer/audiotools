@@ -46,6 +46,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
         meterView = MeterView()
         spectrumView = SpectrumView()
 
+        displayView.toolTip = "Frequency and level display"
+        meterView.toolTip = "Level meter"
+        spectrumView.toolTip = "Spectrum"
+
         // Stack
         let stack = NSStackView(views: [displayView, meterView, spectrumView])
         stack.orientation = .vertical
@@ -79,8 +83,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         {
             displayAlert("Tuner", "Audio initialisation failed", status)
         }
-
-        NSLog("Audio %d", status)
     }
 
     // DisplayAlert

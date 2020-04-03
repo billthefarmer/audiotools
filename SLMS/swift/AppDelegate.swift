@@ -28,11 +28,11 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     @IBOutlet weak var window: NSWindow!
 
-
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         // Insert code here to initialize your application
 
+        window.setContentSize(NSMakeSize(620, 320))
         window.contentMinSize = NSMakeSize(CGFloat(kMinWidth),
                                            CGFloat(kMinHeight))
         window.contentAspectRatio = NSMakeSize(CGFloat(1936),
@@ -50,20 +50,24 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         knobView.target = self
         knobView.action = #selector(knobChange)
-        knobView.toolTip = "Frequency knob"
-        knobView.tag = kTagFreq
 
         scaleView.toolTip = "Frequency scale"
+        knobView.toolTip = "Frequency knob"
         displayView.toolTip = "Frequency and level display"
+        meterView.toolTip = "Level meter"
+        spectrumView.toolTip = "Spectrum"
 
         // Stack
         let lStack = NSStackView(views: [scaleView, knobView])
         let rStack = NSStackView(views: [displayView, meterView, spectrumView])
         let stack = NSStackView(views: [lStack, rStack])
+
         lStack.orientation = .vertical
         lStack.spacing = 8
+
         rStack.orientation = .vertical
         rStack.spacing = 8
+
         stack.orientation = .horizontal
         stack.spacing = 8
         stack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20)
@@ -144,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     @objc func knobChange(sender: KnobView)
     {
         let value = sender.value
-//        scaleView.value = sender.value / 2.0
+        scaleView.value = sender.value / 2.0
         let frequency = Float(pow(10, value / 2) * 10)
         audio.frequency = frequency
         disp.frequency = frequency
