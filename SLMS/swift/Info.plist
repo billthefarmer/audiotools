@@ -11,7 +11,7 @@
     <key>CFBundleIconFile</key>
     <string>SLMS.icns</string>
     <key>CFBundleIdentifier</key>
-    <string>org.billthefarmer.LMS</string>
+    <string>org.billthefarmer.SLMS</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
