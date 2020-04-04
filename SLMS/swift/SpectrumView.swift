@@ -26,7 +26,7 @@ import Cocoa
 class SpectrumView: SLMSView
 {
     @objc var slot = Float(0)
-    @objc var max = Float(0)
+    static var max = Float(0)
 
     override func draw(_ dirtyRect: NSRect)
     {
@@ -112,7 +112,7 @@ class SpectrumView: SLMSView
 
         // Yellow trace
         NSColor.yellow.setStroke()
-        let x = CGFloat(log(spectrum.slot * 4)) / xscale
+        let x = CGFloat(log(slot * 4)) / xscale
         NSBezierPath.strokeLine(from: NSMakePoint(x, rect.minY),
                                 to: NSMakePoint(x, rect.maxY))
     }

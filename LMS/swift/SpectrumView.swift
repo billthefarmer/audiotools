@@ -26,7 +26,7 @@ import Cocoa
 class SpectrumView: LMSView
 {
     @objc var slot = Float(0)
-    @objc var max = Float(0)
+    static var max = Float(0)
 
     override func draw(_ dirtyRect: NSRect)
     {
@@ -109,5 +109,11 @@ class SpectrumView: LMSView
         path.line(to: NSMakePoint(width, 0))
         path.close()
         path.fill()
+
+        // Yellow trace
+        NSColor.yellow.setStroke()
+        let x = CGFloat(log(slot * 4)) / xscale
+        NSBezierPath.strokeLine(from: NSMakePoint(x, rect.minY),
+                                to: NSMakePoint(x, rect.maxY))
     }
 }

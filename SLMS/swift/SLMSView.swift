@@ -61,4 +61,22 @@ class SLMSView: NSView
 
         return inset
     }
+
+    // keyDown
+    override func keyDown(with event: NSEvent)
+    {
+        let code = Int(event.keyCode)
+        switch code
+        {
+        case kLeftKey:
+            knobView.value = round((knobView.value * 100.0) - 1) / 100.0
+
+        case kRightKey:
+            knobView.value = round((knobView.value * 100.0) + 1) / 100.0
+
+        default:
+            NSLog("Key %x", code)
+            
+        }
+    }
 }

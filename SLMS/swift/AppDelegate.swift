@@ -116,6 +116,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // Window
         window.contentView = stack
         window.makeKeyAndOrderFront(self)
+        window.makeFirstResponder(displayView)
         window.makeMain()
 
         // Audio

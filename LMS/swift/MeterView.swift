@@ -25,6 +25,7 @@ import Cocoa
 class MeterView: LMSView
 {
     @objc var level = Float(0)
+    static var ml = Float(0)
 
     override func draw(_ dirtyRect: NSRect)
     {
@@ -123,12 +124,12 @@ class MeterView: LMSView
         thumb.close()
 
         // Do calculation
-        level = ((level * 7) + meter.level) / 8
+        ml = ((ml * 7) + level) / 8
 
         // Transform
         let scale = AffineTransform(scale: height / 16)
         let translate =
-          AffineTransform(translationByX: kMargin + CGFloat(level) *
+          AffineTransform(translationByX: kMargin + CGFloat(ml) *
                             (width - kMargin * 2), byY: 0)
         thumb.transform(using: scale)
         thumb.transform(using: translate)

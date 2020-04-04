@@ -29,6 +29,8 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
+#import "SLMS-Swift.h"
+
 // Macros
 #define Length(a) (sizeof(a) / sizeof(a[0]))
 
@@ -87,9 +89,9 @@ typedef struct
 } Audio;
 Audio audio;
 
-NSView *displayView;
-NSView *meterView;
-NSView *spectrumView;
+DisplayView *displayView;
+MeterView *meterView;
+SpectrumView *spectrumView;
 
 OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
                    const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber,

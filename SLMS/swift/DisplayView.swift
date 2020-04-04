@@ -63,12 +63,12 @@ class DisplayView: SLMSView
         let y = rect.midY - kTextSize / 2
 
         // Draw frequency
-        let freq = String(format: "%1.2fHz", disp.frequency)
+        let freq = String(format: "%1.2fHz", frequency)
         var x = rect.minX + kMargin
         freq.draw(at: NSMakePoint(x, y), withAttributes: attribs)
 
         // Draw decibels
-        let db = String(format: "%+1.2fdB", disp.level)
+        let db = String(format: "%+1.2fdB", level)
         x = rect.maxX - db.size(withAttributes: attribs).width - kMargin
         db.draw(at: NSMakePoint(x, y), withAttributes: attribs)
     }
