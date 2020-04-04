@@ -402,29 +402,23 @@ void (^ProcessAudio)() = ^
     }
 
     float level = hypotf(real, imag);
-
     level = level / (kSamples / (4.0 * sqrtf(2.0)));
-
     float dB = log10f(level * 1.5) * 20.0;
 
     if (dB < -80.0)
 	dB = -80.0;
 
-    disp.level = dB;
-
-    meter.level = level * 1.5 / powf(10.0, 0.15);
-
     static long n;
 
     // Update display
+    if ((n % 16) == 0)
+        displayView.level = dB;
+
     if ((n % 4) == 0)
     {
         spectrumView.needsDisplay = true;
-        meterView.needsDisplay = true;
+        meterView.level = level * 1.5 / powf(10.0, 0.15);
     }
-
-    if ((n % 16) == 0)
-        displayView.needsDisplay = true;
 
     n++;
 };
