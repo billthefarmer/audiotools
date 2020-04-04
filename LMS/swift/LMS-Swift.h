@@ -230,7 +230,6 @@ SWIFT_CLASS("_TtC3LMS9MeterView")
 SWIFT_CLASS("_TtC3LMS12SpectrumView")
 @interface SpectrumView : LMSView
 @property (nonatomic) float slot;
-@property (nonatomic) float max;
 - (void)drawRect:(NSRect)dirtyRect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;

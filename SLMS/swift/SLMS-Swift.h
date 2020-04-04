@@ -199,11 +199,13 @@ SWIFT_CLASS("_TtC4SLMS11AppDelegate")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+@class NSEvent;
 @class NSCoder;
 
 SWIFT_CLASS("_TtC4SLMS8SLMSView")
 @interface SLMSView : NSView
 - (void)drawRect:(NSRect)dirtyRect;
+- (void)keyDown:(NSEvent * _Nonnull)event;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -218,7 +220,6 @@ SWIFT_CLASS("_TtC4SLMS11DisplayView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class NSEvent;
 
 SWIFT_CLASS("_TtC4SLMS8KnobView")
 @interface KnobView : NSControl
@@ -251,7 +252,6 @@ SWIFT_CLASS("_TtC4SLMS9ScaleView")
 SWIFT_CLASS("_TtC4SLMS12SpectrumView")
 @interface SpectrumView : SLMSView
 @property (nonatomic) float slot;
-@property (nonatomic) float max;
 - (void)drawRect:(NSRect)dirtyRect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;

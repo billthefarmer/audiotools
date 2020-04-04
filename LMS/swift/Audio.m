@@ -451,7 +451,7 @@ void (^ProcessAudio)() = ^
 
     if (max > kMin)
     {
-	disp.frequency = f;
+	displayView.frequency = f;
 	n = 0;
     }
 
@@ -468,9 +468,9 @@ void (^ProcessAudio)() = ^
     if (dB < -80.0)
 	dB = -80.0;
 
-    disp.level = dB;
+    displayView.level = dB;
 
-    meter.level = level * 3.0 / powf(10.0, 0.15);
+    meterView.level = level * 3.0 / powf(10.0, 0.15);
 
     static long m;
 

@@ -25,7 +25,7 @@ import Cocoa
 class MeterView: LMSView
 {
     @objc var level = Float(0)
-    static var ml = Float(0)
+    var ml = Float(0)
 
     override func draw(_ dirtyRect: NSRect)
     {

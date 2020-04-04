@@ -29,7 +29,7 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
-#import "SLMS-Swift.h"
+#import "LMS-Swift.h"
 
 // Macros
 #define Length(a) (sizeof(a) / sizeof(a[0]))

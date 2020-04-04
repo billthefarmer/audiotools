@@ -26,7 +26,7 @@ import Cocoa
 class SpectrumView: LMSView
 {
     @objc var slot = Float(0)
-    static var max = Float(0)
+    var max = Float(0)
 
     override func draw(_ dirtyRect: NSRect)
     {
