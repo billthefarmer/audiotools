@@ -69,19 +69,6 @@ Spectrum spectrum;
 
 typedef struct
 {
-    float frequency;
-    float level;
-} Display;
-Display disp;
-
-typedef struct
-{
-    float level;
-} Meter;
-Meter meter;
-
-typedef struct
-{
     AudioUnit output;
     float *buffer;
     int frames;

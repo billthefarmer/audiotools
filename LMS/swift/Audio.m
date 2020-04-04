@@ -446,44 +446,35 @@ void (^ProcessAudio)() = ^
     vDSP_maxmgvi(xa, 1, &max, &imax, kRange);
 
     float f = xf[imax];
-
-    static long n;
-
-    if (max > kMin)
-    {
-	displayView.frequency = f;
-	n = 0;
-    }
-
-    else
-    {
-	if (n == 64)
-            disp.frequency = 0.0;
-    }
-
-    n++;
-
     float dB = log10f(level * 3.0) * 20.0;
 
     if (dB < -80.0)
 	dB = -80.0;
 
-    displayView.level = dB;
-
-    meterView.level = level * 3.0 / powf(10.0, 0.15);
-
+    static long n;
     static long m;
 
     // Update display
+    if ((m % 16) == 0)
+    {
+        if (max > kMin)
+        {
+            displayView.frequency = f;
+            n = 0;
+        }
+        displayView.level = dB;
+    }
+
     if ((m % 4) == 0)
     {
         spectrumView.needsDisplay = true;
-        meterView.needsDisplay = true;
+        meterView.level = level * 3.0 / powf(10.0, 0.15);
     }
 
-    if ((m % 16) == 0)
-        displayView.needsDisplay = true;
+    if (n == 64)
+        disp.frequency = 0.0;
 
+    n++;
     m++;
 };
 
