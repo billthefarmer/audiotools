@@ -80,7 +80,6 @@ class SpectrumView: LMSView
         // Transparent green fill
         NSColor(red: 0, green: 1, blue: 0, alpha: 0.25).setFill()
         context.shouldAntialias = true;
-        context.cgContext.translateBy(x: rect.minX, y: rect.minY)
 
         var last = 1
         let path = NSBezierPath()
@@ -110,7 +109,7 @@ class SpectrumView: LMSView
             }
 
             let y = CGFloat(value) * yscale
-            path.line(to: NSMakePoint(CGFloat(x), y))
+            path.line(to: NSMakePoint(rect.minX + CGFloat(x), rect.minY + y))
         }
 
         path.stroke()
