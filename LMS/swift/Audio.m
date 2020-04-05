@@ -472,7 +472,7 @@ void (^ProcessAudio)() = ^
     }
 
     if (n == 64)
-        disp.frequency = 0.0;
+        displayView.frequency = 0.0;
 
     n++;
     m++;

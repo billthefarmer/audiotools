@@ -68,10 +68,10 @@ enum
 enum
     {kOversample = 4,
      kSamples = 4096,
-     kLog2Step = 10,
-     kRange = kSamples * 7 / 64,
-     kStep = kSamples / kOversample,
-     kStep2 = kStep /2};
+     kLog2Samples = 12,
+     kSamples2 = kSamples / 2,
+     kRange = kSamples * 7 / 16,
+     kStep = kSamples / kOversample};
 
 // Tags
 enum
@@ -94,19 +94,6 @@ typedef struct
     float slot;
 } Spectrum;
 Spectrum spectrum;
-
-typedef struct
-{
-    float frequency;
-    float level;
-} Display;
-Display disp;
-
-typedef struct
-{
-    float level;
-} Meter;
-Meter meter;
 
 typedef struct
 {

@@ -1,6 +1,6 @@
 //
 //  Audio.m
-//  LMS
+//  SLMS
 //
 //  Created by Bill Farmer on 03/07/2018.
 //  Copyright © 2018 Bill Farmer. All rights reserved.
@@ -323,11 +323,11 @@ void (^ProcessAudio)() = ^
     // Arrays for processing input
     static float xa[kRange];
 
-    static float window[kStep];
-    static float input[kStep];
+    static float window[kRange];
+    static float input[kRange];
 
-    static float re[kStep / 2];
-    static float im[kStep / 2];
+    static float re[kSamples2];
+    static float im[kSamples2];
 
     static DSPSplitComplex x =
 	{re, im};
@@ -345,10 +345,10 @@ void (^ProcessAudio)() = ^
 	K = 2.0 * M_PI / audio.sample;
 
 	// Init Hamming window
-	vDSP_hamm_window(window, kStep, 0);
+	vDSP_hamm_window(window, kSamples, 0);
 
 	// Init FFT
-	setup = vDSP_create_fftsetup(kLog2Step, kFFTRadix2);
+	setup = vDSP_create_fftsetup(kLog2Samples, kFFTRadix2);
     }
 
     // Maximum data value
@@ -361,19 +361,19 @@ void (^ProcessAudio)() = ^
     float norm = dmax;
 
     // Get max magitude
-    vDSP_maxmgv(audio.buffer, 1, &dmax, kStep);
+    vDSP_maxmgv(audio.buffer, 1, &dmax, kSamples);
 
     // Divide by normalisation
-    vDSP_vsdiv(audio.buffer, 1, &norm, input, 1, kStep);
+    vDSP_vsdiv(audio.buffer, 1, &norm, input, 1, kSamples);
 
     // Multiply by window
-    vDSP_vmul(input, 1, window, 1, input, 1, kStep);
+    vDSP_vmul(input, 1, window, 1, input, 1, kSamples);
 
     // Copy input to split complex vector
-    vDSP_ctoz((COMPLEX *)input, 2, &x, 1, kStep2);
+    vDSP_ctoz((COMPLEX *)input, 2, &x, 1, kSamples2);
 
     // Do FFT
-    vDSP_fft_zrip(setup, &x, 1, kLog2Step, kFFTDirection_Forward);
+    vDSP_fft_zrip(setup, &x, 1, kLog2Samples, kFFTDirection_Forward);
 
     // Zero the zeroth part
     x.realp[0] = 0.0;
@@ -382,8 +382,8 @@ void (^ProcessAudio)() = ^
     // Scale the output
     float scale = kScale;
 
-    vDSP_vsdiv(x.realp, 1, &scale, x.realp, 1, kStep / 2);
-    vDSP_vsdiv(x.imagp, 1, &scale, x.imagp, 1, kStep / 2);
+    vDSP_vsdiv(x.realp, 1, &scale, x.realp, 1, kSamples2);
+    vDSP_vsdiv(x.imagp, 1, &scale, x.imagp, 1, kSamples2);
 
     // Magnitude
     vDSP_vdist(x.realp, 1, x.imagp, 1, xa, 1, kRange);

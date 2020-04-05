@@ -152,7 +152,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         scaleView.value = sender.value / 2.0
         let frequency = Float(pow(10, value / 2) * 10)
         audio.frequency = frequency
-        disp.frequency = frequency
+        displayView.frequency = frequency
         let fps = audio.sample / Float(kStep)
         spectrum.slot = frequency / fps
     }
