@@ -26,6 +26,8 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate
 {
 
+    let kFreqRef: Float = 1000
+
     @IBOutlet weak var window: NSWindow!
 
     func applicationDidFinishLaunching(_ aNotification: Notification)
@@ -125,6 +127,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
         {
             displayAlert("Tuner", "Audio initialisation failed", status)
         }
+
+        // Set frequency
+        displayView.frequency = kFreqRef
+        audio.frequency = kFreqRef
+        let fps = audio.sample / Float(kStep)
+        spectrumView.slot = kFreqRef / fps
     }
 
     // DisplayAlert
@@ -154,7 +162,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         audio.frequency = frequency
         displayView.frequency = frequency
         let fps = audio.sample / Float(kStep)
-        spectrum.slot = frequency / fps
+        spectrumView.slot = frequency / fps
     }
 
     // print

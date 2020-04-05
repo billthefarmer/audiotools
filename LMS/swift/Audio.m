@@ -467,7 +467,7 @@ void (^ProcessAudio)() = ^
 
     if ((m % 4) == 0)
     {
-        spectrumView.slot = f / fps
+        spectrumView.slot = f / fps;
         meterView.level = level * 3.0 / powf(10.0, 0.15);
     }
 

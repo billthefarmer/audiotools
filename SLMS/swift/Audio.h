@@ -89,7 +89,6 @@ typedef struct
 {
     int length;
     float *data;
-    float slot;
 } Spectrum;
 Spectrum spectrum;
 
