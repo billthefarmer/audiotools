@@ -323,8 +323,8 @@ void (^ProcessAudio)() = ^
     // Arrays for processing input
     static float xa[kRange];
 
-    static float window[kRange];
-    static float input[kRange];
+    static float window[kSamples];
+    static float input[kSamples];
 
     static float re[kSamples2];
     static float im[kSamples2];
