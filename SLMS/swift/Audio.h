@@ -84,7 +84,9 @@ enum
      kLeftKey  = 0x7b,
      kRightKey = 0x7c,
      kPriorKey = 0x74,
-     kNextKey  = 0x79};
+     kNextKey  = 0x79,
+     kHomeKey  = 0x73,
+     kEndKey   = 0x77};
 
 // Global data
 typedef struct

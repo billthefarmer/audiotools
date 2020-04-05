@@ -69,10 +69,16 @@ class SLMSView: NSView
         switch code
         {
         case kLeftKey:
-            knobView.value = round((knobView.value * 100.0) - 1) / 100.0
+            knobView.value = round((knobView.value * 100) - 1) / 100
 
         case kRightKey:
-            knobView.value = round((knobView.value * 100.0) + 1) / 100.0
+            knobView.value = round((knobView.value * 100) + 1) / 100
+
+        case kHomeKey:
+            knobView.value = round((knobView.value * 1000) - 1) / 1000
+
+        case kEndKey:
+            knobView.value = round((knobView.value * 1000) + 1) / 1000
 
         default:
             NSLog("Key %x", code)
