@@ -73,6 +73,8 @@ class SpectrumView: LMSView
         NSColor.green.setStroke()
         // Transparent green fill
         NSColor(red: 0, green: 1, blue: 0, alpha: 0.25).setFill()
+        context.shouldAntialias = true;
+        context.cgContext.translateBy(x: 0, y: 2)
 
         var last = 1
         let path = NSBezierPath()
