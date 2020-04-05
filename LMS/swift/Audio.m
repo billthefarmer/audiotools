@@ -460,6 +460,7 @@ void (^ProcessAudio)() = ^
         if (max > kMin)
         {
             displayView.frequency = f;
+            spectrumView.slot = f / fps;
             n = 0;
         }
         displayView.level = dB;
@@ -467,12 +468,15 @@ void (^ProcessAudio)() = ^
 
     if ((m % 4) == 0)
     {
-        spectrumView.slot = f / fps;
+        spectrumView.needsDisplay;
         meterView.level = level * 3.0 / powf(10.0, 0.15);
     }
 
     if (n == 64)
+    {
         displayView.frequency = 0.0;
+        spectrumView.slot = 0.0;
+    }
 
     n++;
     m++;
