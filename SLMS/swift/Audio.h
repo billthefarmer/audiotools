@@ -73,10 +73,6 @@ enum
      kRange = kSamples * 7 / 16,
      kStep = kSamples / kOversample};
 
-// Tags
-enum
-    {kTagFreq   = 'Freq'};
-
 // Keycodes
 enum
     {kUpKey    = 0x7e,

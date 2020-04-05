@@ -26,6 +26,12 @@ import Cocoa
 class SpectrumView: LMSView
 {
     @objc var slot = Float(0)
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
     var max = Float(0)
 
     override func draw(_ dirtyRect: NSRect)
@@ -74,7 +80,7 @@ class SpectrumView: LMSView
         // Transparent green fill
         NSColor(red: 0, green: 1, blue: 0, alpha: 0.25).setFill()
         context.shouldAntialias = true;
-        context.cgContext.translateBy(x: 0, y: 2)
+        context.cgContext.translateBy(x: rect.minX, y: rect.minY)
 
         var last = 1
         let path = NSBezierPath()
