@@ -202,8 +202,8 @@ SWIFT_CLASS("_TtC5Scope11AppDelegate")
 
 SWIFT_CLASS("_TtC5Scope9ScopeView")
 @interface ScopeView : NSView
-@property (nonatomic) NSInteger index;
-@property (nonatomic) NSInteger start;
+@property (nonatomic) float index;
+@property (nonatomic) float start;
 @property (nonatomic) BOOL storage;
 - (void)mouseDown:(NSEvent * _Nonnull)event;
 - (void)keyDown:(NSEvent * _Nonnull)event;
@@ -217,8 +217,8 @@ SWIFT_CLASS("_TtC5Scope10XScaleView")
 @interface XScaleView : NSView
 @property (nonatomic, readonly) NSSize intrinsicContentSize;
 @property (nonatomic) float scale;
-@property (nonatomic) NSInteger start;
-@property (nonatomic) NSInteger step;
+@property (nonatomic) float start;
+@property (nonatomic) float step;
 - (void)drawRect:(NSRect)rect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)decoder OBJC_DESIGNATED_INITIALIZER;
@@ -228,7 +228,7 @@ SWIFT_CLASS("_TtC5Scope10XScaleView")
 SWIFT_CLASS("_TtC5Scope10YScaleView")
 @interface YScaleView : NSView
 @property (nonatomic, readonly) NSSize intrinsicContentSize;
-@property (nonatomic) NSInteger index;
+@property (nonatomic) float index;
 - (void)mouseDown:(NSEvent * _Nonnull)event;
 - (void)drawRect:(NSRect)rect;
 - (nonnull instancetype)initWithFrame:(NSRect)frameRect OBJC_DESIGNATED_INITIALIZER;
