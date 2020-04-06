@@ -35,7 +35,7 @@ class YScaleView: NSView
         }
     }
 
-    @objc var index = 0
+    @objc var index = Float(0)
     {
         didSet
         {

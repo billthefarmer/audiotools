@@ -41,7 +41,7 @@ class XScaleView: NSView
         }
     }
 
-    @objc var start = 0
+    @objc var start = Float(0)
     {
         didSet
         {
@@ -49,7 +49,7 @@ class XScaleView: NSView
         }
     }
 
-    @objc var step = 0
+    @objc var step = Float(0)
     {
         didSet
         {

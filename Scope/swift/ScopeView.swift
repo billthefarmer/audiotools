@@ -28,7 +28,7 @@ class ScopeView: NSView
     var graticule: CGContext!
     var image: CGImage!
 
-    @objc var index = 0
+    @objc var index = Int32(0)
     {
         didSet
         {
@@ -36,7 +36,7 @@ class ScopeView: NSView
         }
     }
 
-    @objc var start = 0
+    @objc var start = Float(0)
     {
         didSet
         {
