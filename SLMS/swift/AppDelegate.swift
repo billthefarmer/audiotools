@@ -26,7 +26,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate
 {
 
-    let kFreqRef: Float = 1000
+    let kFreqRef = Float(1000)
 
     @IBOutlet weak var window: NSWindow!
 
@@ -157,7 +157,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     @objc func knobChange(sender: KnobView)
     {
         let value = sender.value
-        scaleView.value = sender.value / 2.0
+        scaleView.value = sender.value / 2
         let frequency = Float(pow(10, value / 2) * 10)
         audio.frequency = frequency
         displayView.frequency = frequency
