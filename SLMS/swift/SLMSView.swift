@@ -74,10 +74,10 @@ class SLMSView: NSView
         case kRightKey:
             knobView.value = round((knobView.value * 100) + 1) / 100
 
-        case kHomeKey:
+        case kDownKey:
             knobView.value = round((knobView.value * 1000) - 1) / 1000
 
-        case kEndKey:
+        case kUpKey:
             knobView.value = round((knobView.value * 1000) + 1) / 1000
 
         default:
