@@ -33,6 +33,30 @@ class XScaleView: NSView
         }
     }
 
+    @objc var scale = Float(0)
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
+    @objc var start = 0
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
+    @objc var step = 0
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
     // draw
     override func draw(_ rect: NSRect)
     {

@@ -26,6 +26,8 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
+#import "Scope-Swift.h"
+
 // Window dimensions
 enum
     {kMinimumWidth  = 640,
@@ -64,9 +66,9 @@ enum
     {kSamples = 262144,
      kFrames = 4096};
 
-NSView  *scopeView;
-NSView *xScaleView;
-NSView *yScaleView;
+ScopeView  *scopeView;
+XScaleView *xScaleView;
+YScaleView *yScaleView;
 
 typedef struct
 {

@@ -35,6 +35,14 @@ class YScaleView: NSView
         }
     }
 
+    @objc var index = 0
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
     // mouseDown
     override func mouseDown(with event: NSEvent)
     {

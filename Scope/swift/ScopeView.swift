@@ -28,6 +28,30 @@ class ScopeView: NSView
     var graticule: CGContext!
     var image: CGImage!
 
+    @objc var index = 0
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
+    @objc var start = 0
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
+    @objc var storage = false
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
     let kMinMax: Float = 0.125
     let kTextSize: CGFloat = 8
 
