@@ -74,26 +74,26 @@ class AppDelegate: NSObject, NSApplicationDelegate
         stack.spacing = 8
         stack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20)
 
-        let knobHeight = NSLayoutConstraint(item: knobView,
+        let knobHeight = NSLayoutConstraint(item: knobView as Any,
                                             attribute: .height,
                                             relatedBy: .equal,
-                                            toItem: knobView,
+                                            toItem: knobView as Any,
                                             attribute: .width,
                                             multiplier: 1,
                                             constant: 0)
         lStack.addConstraint(knobHeight)
-        let spectrumHeight = NSLayoutConstraint(item: spectrumView,
+        let spectrumHeight = NSLayoutConstraint(item: spectrumView as Any,
                                                 attribute: .height,
                                                 relatedBy: .equal,
-                                                toItem: displayView,
+                                                toItem: displayView as Any,
                                                 attribute: .height,
                                                 multiplier: 1,
                                                 constant: 0)
         rStack.addConstraint(spectrumHeight)
-        let meterHeight = NSLayoutConstraint(item: meterView,
+        let meterHeight = NSLayoutConstraint(item: meterView as Any,
                                              attribute: .height,
                                              relatedBy: .equal,
-                                             toItem: displayView,
+                                             toItem: displayView as Any,
                                              attribute: .height,
                                              multiplier: 1,
                                              constant: 0)
@@ -106,10 +106,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                             multiplier: 0.5,
                                             constant: 0)
         stack.addConstraint(stackWidth)
-        let scaleHeight = NSLayoutConstraint(item: scaleView,
+        let scaleHeight = NSLayoutConstraint(item: scaleView as Any,
                                              attribute: .height,
                                              relatedBy: .equal,
-                                             toItem: displayView,
+                                             toItem: displayView as Any,
                                              attribute: .height,
                                              multiplier: 1,
                                              constant: 0)

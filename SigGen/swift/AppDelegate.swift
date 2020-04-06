@@ -74,10 +74,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         let lStack = NSStackView(views: [scaleView, knobView])
 
-        let knobHeight = NSLayoutConstraint(item: knobView,
+        let knobHeight = NSLayoutConstraint(item: knobView as Any,
                                             attribute: .height,
                                             relatedBy: .equal,
-                                            toItem: knobView,
+                                            toItem: knobView as Any,
                                             attribute: .width,
                                             multiplier: 1,
                                             constant: 0)
@@ -152,7 +152,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         rStack.orientation = .vertical
         rStack.alignment = .left
         rStack.spacing = 8
-        let displayHeight = NSLayoutConstraint(item: displayView,
+        let displayHeight = NSLayoutConstraint(item: displayView as Any,
                                                attribute: .height,
                                                relatedBy: .equal,
                                                toItem: hStack,
@@ -172,10 +172,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
                                             multiplier: 1,
                                             constant: 0)
         stack.addConstraint(stackWidth)
-        let scaleHeight = NSLayoutConstraint(item: scaleView,
+        let scaleHeight = NSLayoutConstraint(item: scaleView as Any,
                                              attribute: .height,
                                              relatedBy: .equal,
-                                             toItem: displayView,
+                                             toItem: displayView as Any,
                                              attribute: .height,
                                              multiplier: 1,
                                              constant: 0)

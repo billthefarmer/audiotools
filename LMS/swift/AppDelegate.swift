@@ -55,18 +55,18 @@ class AppDelegate: NSObject, NSApplicationDelegate
         stack.orientation = .vertical
         stack.spacing = 8
         stack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20)
-        let spectrumHeight = NSLayoutConstraint(item: spectrumView,
+        let spectrumHeight = NSLayoutConstraint(item: spectrumView as Any,
                                                 attribute: .height,
                                                 relatedBy: .equal,
-                                                toItem: displayView,
+                                                toItem: displayView as Any,
                                                 attribute: .height,
                                                 multiplier: 1,
                                                 constant: 0)
         stack.addConstraint(spectrumHeight)
-        let meterHeight = NSLayoutConstraint(item: meterView,
+        let meterHeight = NSLayoutConstraint(item: meterView as Any,
                                              attribute: .height,
                                              relatedBy: .equal,
-                                             toItem: displayView,
+                                             toItem: displayView as Any,
                                              attribute: .height,
                                              multiplier: 1,
                                              constant: 0)
