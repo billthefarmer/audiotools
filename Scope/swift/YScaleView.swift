@@ -35,7 +35,7 @@ class YScaleView: NSView
         }
     }
 
-    @objc var index = Float(0)
+    @objc var index = CGFloat(0)
     {
         didSet
         {
@@ -50,8 +50,7 @@ class YScaleView: NSView
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            yscale.index = Int32(point.y - (size.height / 2))
-            needsDisplay = true;
+            index = point.y - (size.height / 2)
         }
     }
 
@@ -100,12 +99,12 @@ class YScaleView: NSView
           AffineTransform(scale: rect.width / (thumb.bounds.width * 1.5))
         let translate =
           AffineTransform(translationByX: rect.width / 2.5,
-                          byY: CGFloat(yscale.index))
+                          byY: index)
         thumb.transform(using: scale)
         thumb.transform(using: translate)
 
         // Draw thumb
-        if (yscale.index != 0)
+        if (index != 0)
         {
             thumb.fill()
         }

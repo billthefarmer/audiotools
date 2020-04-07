@@ -33,7 +33,7 @@ class XScaleView: NSView
         }
     }
 
-    @objc var scale = Float(0)
+    var scale = Float(0)
     {
         didSet
         {
@@ -41,7 +41,7 @@ class XScaleView: NSView
         }
     }
 
-    @objc var start = Float(0)
+    var start = Float(0)
     {
         didSet
         {
@@ -49,7 +49,7 @@ class XScaleView: NSView
         }
     }
 
-    @objc var step = Float(0)
+    var step = Float(0)
     {
         didSet
         {
@@ -87,7 +87,7 @@ class XScaleView: NSView
         let font = NSFont.boldSystemFont(ofSize: kTextSize)
         let attrs: [NSAttributedString.Key: Any] = [.font: font]
 
-        if (xscale.scale < 100)
+        if (scale < 100)
         {
             var offset = "ms".size(withAttributes: attrs).width / 2
             "ms".draw(at: NSMakePoint(-offset, 4), withAttributes: attrs)
@@ -96,8 +96,7 @@ class XScaleView: NSView
             {
                 let s =
                   String(format: "%0.1f",
-                         (Float(xscale.start) +
-                            (Float(x) * xscale.scale)) / 100.0)
+                         (start + (Float(x) * scale)) / 100.0)
                 offset = s.size(withAttributes: attrs).width / 2
                 s.draw(at: NSMakePoint(x - offset, 4), withAttributes: attrs)
             }
@@ -112,8 +111,7 @@ class XScaleView: NSView
             {
                 let s =
                   String(format: "%0.1f",
-                         (Float(xscale.start) +
-                            (Float(x) * xscale.scale)) / 100000.0)
+                         (start + (Float(x) * scale)) / 100000.0)
                 offset = s.size(withAttributes: attrs).width / 2
                 s.draw(at: NSMakePoint(x - offset, 4), withAttributes: attrs)
             }

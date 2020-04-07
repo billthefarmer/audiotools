@@ -317,10 +317,7 @@ void (^ProcessAudio)() = ^
 
     // Initialise data structs
     if (scope.data == nil)
-    {
         scope.data = buffer;
-        scope.length = scope.count;
-    }
 
     // Copy the input data
     float *data = audio.ablp->mBuffers[0].mData;
@@ -342,7 +339,7 @@ void (^ProcessAudio)() = ^
                 break;
 
             // Calculate sync level
-            float level = yscale.index * scope.yscale;
+            float level = yScaleView.index * scope.yscale;
 
             // Initialise sync
             float dx = 0.0;
@@ -395,8 +392,7 @@ void (^ProcessAudio)() = ^
     case FIRST:
 
         // Update count
-        count = scope.count;
-        scope.length = count;
+        count = scope.length;
 
         // Copy data
         memmove(buffer, data + index, (audio.frames - index) * sizeof(float));

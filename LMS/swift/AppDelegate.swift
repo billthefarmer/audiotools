@@ -97,9 +97,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
           .takeRetainedValue() as String :
           String(utf8String: AudioUnitErrString(status))!
 
-        alert.informativeText = informativeText + ": " + error +
-          " (" + String(status) + ")"
-
+        alert.informativeText = String(format: "%@: %@ (%x)", informativeText,
+                                       error, status)
         alert.runModal()
     }
 

@@ -124,9 +124,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
           .takeRetainedValue() as String :
           String(utf8String: AudioUnitErrString(status))!
 
-        alert.informativeText = informativeText + ": " + error +
-          " (" + String(status) + ")"
-
+        alert.informativeText = String(format: "%@: %@ (%x)", informativeText,
+                                       error, status)
         alert.runModal()
     }
 
@@ -134,11 +133,10 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func updateTimebase(_ index: Int)
     {
         timebase.index = index
-        scope.count = Int32(timebase.counts[index])
+        scope.length = Int32(timebase.counts[index])
         scope.scale = timebase.values[index]
-        xscale.scale = scope.scale
-        xscale.step = Int32(500 * xscale.scale)
-        xScaleView.needsDisplay = true
+        xScaleView.scale = scope.scale
+        xScaleView.step = xScaleView.scale * 500
     }
 
     // print
@@ -367,58 +365,54 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 break
 
             case left:
-                scope.start -= xscale.step
-                if (scope.start < 0)
+                scopeView.start -= xScaleView.step
+                if (scopeView.start < 0)
                 {
-                    scope.start = 0
+                    scopeView.start = 0
                 }
-                xscale.start = scope.start
+                xScaleView.start = scopeView.start
                 xScaleView.needsDisplay = true
                 break
 
             case right:
-                scope.start += xscale.step
-                if (scope.start >= scope.length)
+                scopeView.start += xScaleView.step
+                if (scopeView.start >= Float(scope.length))
                 {
-                    scope.start -= xscale.step
+                    scopeView.start -= xScaleView.step
                 }
-                xscale.start = scope.start
+                xScaleView.start = scopeView.start
                 xScaleView.needsDisplay = true
                 break
 
             case start:
-	        scope.start = 0
-	        scope.index = 0
-	        xscale.start = 0
-	        yscale.index = 0
+	        scopeView.start = 0
+	        scopeView.index = 0
+	        xScaleView.start = 0
+	        yScaleView.index = 0
 
                 xScaleView.needsDisplay = true
-                yScaleView.needsDisplay = true
                 break
 
             case end:
-                while (scope.start < scope.length)
+                while (scopeView.start < Float(scope.length))
                 {
-		    scope.start += xscale.step
+		    scopeView.start += xScaleView.step
                 }
-	        scope.start -= xscale.step
-	        xscale.start = scope.start
+	        scopeView.start -= xScaleView.step
+	        xScaleView.start = scopeView.start
                 xScaleView.needsDisplay = true
                 break
 
             case reset:
-                scope.index = 0
-	        scope.start = 0
+                scopeView.index = 0
+	        scopeView.start = 0
 
 	        scope.bright = false
 	        scope.single = false
 	        scope.storage = false
 
-	        xscale.start = 0
-	        yscale.index = 0
-
-                xScaleView.needsDisplay = true
-                yScaleView.needsDisplay = true
+	        xScaleView.start = 0
+	        yScaleView.index = 0
 
                 // Reset toolbar icons
                 let toolbar = sender.toolbar!

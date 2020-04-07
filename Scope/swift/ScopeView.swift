@@ -28,7 +28,7 @@ class ScopeView: NSView
     var graticule: CGContext!
     var image: CGImage!
 
-    @objc var index = Int32(0)
+    var index = CGFloat(0)
     {
         didSet
         {
@@ -44,6 +44,14 @@ class ScopeView: NSView
         }
     }
 
+    @objc var step = Float(0)
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
     @objc var storage = false
     {
         didSet
@@ -51,6 +59,16 @@ class ScopeView: NSView
             needsDisplay = true
         }
     }
+
+    @objc var clear = false
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
+    var max = Float(0)
 
     let kMinMax: Float = 0.125
     let kTextSize: CGFloat = 8
@@ -62,7 +80,7 @@ class ScopeView: NSView
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            scope.index = Int32(point.x)
+            index = point.x
             needsDisplay = true;
         }
     }
@@ -77,34 +95,32 @@ class ScopeView: NSView
         switch code
         {
         case UInt16(kKeyboardUpKey):
-            yscale.index += 1
-            if yscale.index > Int32(size.height / 2)
+            yScaleView.index += 1
+            if yScaleView.index > (size.height / 2)
             {
-                yscale.index = Int32(size.height / 2)
+                yScaleView.index = (size.height / 2)
             }
-            yScaleView.needsDisplay = true;
             break
         case UInt16(kKeyboardDownKey):
-            yscale.index -= 1
-            if yscale.index < -Int32(size.height / 2)
+            yScaleView.index -= 1
+            if yScaleView.index < -(size.height / 2)
             {
-                yscale.index = -Int32(size.height / 2)
+                yScaleView.index = -(size.height / 2)
             }
-            yScaleView.needsDisplay = true;
             break
         case UInt16(kKeyboardRightKey):
-            scope.index += 1
-            if scope.index > Int32(size.width)
+            index += 1
+            if index > (size.width)
             {
-                scope.index = Int32(size.width)
+                index = (size.width)
             }
             needsDisplay = true;
             break
         case UInt16(kKeyboardLeftKey):
-            scope.index -= 1
-            if scope.index < 0
+            index -= 1
+            if index < 0
             {
-                scope.index = 0
+                index = 0
             }
             needsDisplay = true;
             break
@@ -210,13 +226,13 @@ class ScopeView: NSView
         }
 
         // Calculate scale
-        if (scope.max < kMinMax)
+        if (max < kMinMax)
         {
-	    scope.max = kMinMax
+	    max = kMinMax
         }
 
-        scope.yscale = scope.max / Float(height / 2)
-        scope.max = 0
+        scope.yscale = max / Float(height / 2)
+        max = 0
 
         // Move the origin
         bitmap.translateBy(x: 0, y: rect.midY)
@@ -232,9 +248,9 @@ class ScopeView: NSView
         {
             for i in stride(from: 0, to: xstop, by: xstep)
             {
-                if (scope.max < abs(scope.data![xstart + i]))
+                if (max < abs(scope.data![xstart + i]))
                 {
-                    scope.max = abs(scope.data![xstart + i])
+                    max = abs(scope.data![xstart + i])
                 }
 
                 let x = CGFloat(Float(i) * xscale)
@@ -250,9 +266,9 @@ class ScopeView: NSView
         {
             for i in 0 ... xstop - xstart
             {
-                if (scope.max < abs(scope.data[xstart + i]))
+                if (max < abs(scope.data[xstart + i]))
                 {
-                    scope.max = abs(scope.data[xstart + i])
+                    max = abs(scope.data[xstart + i])
                 }
 
                 let x = CGFloat(Float(i) * xscale)
@@ -276,26 +292,26 @@ class ScopeView: NSView
 	    }
 	}
 
-        if (scope.index > 0 && !scope.storage)
+        if (index > 0 && !scope.storage)
         {
             let context = NSGraphicsContext(cgContext: bitmap, flipped: false)
             NSGraphicsContext.current = context;
             // Yellow trace
             NSColor.yellow.set()
             // Draw cursor
-            NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(scope.index),
-                                                     -height / 2),
-                                    to: NSMakePoint(CGFloat(scope.index),
-                                                     height / 2))
+            NSBezierPath.strokeLine(from: NSMakePoint(index,
+                                                      -height / 2),
+                                    to: NSMakePoint(index,
+                                                    height / 2))
             // Yellow text
             let font = NSFont.boldSystemFont(ofSize: kTextSize)
             let attrs: [NSAttributedString.Key: Any] =
               [.font: font, .foregroundColor: NSColor.yellow]
-            let i = Int(Float(scope.index) / xscale)
+            let i = Int(Float(index) / xscale)
             let s = String(format: "%0.3f", scope.data[xstart + i])
             let size = s.size(withAttributes: attrs)
             let y = CGFloat(scope.data[xstart + i] / scope.yscale)
-            s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2, y),
+            s.draw(at: NSMakePoint(index - size.width / 2, y),
                    withAttributes: attrs)
 
             if (scope.scale < 100)
@@ -303,9 +319,9 @@ class ScopeView: NSView
                 let s = String(format: (scope.scale < 1) ? "%0.3f": 
 		    (scope.scale < 10.0) ? "%0.2f": "%0.1f",
 		               (Float(scope.start) +
-		                  (Float(scope.index) * scope.scale)) / 100.0)
+		                  (Float(index) * scope.scale)) / 100.0)
                 let size = s.size(withAttributes: attrs)
-                s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2,
+                s.draw(at: NSMakePoint(index - size.width / 2,
                                        -height / 2),
                        withAttributes: attrs)
             }
@@ -314,10 +330,10 @@ class ScopeView: NSView
             {
                 let s = String(format: "%0.3f",
 		               (Float(scope.start) +
-		                  (Float(scope.index) * scope.scale)) /
+		                  (Float(index) * scope.scale)) /
                                  100000.0)
                 let size = s.size(withAttributes: attrs)
-                s.draw(at: NSMakePoint(CGFloat(scope.index) - size.width / 2,
+                s.draw(at: NSMakePoint(index - size.width / 2,
                                        -height / 2),
                        withAttributes: attrs)
             }

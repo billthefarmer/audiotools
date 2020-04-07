@@ -75,11 +75,8 @@ typedef struct
     float *data;
     float scale;
     float yscale;
-    float max;
-    int index;
     int start;
     int length;
-    int count;
     bool bright;
     bool single;
     bool trigger;
@@ -87,20 +84,6 @@ typedef struct
     bool clear;
 } Scope;
 Scope scope;
-
-typedef struct
-{
-    float scale;
-    int start;
-    int step;
-} XScale;
-XScale xscale;
-
-typedef struct
-{
-    int index;
-} YScale;
-YScale yscale;
 
 typedef struct
 {
