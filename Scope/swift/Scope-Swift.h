@@ -227,6 +227,7 @@ SWIFT_CLASS("_TtC5Scope9ScopeView")
 @interface ScopeView : NSView
 @property (nonatomic) float start;
 @property (nonatomic) float step;
+@property (nonatomic) float scale;
 @property (nonatomic) BOOL storage;
 @property (nonatomic) BOOL clear;
 - (void)mouseDown:(NSEvent * _Nonnull)event;

@@ -73,15 +73,11 @@ YScaleView *yScaleView;
 typedef struct
 {
     float *data;
-    float scale;
     float yscale;
-    int start;
     int length;
     bool bright;
     bool single;
     bool trigger;
-    bool storage;
-    bool clear;
 } Scope;
 Scope scope;
 

@@ -134,8 +134,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
     {
         timebase.index = index
         scope.length = Int32(timebase.counts[index])
-        scope.scale = timebase.values[index]
-        xScaleView.scale = scope.scale
+        scopeView.scale = timebase.values[index]
+        xScaleView.scale = scopeView.scale
         xScaleView.step = xScaleView.scale * 500
     }
 
@@ -355,13 +355,13 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 scope.trigger = true
                 break
             case storage:
-                scope.storage = !scope.storage
-                let image = getImage(scope.storage ? "ic_storage_blue_36dp" :
+                scopeView.storage = !scopeView.storage
+                let image = getImage(scopeView.storage ? "ic_storage_blue_36dp" :
                                        "ic_storage_black_36dp")
                 sender.image = image
                 break
             case clear:
-                scope.clear = true
+                scopeView.clear = true
                 break
 
             case left:
@@ -409,7 +409,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
 	        scope.bright = false
 	        scope.single = false
-	        scope.storage = false
+	        scopeView.storage = false
 
 	        xScaleView.start = 0
 	        yScaleView.index = 0

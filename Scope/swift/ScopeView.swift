@@ -28,7 +28,7 @@ class ScopeView: NSView
     var graticule: CGContext!
     var image: CGImage!
 
-    var index = CGFloat(0)
+    var index = Float(0)
     {
         didSet
         {
@@ -45,6 +45,14 @@ class ScopeView: NSView
     }
 
     @objc var step = Float(0)
+    {
+        didSet
+        {
+            needsDisplay = true
+        }
+    }
+
+    @objc var scale = Float(0)
     {
         didSet
         {
@@ -80,7 +88,7 @@ class ScopeView: NSView
         {
             let location = event.locationInWindow
             let point = convert(location, from: nil)
-            index = point.x
+            index = Float(point.x)
             needsDisplay = true;
         }
     }
@@ -110,9 +118,9 @@ class ScopeView: NSView
             break
         case UInt16(kKeyboardRightKey):
             index += 1
-            if index > (size.width)
+            if index > Float(size.width)
             {
-                index = (size.width)
+                index = Float(size.width)
             }
             needsDisplay = true;
             break
@@ -195,7 +203,7 @@ class ScopeView: NSView
 
             graticule.strokePath()
             image = graticule.makeImage()
-            scope.clear = true
+            clear = true
         }
  
         // No trace if no data
@@ -206,17 +214,17 @@ class ScopeView: NSView
         }
 
         // Erase background
-        if (!scope.storage || scope.clear)
+        if (!storage || clear)
         {
 	    // Draw graticule image
 	    bitmap.draw(image, in: rect)
 
-	    scope.clear = false
+	    clear = false
         }
 
         // Calculate scale etc
-        let xscale = 1.0 / ((audio.sample / 100000.0) * scope.scale)
-        let xstart = Int(scope.start)
+        let xscale = 1.0 / ((audio.sample / 100000.0) * scale)
+        let xstart = Int(start)
         let xstep = Int(1.0 / Float(xscale))
         var xstop = Int(round(Float(xstart) + (Float(width) / xscale)))
 
@@ -292,16 +300,16 @@ class ScopeView: NSView
 	    }
 	}
 
-        if (index > 0 && !scope.storage)
+        if (index > 0 && !storage)
         {
             let context = NSGraphicsContext(cgContext: bitmap, flipped: false)
             NSGraphicsContext.current = context;
             // Yellow trace
             NSColor.yellow.set()
             // Draw cursor
-            NSBezierPath.strokeLine(from: NSMakePoint(index,
+            NSBezierPath.strokeLine(from: NSMakePoint(CGFloat(index),
                                                       -height / 2),
-                                    to: NSMakePoint(index,
+                                    to: NSMakePoint(CGFloat(index),
                                                     height / 2))
             // Yellow text
             let font = NSFont.boldSystemFont(ofSize: kTextSize)
@@ -311,17 +319,16 @@ class ScopeView: NSView
             let s = String(format: "%0.3f", scope.data[xstart + i])
             let size = s.size(withAttributes: attrs)
             let y = CGFloat(scope.data[xstart + i] / scope.yscale)
-            s.draw(at: NSMakePoint(index - size.width / 2, y),
+            s.draw(at: NSMakePoint(CGFloat(index) - size.width / 2, y),
                    withAttributes: attrs)
 
-            if (scope.scale < 100)
+            if (scale < 100)
             {
-                let s = String(format: (scope.scale < 1) ? "%0.3f": 
-		    (scope.scale < 10.0) ? "%0.2f": "%0.1f",
-		               (Float(scope.start) +
-		                  (Float(index) * scope.scale)) / 100.0)
+                let s = String(format: (scale < 1) ? "%0.3f": 
+		    (scale < 10.0) ? "%0.2f": "%0.1f", (start +
+		                  (index * scale)) / 100.0)
                 let size = s.size(withAttributes: attrs)
-                s.draw(at: NSMakePoint(index - size.width / 2,
+                s.draw(at: NSMakePoint(CGFloat(index) - size.width / 2,
                                        -height / 2),
                        withAttributes: attrs)
             }
@@ -329,11 +336,9 @@ class ScopeView: NSView
             else
             {
                 let s = String(format: "%0.3f",
-		               (Float(scope.start) +
-		                  (Float(index) * scope.scale)) /
-                                 100000.0)
+                               (start + (index * scale)) / 100000.0)
                 let size = s.size(withAttributes: attrs)
-                s.draw(at: NSMakePoint(index - size.width / 2,
+                s.draw(at: NSMakePoint(CGFloat(index) - size.width / 2,
                                        -height / 2),
                        withAttributes: attrs)
             }
