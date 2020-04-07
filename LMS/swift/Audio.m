@@ -191,8 +191,6 @@ OSStatus SetupAudio()
 	return status;
     }
 
-    audio.frames = frames;
-
     AudioStreamBasicDescription format;
     size = sizeof(format);
 
@@ -303,13 +301,13 @@ OSStatus InputProc(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags,
 	return status;
 
     // Copy the input data
-    memmove(buffer, buffer + audio.frames,
-	    (kSamples - audio.frames) * sizeof(float));
+    memmove(buffer, buffer + inNumberFrames,
+	    (kSamples - inNumberFrames) * sizeof(float));
 
     Float32 *data = abl.mBuffers[0].mData;
 
-    memmove(buffer + kSamples - audio.frames, data,
-	    audio.frames * sizeof(float));
+    memmove(buffer + kSamples - inNumberFrames, data,
+	    inNumberFrames * sizeof(float));
 
     // Run in main queue
     dispatch_async(dispatch_get_main_queue(), ProcessAudio);

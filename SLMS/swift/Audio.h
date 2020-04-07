@@ -96,7 +96,6 @@ typedef struct
 {
     AudioUnit output;
     float *buffer;
-    int frames;
     float sample;
     float frequency;
 } Audio;
