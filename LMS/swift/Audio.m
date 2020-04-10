@@ -124,7 +124,7 @@ OSStatus SetupAudio()
     Float64 rate = kSampleRate;
     size = sizeof(rate);
 
-    // Get nominal sample rates
+    // Get nominal sample rate
     AudioObjectPropertyAddress audioDeviceAOPA =
         {kAudioDevicePropertyNominalSampleRate,
          kAudioObjectPropertyScopeGlobal,
