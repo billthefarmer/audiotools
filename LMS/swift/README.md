@@ -16,5 +16,5 @@ input.
 ### Downloads
 Windows and Mac versions [here][2].
 
- [1]: images/LMS.png
+ [1]: https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/LMS-swift.png
  [2]: https://github.com/billthefarmer/audiotools/releases (https://github.com/billthefarmer/audiotools/releases)
