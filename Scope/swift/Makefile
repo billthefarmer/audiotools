@@ -55,7 +55,7 @@ SFLAGS = -g -target x86_64-apple-macosx10.10 \
 CFLAGS = -g -target x86_64-apple-macosx10.10
 
 
-$(APPBUNDLE): $(APPNAME) $(APPNAME).icns $(APPNAME).entitlements Icons
+$(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist Frameworks Icons
 	$(RM) -rf $(APPBUNDLE)
 	$(MD) $(APPBUNDLE)
 	$(MD) $(APPBUNDLECONTENTS)
@@ -64,9 +64,9 @@ $(APPBUNDLE): $(APPNAME) $(APPNAME).icns $(APPNAME).entitlements Icons
 	$(CP) Info.plist $(APPBUNDLECONTENTS)/
 	$(CP) PkgInfo $(APPBUNDLECONTENTS)/
 	$(CP) -r Frameworks $(APPBUNDLECONTENTS)/
+	$(CP) MainMenu.nib $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).icns $(APPBUNDLERESOURCES)/
 	$(CP) -r Icons $(APPBUNDLERESOURCES)/
-	$(CP) MainMenu.nib $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).entitlements $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME) $(APPBUNDLEMACOS)/
 
