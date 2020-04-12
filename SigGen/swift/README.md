@@ -3,7 +3,7 @@
 An audio signal generator with twirly knob, fine frequency and level
 adjustment sliders.
 
-![Tuner](https://github.com/billthefarmer/billthefarmer.github.io/blob/master/images/audiotools/SigGen-swift.png)
+![Tuner](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/SigGen-swift.png)
 
 * Frequency range 10Hz - 25KHz
 * Level range 0dB - -80dB
