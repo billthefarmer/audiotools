@@ -33,7 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // Check for a previous instance of this app
     if (!hPrevInstance)
 	if (!RegisterMainClass(hInstance))
-	    return FALSE;
+	    return false;
 
     // Save the application-instance handle.
     hInst = hInstance;
@@ -60,7 +60,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // If the main window cannot be created, terminate
     // the application.
     if (!window.hwnd)
-	return FALSE;
+	return false;
 
     // Show the window and send a WM_PAINT message to the window
     // procedure.
@@ -278,47 +278,39 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	break;
 
 	// Colour static text
-
     case WM_CTLCOLORSTATIC:
     	return (LRESULT)GetSysColorBrush(COLOR_WINDOW);
     	break;
 
 	// Draw item
-
     case WM_DRAWITEM:
 	return DrawItem(wParam, lParam);
 	break;
 
 	// Disable menus by capturing this message
-
     case WM_INITMENU:
 	break;
 
 	// Capture system character key to stop pop up menus and other
 	// nonsense
-
     case WM_SYSCHAR:
 	break;
 
 	// Char pressed
-
     case WM_CHAR:
 	CharPressed(wParam, lParam);
 	break;
 
 	// Key pressed
-
     case WM_KEYDOWN:
 	KeyDown(wParam, lParam);
 	break;
 
 	// Buttons
-
     case WM_COMMAND:
 	switch (LOWORD(wParam))
 	{
 	    // Quit
-
 	case QUIT_ID:
             Gdiplus::GdiplusShutdown(token);
 	    waveInStop(audio.hwi);
@@ -329,7 +321,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	break;
 
 	// Notify
-
     case WM_NOTIFY:
 	switch (((LPNMHDR)lParam)->code)
 	{
@@ -346,7 +337,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	break;
 
         // Process other messages.
-
     case WM_DESTROY:
         Gdiplus::GdiplusShutdown(token);
 	waveInStop(audio.hwi);
@@ -355,7 +345,6 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	break;
 
 	// Everything else
-
     default:
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
@@ -364,12 +353,10 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 }
 
 // Register class
-
 BOOL RegisterKnobClass(HINSTANCE hinst)
 {
     // Fill in the window class structure with parameters
     // that describe the main window.
-
     WNDCLASS wc = 
 	{0, KnobProc,
 	 0, 0, hinst,
@@ -377,12 +364,10 @@ BOOL RegisterKnobClass(HINSTANCE hinst)
 	 NULL, NULL, KNOBCLASS};
 
     // Register the window class.
-
     return RegisterClass(&wc);
 }
 
 // Draw item
-
 BOOL DrawItem(WPARAM wParam, LPARAM lParam)
 {
     LPDRAWITEMSTRUCT lpdi = (LPDRAWITEMSTRUCT)lParam;
@@ -395,33 +380,30 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
     switch (wParam)
     {
 	// Scale
-
     case SCALE_ID:
 	return DrawScale(hdc, rect);
 	break;
 
 	// Spectrum
-
     case SPECTRUM_ID:
 	return DrawSpectrum(hdc, rect);
 	break;
 
 	// Display
-
     case DISPLAY_ID:
 	return DrawDisplay(hdc, rect);
 	break;
 
 	// Meter
-
     case METER_ID:
 	return DrawMeter(hdc, rect);
 	break;
     }
+
+    return false;
 }
 
 // Knob procedure
-
 LRESULT CALLBACK KnobProc(HWND hWnd, UINT uMsg,
 			  WPARAM wParam, LPARAM lParam)
 {
@@ -432,7 +414,6 @@ LRESULT CALLBACK KnobProc(HWND hWnd, UINT uMsg,
     switch (uMsg)
     {
 	// Paint
-
     case WM_PAINT:
 	hdc = BeginPaint(hWnd, &ps);
 	GetClientRect(hWnd, &rect);
@@ -441,25 +422,21 @@ LRESULT CALLBACK KnobProc(HWND hWnd, UINT uMsg,
 	break;
 
 	// Char pressed
-
     case WM_CHAR:
     	CharPressed(wParam, lParam);
     	break;
 
 	// Key pressed
-
     case WM_KEYDOWN:
     	KeyDown(wParam, lParam);
     	break;
 
 	// Mouse move
-
     case WM_MOUSEMOVE:
     	MouseMove(hWnd, wParam, lParam);
     	break;
 
 	// Everything else
-
     default:
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
@@ -468,7 +445,6 @@ LRESULT CALLBACK KnobProc(HWND hWnd, UINT uMsg,
 }
 
 // Draw Scale
-
 BOOL DrawScale(HDC hdc, RECT rect)
 {
     static HBITMAP bitmap;
@@ -479,7 +455,7 @@ BOOL DrawScale(HDC hdc, RECT rect)
     static LOGFONT lf =
 	{0, 0, 0, 0,
 	 FW_NORMAL,
-	 FALSE, FALSE, FALSE,
+	 false, false, false,
 	 DEFAULT_CHARSET,
 	 OUT_DEFAULT_PRECIS,
 	 CLIP_DEFAULT_PRECIS,
@@ -734,7 +710,7 @@ BOOL DrawDisplay(HDC hdc, RECT rect)
     static LOGFONT lf =
 	{0, 0, 0, 0,
 	 FW_BOLD,
-	 FALSE, FALSE, FALSE,
+	 false, false, false,
 	 DEFAULT_CHARSET,
 	 OUT_DEFAULT_PRECIS,
 	 CLIP_DEFAULT_PRECIS,
@@ -816,7 +792,7 @@ BOOL DrawMeter(HDC hdc, RECT rect)
     static LOGFONT lf =
 	{0, 0, 0, 0,
 	 FW_NORMAL,
-	 FALSE, FALSE, FALSE,
+	 false, false, false,
 	 DEFAULT_CHARSET,
 	 OUT_DEFAULT_PRECIS,
 	 CLIP_DEFAULT_PRECIS,
@@ -1170,7 +1146,7 @@ void MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // Button not down
     else
 	if (move)
-	    move = FALSE;
+	    move = false;
 }
 
 // Update frequency
@@ -1186,7 +1162,7 @@ void UpdateFrequency()
 
     InvalidateRgn(display.hwnd, NULL, true);
     InvalidateRgn(scale.hwnd, NULL, true);
-    InvalidateRgn(knob.hwnd, NULL, TRUE);
+    InvalidateRgn(knob.hwnd, NULL, true);
 }
 
 // Tooltip show

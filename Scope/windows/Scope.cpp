@@ -33,7 +33,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // Check for a previous instance of this app
     if (!hPrevInstance)
 	if (!RegisterMainClass(hInstance))
-	    return FALSE;
+	    return false;
 
     // Save the application-instance handle.
     hInst = hInstance;
@@ -61,7 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // If the main window cannot be created, terminate
     // the application.
     if (!window.hwnd)
-	return FALSE;
+	return false;
 
     // Show the window and send a WM_PAINT message to the window
     // procedure.
@@ -262,7 +262,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
 	    // Trigger
 	case TRIGGER_ID:
-	    scope.trigger = TRUE;
+	    scope.trigger = true;
 	    break;
 
 	    // Timebase
@@ -277,7 +277,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
 	    // Clear
 	case CLEAR_ID:
-	    scope.clear = TRUE;
+	    scope.clear = true;
 	    break;
 
 	    // Left
@@ -291,7 +291,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
                     xscale.start = 0;
 
                 scope.start = xscale.start / scale;
-                InvalidateRgn(xscale.hwnd, NULL, TRUE);
+                InvalidateRgn(xscale.hwnd, NULL, true);
             }
 	    break;
 
@@ -310,7 +310,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
                     scope.start = xscale.start / scale;
                 }
 
-                InvalidateRgn(xscale.hwnd, NULL, TRUE);
+                InvalidateRgn(xscale.hwnd, NULL, true);
             }
 	    break;
 
@@ -320,8 +320,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    scope.index = 0;
 	    xscale.start = 0;
 	    yscale.index = 0;
-	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
-	    InvalidateRgn(yscale.hwnd, NULL, TRUE);
+	    InvalidateRgn(xscale.hwnd, NULL, true);
+	    InvalidateRgn(yscale.hwnd, NULL, true);
 	    break;
 
 	    // End
@@ -338,7 +338,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
                 xscale.start -= xscale.step;
                 scope.start = xscale.start / scale;
-                InvalidateRgn(xscale.hwnd, NULL, TRUE);
+                InvalidateRgn(xscale.hwnd, NULL, true);
             }
             break;
 
@@ -346,20 +346,20 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	case RESET_ID:
 	    scope.index = 0;
 	    scope.start = 0;
-	    scope.bright = FALSE;
-	    scope.single = FALSE;
-	    // scope.polarity = FALSE;
-	    scope.storage = FALSE;
+	    scope.bright = false;
+	    scope.single = false;
+	    // scope.polarity = false;
+	    scope.storage = false;
 
 	    yscale.index = 0;
-	    InvalidateRgn(xscale.hwnd, NULL, TRUE);
+	    InvalidateRgn(xscale.hwnd, NULL, true);
 
 	    yscale.index = 0;
-	    InvalidateRgn(yscale.hwnd, NULL, TRUE);
+	    InvalidateRgn(yscale.hwnd, NULL, true);
 
-	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, BRIGHT_ID, FALSE);
-	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, SINGLE_ID, FALSE);
-	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, STORAGE_ID, FALSE);
+	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, BRIGHT_ID, false);
+	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, SINGLE_ID, false);
+	    SendMessage(toolbar.hwnd, TB_CHECKBUTTON, STORAGE_ID, false);
 	    break;
 
 	    // Scope
@@ -458,8 +458,8 @@ BOOL CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam)
 	// X scale, resize it
     case XSCALE_ID:
 	MoveWindow(hWnd, status.rect.left, status.rect.top - SCALE_HEIGHT,
-		   status.rect.right, SCALE_HEIGHT, FALSE);
-	InvalidateRgn(hWnd, NULL, TRUE);
+		   status.rect.right, SCALE_HEIGHT, false);
+	InvalidateRgn(hWnd, NULL, true);
 	GetWindowRect(hWnd, &xscale.rect);
 	MapWindowPoints(NULL, (HWND)lParam, (POINT *)&xscale.rect, 2);
 	break;
@@ -467,8 +467,8 @@ BOOL CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam)
 	// Y scale, resize it
     case YSCALE_ID:
 	MoveWindow(hWnd, toolbar.rect.left, toolbar.rect.bottom,
-		   SCALE_WIDTH, xscale.rect.top - toolbar.rect.bottom, FALSE);
-	InvalidateRgn(hWnd, NULL, TRUE);
+		   SCALE_WIDTH, xscale.rect.top - toolbar.rect.bottom, false);
+	InvalidateRgn(hWnd, NULL, true);
 	GetWindowRect(hWnd, &yscale.rect);
 	MapWindowPoints(NULL, (HWND)lParam, (POINT *)&yscale.rect, 2);
 	break;
@@ -477,12 +477,12 @@ BOOL CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam)
     case SCOPE_ID:
 	MoveWindow(hWnd, yscale.rect.right, toolbar.rect.bottom,
 		   toolbar.rect.right - yscale.rect.right,
-		   xscale.rect.top - toolbar.rect.bottom, FALSE);
-	InvalidateRgn(hWnd, NULL, TRUE);
+		   xscale.rect.top - toolbar.rect.bottom, false);
+	InvalidateRgn(hWnd, NULL, true);
 	break;
     }
 
-    return TRUE;
+    return true;
 }
 
 // Add toolbar bitmap
@@ -525,7 +525,7 @@ BOOL AddToolbarBitmap(HWND control, LPCTSTR name)
 
     SendMessage(control, TB_ADDBITMAP, 14, (LPARAM)&bitmap);
 
-    return TRUE;
+    return true;
 }
 
 BOOL AddToolbarButtons(HWND control)
@@ -565,7 +565,7 @@ BOOL AddToolbarButtons(HWND control)
     SendMessage(control, TB_ADDBUTTONS,
 		Length(buttons), (LPARAM)&buttons);
 
-    return TRUE;
+    return true;
 }
 
 // Window resizing
@@ -587,7 +587,7 @@ BOOL WindowResizing(HWND hWnd, WPARAM wParam, LPARAM lParam)
     if (rectp->bottom - rectp->top > MAX_HEIGHT)
     	rectp->bottom = rectp->top + MAX_HEIGHT;
 
-    return TRUE;
+    return true;
 }
 
 // Display timebase menu
@@ -620,7 +620,7 @@ BOOL DisplayTimebaseMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		   rect.left, rect.bottom,
 		   0, hWnd, NULL);
 
-    return TRUE;
+    return true;
 }
 
 // Scope clicked
@@ -633,7 +633,7 @@ BOOL ScopeClicked(WPARAM wParam, LPARAM lParam)
 
     scope.index = point.x;
 
-    return TRUE;
+    return true;
 }
 
 // Y scale clicked
@@ -645,9 +645,9 @@ BOOL YScaleClicked(WPARAM wParam, LPARAM lParam)
     MapWindowPoints(HWND_DESKTOP, (HWND)lParam, &point, 1);
 
     yscale.index = point.y - yscale.height / 2;;
-    InvalidateRgn(yscale.hwnd, NULL, TRUE);
+    InvalidateRgn(yscale.hwnd, NULL, true);
 
-    return TRUE;
+    return true;
 }
 
 // Key pressed
@@ -678,7 +678,7 @@ void KeyDown(WPARAM wParam, LPARAM lParam)
 	if (--yscale.index <= -height / 2)
 	    yscale.index = 0;
 
-	InvalidateRgn(yscale.hwnd, NULL, TRUE);
+	InvalidateRgn(yscale.hwnd, NULL, true);
 	break;
 
 	// Down
@@ -686,7 +686,7 @@ void KeyDown(WPARAM wParam, LPARAM lParam)
 	if (++yscale.index >= height / 2)
 	    yscale.index = 0;
 
-	InvalidateRgn(yscale.hwnd, NULL, TRUE);
+	InvalidateRgn(yscale.hwnd, NULL, true);
 	break;
 
     default:
@@ -721,7 +721,7 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
 	break;
     }
 
-    return FALSE;
+    return false;
 }
 
 // Draw X scale
@@ -737,7 +737,7 @@ BOOL DrawXScale(HDC hdc, RECT rect)
     static LOGFONT lf =
 	{0, 0, 0, 0,
 	 FW_BOLD,
-	 FALSE, FALSE, FALSE,
+	 false, false, false,
 	 DEFAULT_CHARSET,
 	 OUT_DEFAULT_PRECIS,
 	 CLIP_DEFAULT_PRECIS,
@@ -803,7 +803,7 @@ BOOL DrawXScale(HDC hdc, RECT rect)
 	}
     }
 
-    return TRUE;
+    return true;
 }
 
 // Draw Y scale
@@ -854,7 +854,7 @@ BOOL DrawYScale(HDC hdc, RECT rect)
 	Polygon(hdc, points, Length(points));
     }
 
-    return TRUE;
+    return true;
 }
 
 // Draw scope
@@ -884,7 +884,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
     static LOGFONT lf =
 	{0, 0, 0, 0,
 	 FW_BOLD,
-	 FALSE, FALSE, FALSE,
+	 false, false, false,
 	 DEFAULT_CHARSET,
 	 OUT_DEFAULT_PRECIS,
 	 CLIP_DEFAULT_PRECIS,
@@ -957,7 +957,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	    LineTo(hgdc, width, height / 2 - i);
 	}
 
-	scope.clear = TRUE;
+	scope.clear = true;
     }
 
     // Don't attempt the trace until there's a buffer
@@ -967,7 +967,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	BitBlt(hdc, rect.left, rect.top, width, height,
 	       hgdc, 0, 0, SRCCOPY);
 
-	return TRUE;
+	return true;
     }
 
     // Erase background
@@ -977,7 +977,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
 	BitBlt(hbdc, rect.left, rect.top, width, height,
 	       hgdc, 0, 0, SRCCOPY);
 
-	scope.clear = FALSE;
+	scope.clear = false;
     }
 
     // Calculate scale etc
@@ -1096,7 +1096,7 @@ BOOL DrawScope(HDC hdc, RECT rect)
     BitBlt(hdc, rect.left, rect.top, width, height,
 	   hbdc, 0, 0, SRCCOPY);
 
-    return TRUE;
+    return true;
 }
 
 // Audio thread
@@ -1108,7 +1108,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
     xscale.step = 500 * xscale.scale;
 
     // Update display
-    InvalidateRgn(xscale.hwnd, NULL, TRUE);
+    InvalidateRgn(xscale.hwnd, NULL, true);
 
     UpdateStatus();
 
@@ -1297,7 +1297,7 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 
 	// Reset trigger
 	if (scope.single && scope.trigger)
-	    scope.trigger = FALSE;
+	    scope.trigger = false;
 
 	// FIRST: First chunk of data
     case FIRST:
@@ -1363,13 +1363,13 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
 	xscale.start = 0;
 
 	// Update display
-	InvalidateRgn(xscale.hwnd, NULL, TRUE);
+	InvalidateRgn(xscale.hwnd, NULL, true);
 
 	UpdateStatus();
     }
 
     // Update display
-    InvalidateRgn(scope.hwnd, NULL, TRUE);
+    InvalidateRgn(scope.hwnd, NULL, true);
 }
 
 // Update status
@@ -1397,5 +1397,5 @@ BOOL UpdateStatus()
     // Update status
     SendMessage(status.hwnd, SB_SETTEXT, 0, (LPARAM)s);
 
-    return TRUE;
+    return true;
 }

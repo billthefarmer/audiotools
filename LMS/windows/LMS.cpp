@@ -302,6 +302,8 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
 	return DrawMeter(hdc, rect);
 	break;
     }
+
+    return false;
 }
 
 // Draw spectrum

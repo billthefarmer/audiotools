@@ -34,7 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // Check for a previous instance of this app
     if (!hPrevInstance)
 	if (!RegisterMainClass(hInstance))
-	    return FALSE;
+	    return false;
 
     // Save the application-instance handle.
     hInst = hInstance;
@@ -61,7 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // If the main window cannot be created, terminate
     // the application.
     if (!window.hwnd)
-	return FALSE;
+	return false;
 
     // Show the window and send a WM_PAINT message to the window
     // procedure.
@@ -218,11 +218,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             GetWindowRect(fine.hwnd, &fine.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&fine.rect, 2);
 
-            SendMessage(fine.hwnd, TBM_SETRANGE, TRUE,
+            SendMessage(fine.hwnd, TBM_SETRANGE, true,
                         MAKELONG(FINE_MIN, FINE_MAX));
             SendMessage(fine.hwnd, TBM_SETTICFREQ, FINE_STEP, 0);
             SendMessage(fine.hwnd, TBM_SETPAGESIZE, 0, FINE_STEP);
-            SendMessage(fine.hwnd, TBM_SETPOS, TRUE, FINE_REF);
+            SendMessage(fine.hwnd, TBM_SETPOS, true, FINE_REF);
 
             // Add slider to tooltip
             tooltip.info.uId = (UINT_PTR)fine.hwnd;
@@ -243,11 +243,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             GetWindowRect(level.hwnd, &level.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&level.rect, 2);
 
-            SendMessage(level.hwnd, TBM_SETRANGE, TRUE,
+            SendMessage(level.hwnd, TBM_SETRANGE, true,
                         MAKELONG(LEVEL_MIN, LEVEL_MAX));
             SendMessage(level.hwnd, TBM_SETTICFREQ, FINE_STEP, 0);
             SendMessage(level.hwnd, TBM_SETPAGESIZE, 0, LEVEL_STEP);
-            SendMessage(level.hwnd, TBM_SETPOS, TRUE, LEVEL_REF);
+            SendMessage(level.hwnd, TBM_SETPOS, true, LEVEL_REF);
 
             // Add slider to tooltip
             tooltip.info.uId = (UINT_PTR)level.hwnd;
@@ -551,7 +551,7 @@ BOOL DrawItem(WPARAM wParam, LPARAM lParam)
 	break;
     }
 
-    return FALSE;
+    return false;
 }
 
 // Draw Scale
@@ -565,7 +565,7 @@ BOOL DrawScale(HDC hdc, RECT rect, UINT state)
     static LOGFONT lf =
 	{0, 0, 0, 0,
 	 FW_NORMAL,
-	 FALSE, FALSE, FALSE,
+	 false, false, false,
 	 DEFAULT_CHARSET,
 	 OUT_DEFAULT_PRECIS,
 	 CLIP_DEFAULT_PRECIS,
@@ -659,7 +659,7 @@ BOOL DrawScale(HDC hdc, RECT rect, UINT state)
     BitBlt(hdc, rect.left, rect.top, width, height,
     	   hbdc, 0, 0, SRCCOPY);
 
-    return TRUE;
+    return true;
 }
 
 // Draw Display
@@ -672,7 +672,7 @@ BOOL DrawDisplay(HDC hdc, RECT rect, UINT state)
     static LOGFONT lf =
 	{0, 0, 0, 0,
 	 FW_BOLD,
-	 FALSE, FALSE, FALSE,
+	 false, false, false,
 	 DEFAULT_CHARSET,
 	 OUT_DEFAULT_PRECIS,
 	 CLIP_DEFAULT_PRECIS,
@@ -705,7 +705,7 @@ BOOL DrawDisplay(HDC hdc, RECT rect, UINT state)
     sprintf(text, "%+6.2lfdB  ", display.decibels);
     TextOut(hdc, x, y, text, strlen(text));
 
-    return TRUE;
+    return true;
 }
 
 // Draw Knob
@@ -782,7 +782,7 @@ BOOL DrawKnob(HDC hdc, RECT rect, UINT state)
     BitBlt(hdc, rect.left, rect.top, width, height,
     	   hbdc, 0, 0, SRCCOPY);
 
-    return TRUE;
+    return true;
 }
 
 // Char pressed
@@ -821,25 +821,25 @@ VOID KeyDown(WPARAM wParam, LPARAM lParam)
 	// Up, increase fine frequency (sliders are backwards)
     case VK_UP:
 	value = SendMessage(fine.hwnd, TBM_GETPOS, 0, 0);
-	SendMessage(fine.hwnd, TBM_SETPOS, TRUE, --value);
+	SendMessage(fine.hwnd, TBM_SETPOS, true, --value);
 	break;
 
 	// Down, decrease fine frequency
     case VK_DOWN:
 	value = SendMessage(fine.hwnd, TBM_GETPOS, 0, 0);
-	SendMessage(fine.hwnd, TBM_SETPOS, TRUE, ++value);
+	SendMessage(fine.hwnd, TBM_SETPOS, true, ++value);
 	break;
 
 	// Page up, increase level (sliders are backwards)
     case VK_PRIOR:
 	value = SendMessage(level.hwnd, TBM_GETPOS, 0, 0);
-	SendMessage(level.hwnd, TBM_SETPOS, TRUE, --value);
+	SendMessage(level.hwnd, TBM_SETPOS, true, --value);
 	break;
 
 	// Page down, decrease level
     case VK_NEXT:
 	value = SendMessage(level.hwnd, TBM_GETPOS, 0, 0);
-	SendMessage(level.hwnd, TBM_SETPOS, TRUE, ++value);
+	SendMessage(level.hwnd, TBM_SETPOS, true, ++value);
 	break;
 
     default:
@@ -888,7 +888,7 @@ VOID MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 	// First point
 	if (!move)
-	    move = TRUE;
+	    move = true;
 
 	// More points
 	else
@@ -927,7 +927,7 @@ VOID MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // Button not down
     else
 	if (move)
-	    move = FALSE;
+	    move = false;
 }
 
 // Slider change
@@ -945,12 +945,12 @@ BOOL SliderChange(WPARAM wParam, LPARAM lParam)
 	break;
 
     default:
-	return FALSE;
+	return false;
     }
 
     // Update
     UpdateValues();
-    return TRUE;
+    return true;
 }
 
 // Display exact
@@ -1127,7 +1127,7 @@ VOID ExactFrequency(WPARAM wParam, LPARAM lParam)
     if (knob.value > FREQ_MAX)
         knob.value = FREQ_MAX;
     scale.value = knob.value;
-    SendMessage(fine.hwnd, TBM_SETPOS, TRUE, FINE_REF);
+    SendMessage(fine.hwnd, TBM_SETPOS, true, FINE_REF);
     UpdateValues();
 }
 
@@ -1149,9 +1149,9 @@ VOID UpdateValues()
     if (display.decibels < -80.0)
 	display.decibels = -80.0;
 
-    InvalidateRgn(display.hwnd, NULL, TRUE);
-    InvalidateRgn(scale.hwnd, NULL, TRUE);
-    InvalidateRgn(knob.hwnd, NULL, TRUE);
+    InvalidateRgn(display.hwnd, NULL, true);
+    InvalidateRgn(scale.hwnd, NULL, true);
+    InvalidateRgn(knob.hwnd, NULL, true);
 }
 
 // Tooltip show
