@@ -50,11 +50,11 @@ SWIFTH = SLMS-Swift.h
 SOURCES = AppDelegate.swift ScaleView.swift DisplayView.swift MeterView.swift \
 		KnobView.swift SpectrumView.swift SLMSView.swift Audio.o
 
-SFLAGS = -g -target x86_64-apple-macosx10.10 \
+SFLAGS = -target x86_64-apple-macosx10.10 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
 	-Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -w
 
-CFLAGS = -g -target x86_64-apple-macosx10.10
+CFLAGS = -target x86_64-apple-macosx10.10
 
 
 $(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist
