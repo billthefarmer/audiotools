@@ -41,6 +41,20 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         window.title = "Level Measuring Set"
 
+        // Find the menu
+        menu = NSApp.mainMenu
+        if (menu != nil)
+        {
+            item = menu.item(withTitle: "File")!
+            if (item.hasSubmenu)
+            {
+                let subMenu = item.submenu!
+                let subItem = subMenu.item(withTitle: "Print…")!
+                subItem.target = self
+                subItem.action = #selector(print)
+            }
+        }
+
         // Views
         displayView = DisplayView()
         meterView = MeterView()
