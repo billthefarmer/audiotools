@@ -56,7 +56,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     @IBOutlet weak var window: NSWindow!
 
-    var menu: NSMenu!
     var toolbar: NSToolbar!
     var delegate: ToolbarDelegate!
 
@@ -74,7 +73,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.title = "Oscilloscope"
 
         // Find the menu
-        menu = NSApp.mainMenu
+        let menu = NSApp.mainMenu!
+        let item = menu.item(withTitle: "File")!
+        if (item.hasSubmenu)
+        {
+            let subMenu = item.submenu!
+            let subItem = subMenu.item(withTitle: "Print…")!
+            subItem.target = self
+            subItem.action = #selector(print)
+        }
 
         // Toolbar
         toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))

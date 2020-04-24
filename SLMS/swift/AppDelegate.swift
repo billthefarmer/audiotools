@@ -43,6 +43,17 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         window.title = "Selective Level Measuring Set"
 
+        // Find the menu
+        let menu = NSApp.mainMenu!
+        let item = menu.item(withTitle: "File")!
+        if (item.hasSubmenu)
+        {
+            let subMenu = item.submenu!
+            let subItem = subMenu.item(withTitle: "Print…")!
+            subItem.target = self
+            subItem.action = #selector(print)
+        }
+
         // Views
         scaleView = ScaleView()
         displayView = DisplayView()

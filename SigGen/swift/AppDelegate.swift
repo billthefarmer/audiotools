@@ -38,8 +38,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     @IBOutlet weak var window: NSWindow!
 
-    var menu: NSMenu!
-
     var stack: NSStackView!
 
     // applicationDidFinishLaunching
@@ -54,7 +52,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.title = "Signal Generator"
 
         // Find the menu
-        menu = NSApp.mainMenu
+        let menu = NSApp.mainMenu!
+        let item = menu.item(withTitle: "File")!
+        if (item.hasSubmenu)
+        {
+            let subMenu = item.submenu!
+            let subItem = subMenu.item(withTitle: "Print…")!
+            subItem.target = self
+            subItem.action = #selector(print)
+        }
 
         knobView = KnobView()
         scaleView = ScaleView()
@@ -267,7 +273,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // buttonClicked
     @objc func buttonClicked(sender: NSButton)
     {
-        print("Button", sender, sender.state)
         switch sender.tag
         {
         case kTagSine :
@@ -310,6 +315,12 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 setFrequency(value!)
             }
         }
+    }
+
+    // print
+    @objc func print(sender: Any)
+    {
+        window.printWindow(sender)
     }
 
     // DisplayAlert
