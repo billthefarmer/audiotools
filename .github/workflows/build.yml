@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-windows:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,3 +27,18 @@ jobs:
           make GXX=x86_64-w64-mingw32-g++ WINDRES=x86_64-w64-mingw32-windres
           cd ../../SLMS/windows
           make GXX=x86_64-w64-mingw32-g++ WINDRES=x86_64-w64-mingw32-windres
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: "actions/checkout@v2"
+      - name: Build tools
+        run: |
+          cd LMS/swift
+          make
+          cd ../../Scope/swift
+          make
+          cd ../../SigGen/swift
+          make
+          cd ../../SLMS/swift
+          make
