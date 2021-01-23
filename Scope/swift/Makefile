@@ -45,8 +45,8 @@ APPVDMG = $(APPNAME)-$(APPVERSION).dmg
 HEADER = Scope-Bridging-Header.h
 SWIFTH = Scope-Swift.h
 
-SOURCES = AppDelegate.swift ScopeView.swift XScaleView.swift \
-		YScaleView.swift Audio.o
+SOURCES = AppDelegate.swift Views/ScopeView.swift Views/XScaleView.swift \
+		Views/YScaleView.swift Audio.o
 
 SFLAGS = -target x86_64-apple-macosx10.10 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \

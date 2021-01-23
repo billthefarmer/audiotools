@@ -1,0 +1,179 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXFileReference section */
+		EDAFF1EB25BC27B6001FB9E9 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		EDAFF1EC25BC27B6001FB9E9 /* Scope.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Scope.png; sourceTree = "<group>"; };
+		EDAFF1ED25BC27B6001FB9E9 /* Audio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Audio.h; sourceTree = "<group>"; };
+		EDAFF1EE25BC27B6001FB9E9 /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = MainMenu.nib; sourceTree = "<group>"; };
+		EDAFF1EF25BC27B6001FB9E9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EDAFF1F025BC27B6001FB9E9 /* ScopeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeView.swift; sourceTree = "<group>"; };
+		EDAFF1F125BC27B6001FB9E9 /* Scope-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Scope-Bridging-Header.h"; sourceTree = "<group>"; };
+		EDAFF1F225BC27B6001FB9E9 /* Icons */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Icons; sourceTree = "<group>"; };
+		EDAFF1F325BC27B6001FB9E9 /* Scope.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Scope.entitlements; sourceTree = "<group>"; };
+		EDAFF1F425BC27B6001FB9E9 /* Scope-Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Scope-Swift.h"; sourceTree = "<group>"; };
+		EDAFF1F525BC27B6001FB9E9 /* XScaleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XScaleView.swift; sourceTree = "<group>"; };
+		EDAFF1F625BC27B6001FB9E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		EDAFF1F725BC27B6001FB9E9 /* Frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Frameworks; sourceTree = "<group>"; };
+		EDAFF1F825BC27B6001FB9E9 /* Scope.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Scope.icns; sourceTree = "<group>"; };
+		EDAFF1F925BC27B6001FB9E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EDAFF1FA25BC27B6001FB9E9 /* YScaleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YScaleView.swift; sourceTree = "<group>"; };
+		EDAFF1FB25BC27B6001FB9E9 /* Audio.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Audio.m; sourceTree = "<group>"; };
+		EDAFF1FC25BC27B6001FB9E9 /* PkgInfo */ = {isa = PBXFileReference; lastKnownFileType = text; path = PkgInfo; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		ED979A7A25BC2D00005AE7F5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EDAFF1F025BC27B6001FB9E9 /* ScopeView.swift */,
+				EDAFF1F525BC27B6001FB9E9 /* XScaleView.swift */,
+				EDAFF1FA25BC27B6001FB9E9 /* YScaleView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EDAFF1E525BC27B6001FB9E9 = {
+			isa = PBXGroup;
+			children = (
+				EDAFF1F625BC27B6001FB9E9 /* AppDelegate.swift */,
+				EDAFF1ED25BC27B6001FB9E9 /* Audio.h */,
+				EDAFF1FB25BC27B6001FB9E9 /* Audio.m */,
+				ED979A7A25BC2D00005AE7F5 /* Views */,
+				EDAFF1EB25BC27B6001FB9E9 /* Makefile */,
+				EDAFF1EE25BC27B6001FB9E9 /* MainMenu.nib */,
+				EDAFF1EF25BC27B6001FB9E9 /* README.md */,
+				EDAFF1F125BC27B6001FB9E9 /* Scope-Bridging-Header.h */,
+				EDAFF1F225BC27B6001FB9E9 /* Icons */,
+				EDAFF1F425BC27B6001FB9E9 /* Scope-Swift.h */,
+				EDAFF1F725BC27B6001FB9E9 /* Frameworks */,
+				EDAFF1F825BC27B6001FB9E9 /* Scope.icns */,
+				EDAFF1F925BC27B6001FB9E9 /* Info.plist */,
+				EDAFF1F325BC27B6001FB9E9 /* Scope.entitlements */,
+				EDAFF1EC25BC27B6001FB9E9 /* Scope.png */,
+				EDAFF1FC25BC27B6001FB9E9 /* PkgInfo */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		EDAFF1EA25BC27B6001FB9E9 /* Scope */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = EDAFF1FD25BC27B6001FB9E9 /* Build configuration list for PBXLegacyTarget "Scope" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = /Users/ant/workspace/audiotools/Scope/swift;
+			dependencies = (
+			);
+			name = Scope;
+			passBuildSettingsInEnvironment = 1;
+			productName = swift;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		EDAFF1E625BC27B6001FB9E9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = EDAFF1E925BC27B6001FB9E9 /* Build configuration list for PBXProject "Scope" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EDAFF1E525BC27B6001FB9E9;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EDAFF1EA25BC27B6001FB9E9 /* Scope */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		EDAFF1E725BC27B6001FB9E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				COPY_PHASE_STRIP = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		EDAFF1E825BC27B6001FB9E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				COPY_PHASE_STRIP = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		EDAFF1FE25BC27B6001FB9E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = Scope;
+			};
+			name = Debug;
+		};
+		EDAFF1FF25BC27B6001FB9E9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = Scope;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EDAFF1E925BC27B6001FB9E9 /* Build configuration list for PBXProject "Scope" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDAFF1E725BC27B6001FB9E9 /* Debug */,
+				EDAFF1E825BC27B6001FB9E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDAFF1FD25BC27B6001FB9E9 /* Build configuration list for PBXLegacyTarget "Scope" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDAFF1FE25BC27B6001FB9E9 /* Debug */,
+				EDAFF1FF25BC27B6001FB9E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EDAFF1E625BC27B6001FB9E9 /* Project object */;
+}
