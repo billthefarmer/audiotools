@@ -11,10 +11,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v2"
-      - run: |
+      - name: Checkout
+        uses: "actions/checkout@v2"
+      - name: Install g++-mingw-w64
+        run: |
           sudo apt update
           sudo apt install g++-mingw-w64
+      - name: Build tools
+        run: |
           cd LMS/windows
           make GXX=x86_64-w64-mingw32-g++ WINDRES=x86_64-w64-mingw32-windres
           cd ../../Scope/windows
