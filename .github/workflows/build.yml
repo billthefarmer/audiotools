@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: SLMS.exe
-          path: SLMS/windows/LMS.exe
+          path: SLMS/windows/SLMS.exe
 
   build-macos:
     runs-on: macos-latest
@@ -83,4 +83,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: SLMS.app
-          path: SLMS/swift/LMS.app
+          path: SLMS/swift/SLMS.app
