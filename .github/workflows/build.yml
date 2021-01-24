@@ -27,6 +27,28 @@ jobs:
           make GXX=x86_64-w64-mingw32-g++ WINDRES=x86_64-w64-mingw32-windres
           cd ../../SLMS/windows
           make GXX=x86_64-w64-mingw32-g++ WINDRES=x86_64-w64-mingw32-windres
+          cd ../..
+      - name: Upload LMS
+        uses: actions/upload-artifact@v2
+        with:
+          name: LMS.exe
+          path: LMS/windows/LMS.exe
+      - name: Upload Scope
+        uses: actions/upload-artifact@v2
+        with:
+          name: Scope.exe
+          path: Scope/windows/Scope.exe
+      - name: Upload SigGen
+        uses: actions/upload-artifact@v2
+        with:
+          name: SigGen.exe
+          path: SigGen/windows/SigGen.exe
+      - name: Upload SLMS
+        uses: actions/upload-artifact@v2
+        with:
+          name: SLMS.exe
+          path: SLMS/windows/LMS.exe
+
   build-macos:
     runs-on: macos-latest
     steps:
@@ -42,3 +64,23 @@ jobs:
           make
           cd ../../SLMS/swift
           make
+      - name: Upload LMS
+        uses: actions/upload-artifact@v2
+        with:
+          name: LMS.app
+          path: LMS/swift/LMS.app
+      - name: Upload Scope
+        uses: actions/upload-artifact@v2
+        with:
+          name: Scope.app
+          path: Scope/swift/Scope.app
+      - name: Upload SigGen
+        uses: actions/upload-artifact@v2
+        with:
+          name: SigGen.app
+          path: SigGen/swift/SigGen.app
+      - name: Upload SLMS
+        uses: actions/upload-artifact@v2
+        with:
+          name: SLMS.app
+          path: SLMS/swift/LMS.app
