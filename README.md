@@ -1,4 +1,4 @@
-# Audio Tools [![Build Status](https://travis-ci.org/billthefarmer/audiotools.svg?branch=master)](https://travis-ci.org/billthefarmer/audiotools) ![.github/workflows/build.yml](https://github.com/billthefarmer/audiotools/workflows/.github/workflows/build.yml/badge.svg)
+# Audio Tools [![.github/workflows/build.yml](https://github.com/billthefarmer/audiotools/workflows/.github/workflows/build.yml/badge.svg)](https://github.com/billthefarmer/audiotools/actions)
 
 ![http://audiotools.googlecode.com/files/Audiotools.png](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/audiotools/Audiotools.png)
 
