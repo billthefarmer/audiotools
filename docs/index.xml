@@ -6,20 +6,16 @@
     <description>Recent content on Audiotools</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <copyright>Copyright &amp;copy; 2019 Bill Farmer</copyright>
-    <lastBuildDate>Wed, 22 May 2019 10:52:22 +0100</lastBuildDate>
-    
-	<atom:link href="https://billthefarmer.github.io/audiotools/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <copyright>Copyright &amp;copy; 2006 Bill Farmer</copyright>
+    <lastBuildDate>Wed, 22 May 2019 10:52:22 +0100</lastBuildDate><atom:link href="https://billthefarmer.github.io/audiotools/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Signal Generator</title>
       <link>https://billthefarmer.github.io/audiotools/tools/siggen/</link>
       <pubDate>Wed, 22 May 2019 10:51:50 +0100</pubDate>
       
       <guid>https://billthefarmer.github.io/audiotools/tools/siggen/</guid>
-      <description>Frequency range 10Hz - 25KHz Level range 0dB - -80dB Frequency knob Frequency scale Frequency and level display Sine, square and sawtooth waveforms Mute control Set exact frequency  Keyboard navigation keys
- Left - frequency knob down Right - frequency knob up Up - fine frequency up Down - fine frequency down Page Up - level up Page Down - level down  Using The frequency knob responds to mouse dragging.</description>
+      <description>Frequency range 10Hz - 25KHz Level range 0dB - -80dB Frequency knob Frequency scale Frequency and level display Sine, square and sawtooth waveforms Mute control Set exact frequency Keyboard navigation keys
+Left - frequency knob down Right - frequency knob up Up - fine frequency up Down - fine frequency down Page Up - level up Page Down - level down Using The frequency knob responds to mouse dragging. The fine frequency and level sliders allow for fine adjustments of frequency and output level.</description>
     </item>
     
     <item>
@@ -28,8 +24,8 @@
       <pubDate>Wed, 22 May 2019 10:52:04 +0100</pubDate>
       
       <guid>https://billthefarmer.github.io/audiotools/tools/scope/</guid>
-      <description>Timebase 0.1ms – 0.5sec Resolution 0.022ms @ 44100 samples/sec Single shot Adjustable sync level Storage Index  The icons on the toolbar are, from left to right:
- Bright line – Defeats the sync and single shot Single shot – Click the trigger icon to get a trace Trigger – Click for a trace Timebase – Drops a submenu of timebase timings Storage – Does not clear the display between traces Clear – Clears the display Left – Moves the trace to the left Right – Moves the trace to the right Start – Moves the trace to the start End – Moves the trace to the end Reset – Resets to default settings  Using Use the toolbar buttons to access functionality.</description>
+      <description>Timebase 0.1ms – 0.5sec Resolution 0.022ms @ 44100 samples/sec Single shot Adjustable sync level Storage Index The icons on the toolbar are, from left to right:
+Bright line – Defeats the sync and single shot Single shot – Click the trigger icon to get a trace Trigger – Click for a trace Timebase – Drops a submenu of timebase timings Storage – Does not clear the display between traces Clear – Clears the display Left – Moves the trace to the left Right – Moves the trace to the right Start – Moves the trace to the start End – Moves the trace to the end Reset – Resets to default settings Using Use the toolbar buttons to access functionality.</description>
     </item>
     
     <item>
@@ -38,7 +34,7 @@
       <pubDate>Wed, 22 May 2019 10:52:14 +0100</pubDate>
       
       <guid>https://billthefarmer.github.io/audiotools/tools/lms/</guid>
-      <description>Level -80dB – +3dB  Audio level measuring set. Measures frequency and relative level with a frequency spectrum display. Absolute level is not possible because of all the variables in the sound system.
+      <description>Level -80dB – +3dB Audio level measuring set. Measures frequency and relative level with a frequency spectrum display. Absolute level is not possible because of all the variables in the sound system.
 Using The level measuring set displays frequency and relative level with a frequency spectrum display. Input is from the currently selected audio input.
 Downloads Windows and Mac versions here.</description>
     </item>
@@ -49,7 +45,7 @@ Downloads Windows and Mac versions here.</description>
       <pubDate>Wed, 22 May 2019 10:52:22 +0100</pubDate>
       
       <guid>https://billthefarmer.github.io/audiotools/tools/slms/</guid>
-      <description>Frequency range 10Hz - 25KHz Level -80dB – +3dB  Audio selective level measuring set. Measures relative level at selected frequency with a frequency spectrum display. Absolute level is not possible because of all the variables in the sound system.
+      <description>Frequency range 10Hz - 25KHz Level -80dB – +3dB Audio selective level measuring set. Measures relative level at selected frequency with a frequency spectrum display. Absolute level is not possible because of all the variables in the sound system.
 Using The selective level measuring set displays selected frequency and relative level with a frequency spectrum display. Use mouse to turn knob, or left and right keys to adjust selected frequency.</description>
     </item>
     
