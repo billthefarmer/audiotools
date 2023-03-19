@@ -25,6 +25,11 @@ CP = cp
 LN = ln
 CC = gcc
 
+FOR = for
+IN = in
+DO = do
+DONE = done
+
 HDIU = hdiutil
 SWIFTC = swiftc
 PLB = /usr/libexec/PlistBuddy
@@ -46,16 +51,27 @@ HEADER = Scope-Bridging-Header.h
 SWIFTH = Scope-Swift.h
 
 SOURCES = AppDelegate.swift Views/ScopeView.swift Views/XScaleView.swift \
-		Views/YScaleView.swift Audio.o
+		Views/YScaleView.swift main.swift Audio.o
 
-SFLAGS = -target x86_64-apple-macosx10.10 \
+LIBRARIES = libswiftAccelerate.dylib libswiftCoreGraphics.dylib \
+	libswiftMetal.dylib libswiftAppKit.dylib libswiftCoreImage.dylib \
+	libswiftObjectiveC.dylib libswiftCore.dylib libswiftDarwin.dylib \
+	libswiftos.dylib libswiftCoreAudio.dylib libswiftDispatch.dylib \
+	libswiftQuartzCore.dylib libswiftCoreData.dylib \
+	libswiftFoundation.dylib libswiftSwiftOnoneSupport.dylib \
+	libswiftCoreFoundation.dylib libswiftIOKit.dylib libswiftXPC.dylib
+
+XCODELIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx/
+
+FRAMEWORKS = Frameworks
+
+SFLAGS = -target x86_64-apple-macosx10.12 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
 	-Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -w
 
-CFLAGS = -target x86_64-apple-macosx10.10
+CFLAGS = -target x86_64-apple-macosx10.12
 
-
-$(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist Frameworks Icons
+$(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist $(FRAMEWORKS) Icons
 	$(RM) -rf $(APPBUNDLE)
 	$(MD) $(APPBUNDLE)
 	$(MD) $(APPBUNDLECONTENTS)
@@ -64,11 +80,15 @@ $(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist Frameworks Icons
 	$(CP) Info.plist $(APPBUNDLECONTENTS)/
 	$(CP) PkgInfo $(APPBUNDLECONTENTS)/
 	$(CP) -r Frameworks $(APPBUNDLECONTENTS)/
-	$(CP) MainMenu.nib $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).icns $(APPBUNDLERESOURCES)/
 	$(CP) -r Icons $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).entitlements $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME) $(APPBUNDLEMACOS)/
+
+$(FRAMEWORKS): $(XCODELIB)
+	$(FOR) file $(IN) $(LIBRARIES); \
+	$(DO) $(CP) $(XCODELIB)$$file $(FRAMEWORKS); \
+	$(DONE);
 
 $(APPNAME): $(SOURCES)
 	$(SWIFTC) $(SOURCES) -o $(APPNAME) $(SFLAGS)
