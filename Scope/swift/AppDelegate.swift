@@ -150,13 +150,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
 	menu.addItem(NSMenuItem.separator())
 
-	title = NSLocalizedString("Preferences…", comment: "Preferences menu item")
-	menuItem = menu.addItem(withTitle: title,
-                                action: #selector(showPreferences),
-                                keyEquivalent: ",")
-
-	menu.addItem(NSMenuItem.separator())
-
 	title = NSLocalizedString("Services", comment: "Services menu item")
 	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
 	let servicesMenu = NSMenu(title: "Services")

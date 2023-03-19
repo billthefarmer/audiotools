@@ -26,6 +26,8 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
+#undef SWIFT_NORETURN
+
 #import "Scope-Swift.h"
 
 // Window dimensions
