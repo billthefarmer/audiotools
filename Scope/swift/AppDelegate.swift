@@ -67,7 +67,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     lazy var applicationName: String =
     {
-	if let bundleName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName")
+	if let bundleName = Bundle.main.object(forInfoDictionaryKey:
+                                                 "CFBundleDisplayName")
         {
             if let bundleNameAsString = bundleName as? String
             {
@@ -85,7 +86,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	    Swift.print("CFBundleName nil!")
 	}
 
-	return NSLocalizedString("Oscilloscope", comment: "The name of this application")
+	return NSLocalizedString("Oscilloscope",
+                                 comment: "The name of this application")
     }()
 
     // applicationWillFinishLaunching
@@ -373,7 +375,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window = NSWindow(contentRect: NSMakeRect(0, 0,
                                                   CGFloat(kMinimumWidth),
                                                   CGFloat(kMinimumHeight)),
-                          styleMask: [.titled, .closable, .resizable, .miniaturizable],
+                          styleMask: [.titled, .closable,
+                                      .resizable, .miniaturizable],
                           backing: .buffered,
                           defer: true)
         window.contentMinSize = NSMakeSize(CGFloat(kMinimumWidth),

@@ -61,13 +61,14 @@ SWIFTH = Scope-Swift.h
 SOURCES = AppDelegate.swift Views/ScopeView.swift Views/XScaleView.swift \
 		Views/YScaleView.swift main.swift
 
-LIBRARIES = libswiftAccelerate.dylib libswiftCoreGraphics.dylib \
-	libswiftMetal.dylib libswiftAppKit.dylib libswiftCoreImage.dylib \
-	libswiftObjectiveC.dylib libswiftCore.dylib libswiftDarwin.dylib \
-	libswiftos.dylib libswiftCoreAudio.dylib libswiftDispatch.dylib \
-	libswiftQuartzCore.dylib libswiftCoreData.dylib \
-	libswiftFoundation.dylib libswiftSwiftOnoneSupport.dylib \
-	libswiftCoreFoundation.dylib libswiftIOKit.dylib libswiftXPC.dylib
+LIBRARIES = libswiftCoreGraphics.dylib libswiftMetal.dylib \
+	libswiftAppKit.dylib libswiftCoreImage.dylib \
+	libswiftObjectiveC.dylib libswiftCore.dylib \
+	libswiftDarwin.dylib libswiftos.dylib libswiftCoreAudio.dylib \
+	libswiftDispatch.dylib libswiftQuartzCore.dylib \
+	libswiftCoreData.dylib libswiftFoundation.dylib \
+	libswiftSwiftOnoneSupport.dylib libswiftCoreFoundation.dylib \
+	libswiftIOKit.dylib libswiftXPC.dylib
 
 XCODELIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx/
 
@@ -84,12 +85,6 @@ SFLAGSARM = -target arm64-apple-macos11 \
 CFLAGSX86 = -target x86_64-apple-macos10.12
 
 CFLAGSARM = -target arm64-apple-macos11
-
-SFLAGS = -target x86_64-apple-macosx10.12 \
-	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
-	-Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -w
-
-CFLAGS = -target x86_64-apple-macosx10.12
 
 $(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist $(FRAMEWORKS) Icons
 	$(RM) -rf $(APPBUNDLE)
@@ -145,8 +140,7 @@ clean:
 	$(RM) -rf $(APPBUNDLE)
 	$(RM) $(APPNAME).icns
 	$(RM) $(APPNAME)
-	$(RM) Audio.o
-	$(RM) *.dmg
+	$(RM) *.o *.dmg
 
 dmg:	$(APPVDMG)
 

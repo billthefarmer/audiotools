@@ -25,9 +25,16 @@ CP = cp
 LN = ln
 CC = gcc
 
+FOR = for
+IN = in
+DO = do
+DONE = done
+
 HDIU = hdiutil
 SWIFTC = swiftc
 PLB = /usr/libexec/PlistBuddy
+LIPO = lipo
+SIPS = sips
 
 APPNAME = SigGen
 APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)
@@ -45,14 +52,32 @@ HEADER = SigGen-Bridging-Header.h
 SWIFTH = SigGen-Swift.h
 
 SOURCES = AppDelegate.swift ScaleView.swift DisplayView.swift \
-		KnobView.swift SigGenView.swift Audio.o
+		KnobView.swift SigGenView.swift main.swift
 
-SFLAGS = -target x86_64-apple-macosx10.10 \
+LIBRARIES = libswiftCoreGraphics.dylib libswiftMetal.dylib \
+	libswiftAppKit.dylib libswiftCoreImage.dylib \
+	libswiftObjectiveC.dylib libswiftCore.dylib \
+	libswiftDarwin.dylib libswiftos.dylib libswiftCoreAudio.dylib \
+	libswiftDispatch.dylib libswiftQuartzCore.dylib \
+	libswiftCoreData.dylib libswiftFoundation.dylib \
+	libswiftSwiftOnoneSupport.dylib libswiftCoreFoundation.dylib \
+	libswiftIOKit.dylib libswiftXPC.dylib
+
+XCODELIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx/
+
+FRAMEWORKS = Frameworks
+
+SFLAGSX86 = -target x86_64-apple-macos10.12 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
-	-Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -w
+	-Xlinker -rpath -Xlinker @loader_path/../Frameworks
 
-CFLAGS = -target x86_64-apple-macosx10.10
+SFLAGSARM = -target arm64-apple-macos11 \
+	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
+	-Xlinker -rpath -Xlinker @loader_path/../Frameworks
 
+CFLAGSX86 = -target x86_64-apple-macos10.12
+
+CFLAGSARM = -target arm64-apple-macos11
 
 $(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist Frameworks
 	$(RM) -rf $(APPBUNDLE)
@@ -63,15 +88,29 @@ $(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist Frameworks
 	$(CP) Info.plist $(APPBUNDLECONTENTS)/
 	$(CP) PkgInfo $(APPBUNDLECONTENTS)/
 	$(CP) -r Frameworks $(APPBUNDLECONTENTS)/
-	$(CP) MainMenu.nib $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).icns $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).entitlements $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME) $(APPBUNDLEMACOS)/
 
-$(APPNAME): $(SOURCES)
-	$(SWIFTC) $(SOURCES) -o $(APPNAME) $(SFLAGS)
+$(FRAMEWORKS): $(XCODELIB)
+	$(FOR) file $(IN) $(LIBRARIES); \
+	$(DO) $(CP) $(XCODELIB)$$file $(FRAMEWORKS); \
+	$(DONE);
 
-$(AUDIO).o: $(AUDIO).m $(AUDIO).h Makefile
+$(APPNAME): $(APPNAMEX86) $(APPNAMEARM)
+	$(LIPO) -create -output $(APPNAME) $(APPNAMEX86) $(APPNAMEARM)
+
+$(APPNAMEX86): $(SOURCES) $(AUDIOX86OBJ)
+	$(SWIFTC) $(SOURCES) $(AUDIOX86OBJ) -o $(APPNAMEX86) $(SFLAGSX86)
+
+$(APPNAMEARM): $(SOURCES) $(AUDIOARMOBJ)
+	$(SWIFTC) $(SOURCES) $(AUDIOARMOBJ) -o $(APPNAMEARM) $(SFLAGSARM)
+
+$(AUDIOX86OBJ):	$(AUDIO).m $(AUDIO).h Makefile
+	$(CC) -c $(CFLAGSX86) $(AUDIO).m -o $(AUDIOX86OBJ)
+
+$(AUDIOARMOBJ):	$(AUDIO).m $(AUDIO).h Makefile
+	$(CC) -c $(CFLAGSARM) $(AUDIO).m -o $(AUDIOARMOBJ)
 
 $(APPNAME).icns: $(APPNAME).png
 	$(RM) -rf $(APPNAME).iconset
@@ -93,8 +132,7 @@ clean:
 	$(RM) -rf $(APPBUNDLE)
 	$(RM) $(APPNAME).icns
 	$(RM) $(APPNAME)
-	$(RM) Audio.o
-	$(RM) *.dmg
+	$(RM) *.o *.dmg
 
 dmg:	$(APPVDMG)
 
@@ -107,5 +145,4 @@ $(APPVDMG): $(APPBUNDLE)
 	$(HDIU) detach /Volumes/$(APPNAME) -quiet
 	$(HDIU) convert -format UDZO -o $(APPVDMG) -ov $(APPDMG) -quiet
 
-%.o: %.m
-	$(CC) -c $(CFLAGS) $< -o $@
+.PHONY:	$(FRAMEWORKS)
