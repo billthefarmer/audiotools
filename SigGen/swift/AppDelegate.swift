@@ -34,11 +34,11 @@ var levelSlider: NSSlider!
     func undo(_ sender:AnyObject)
 }
 
-@NSApplicationMain
+// AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate
 {
-    let kWidth = CGFloat(340)
-    let kHeight = CGFloat(260)
+    let kWidth = CGFloat(360)
+    let kHeight = CGFloat(280)
 
     let kFineRef  = 0.5
     let kLevelRef = 0.1
