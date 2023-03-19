@@ -29,6 +29,8 @@
 #import <AudioUnit/AudioUnit.h>
 #import <CoreAudio/CoreAudio.h>
 
+#undef SWIFT_NORETURN
+
 #import "SLMS-Swift.h"
 
 // Size
