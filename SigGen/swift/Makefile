@@ -36,7 +36,14 @@ PLB = /usr/libexec/PlistBuddy
 LIPO = lipo
 SIPS = sips
 
+AUDIO = Audio
+AUDIOX86OBJ = $(AUDIO).x86.o
+AUDIOARMOBJ = $(AUDIO).arm.o
+
 APPNAME = SigGen
+APPNAMEX86 = $(APPNAME)_x86
+APPNAMEARM = $(APPNAME)_arm
+
 APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)
 
 APPBUNDLE = $(APPNAME).app
