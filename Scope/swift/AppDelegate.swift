@@ -67,7 +67,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
     lazy var applicationName: String =
     {
-	if let bundleName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName")
+	if let bundleName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName")
         {
             if let bundleNameAsString = bundleName as? String
             {
@@ -85,7 +85,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	    Swift.print("CFBundleName nil!")
 	}
 
-	return NSLocalizedString("Scope", comment: "The name of this application")
+	return NSLocalizedString("Oscilloscope", comment: "The name of this application")
     }()
 
     // applicationWillFinishLaunching
@@ -370,26 +370,19 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationDidFinishLaunching(_ aNotification: Notification)
     {
         // Insert code here to initialize your application
-        window.setContentSize(NSMakeSize(CGFloat(kMinimumWidth),
-                                         CGFloat(kMinimumHeight)))
+        window = NSWindow(contentRect: NSMakeRect(0, 0,
+                                                  CGFloat(kMinimumWidth),
+                                                  CGFloat(kMinimumHeight)),
+                          styleMask: [.titled, .closable, .resizable, .miniaturizable],
+                          backing: .buffered,
+                          defer: true)
         window.contentMinSize = NSMakeSize(CGFloat(kMinimumWidth),
                                            CGFloat(kMinimumHeight))
         window.contentMaxSize = NSMakeSize(CGFloat(kMaximumWidth),
                                            CGFloat(kMaximumHeight))
         window.collectionBehavior.insert(.fullScreenNone)
-
-        window.title = "Oscilloscope"
-
-        // Find the menu
-        let menu = NSApp.mainMenu!
-        let item = menu.item(withTitle: "File")!
-        if (item.hasSubmenu)
-        {
-            let subMenu = item.submenu!
-            let subItem = subMenu.item(withTitle: "Print…")!
-            subItem.target = self
-            subItem.action = #selector(print)
-        }
+        window.title = applicationName
+        window.center()
 
         // Toolbar
         toolbar = NSToolbar(identifier: NSToolbar.Identifier(kToolbar))
@@ -632,7 +625,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
           [NSToolbarItem.Identifier]
         {
             return [bright, single, trigger, time,
-                    .separator, storage, clear, left, right, start,
+                    storage, clear, left, right, start,
                     end, reset]
         }
 

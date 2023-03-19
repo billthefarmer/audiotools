@@ -1,6 +1,6 @@
 #
 #  Makefile
-#  SigGen
+#  Scope
 #
 #  Created by Bill Farmer on 29/03/2018.
 #  Copyright © 2018 Bill Farmer. All rights reserved.
@@ -33,9 +33,17 @@ DONE = done
 HDIU = hdiutil
 SWIFTC = swiftc
 PLB = /usr/libexec/PlistBuddy
+LIPO = lipo
+SIPS = sips
 
 AUDIO = Audio
+AUDIOX86OBJ = $(AUDIO).x86.o
+AUDIOARMOBJ = $(AUDIO).arm.o
+
 APPNAME = Scope
+APPNAMEX86 = $(APPNAME)_x86
+APPNAMEARM = $(APPNAME)_arm
+
 APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)
 
 APPBUNDLE = $(APPNAME).app
@@ -51,7 +59,7 @@ HEADER = Scope-Bridging-Header.h
 SWIFTH = Scope-Swift.h
 
 SOURCES = AppDelegate.swift Views/ScopeView.swift Views/XScaleView.swift \
-		Views/YScaleView.swift main.swift Audio.o
+		Views/YScaleView.swift main.swift
 
 LIBRARIES = libswiftAccelerate.dylib libswiftCoreGraphics.dylib \
 	libswiftMetal.dylib libswiftAppKit.dylib libswiftCoreImage.dylib \
@@ -64,6 +72,18 @@ LIBRARIES = libswiftAccelerate.dylib libswiftCoreGraphics.dylib \
 XCODELIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx/
 
 FRAMEWORKS = Frameworks
+
+SFLAGSX86 = -target x86_64-apple-macos10.12 \
+	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
+	-Xlinker -rpath -Xlinker @loader_path/../Frameworks
+
+SFLAGSARM = -target arm64-apple-macos11 \
+	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
+	-Xlinker -rpath -Xlinker @loader_path/../Frameworks
+
+CFLAGSX86 = -target x86_64-apple-macos10.12
+
+CFLAGSARM = -target arm64-apple-macos11
 
 SFLAGS = -target x86_64-apple-macosx10.12 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
@@ -90,10 +110,20 @@ $(FRAMEWORKS): $(XCODELIB)
 	$(DO) $(CP) $(XCODELIB)$$file $(FRAMEWORKS); \
 	$(DONE);
 
-$(APPNAME): $(SOURCES)
-	$(SWIFTC) $(SOURCES) -o $(APPNAME) $(SFLAGS)
+$(APPNAME): $(APPNAMEX86) $(APPNAMEARM)
+	$(LIPO) -create -output $(APPNAME) $(APPNAMEX86) $(APPNAMEARM)
 
-$(AUDIO).o: $(AUDIO).m $(AUDIO).h Makefile
+$(APPNAMEX86): $(SOURCES) $(AUDIOX86OBJ)
+	$(SWIFTC) $(SOURCES) $(AUDIOX86OBJ) -o $(APPNAMEX86) $(SFLAGSX86)
+
+$(APPNAMEARM): $(SOURCES) $(AUDIOARMOBJ)
+	$(SWIFTC) $(SOURCES) $(AUDIOARMOBJ) -o $(APPNAMEARM) $(SFLAGSARM)
+
+$(AUDIOX86OBJ):	$(AUDIO).m $(AUDIO).h Makefile
+	$(CC) -c $(CFLAGSX86) $(AUDIO).m -o $(AUDIOX86OBJ)
+
+$(AUDIOARMOBJ):	$(AUDIO).m $(AUDIO).h Makefile
+	$(CC) -c $(CFLAGSARM) $(AUDIO).m -o $(AUDIOARMOBJ)
 
 $(APPNAME).icns: $(APPNAME).png
 	$(RM) -rf $(APPNAME).iconset
@@ -129,5 +159,4 @@ $(APPVDMG): $(APPBUNDLE)
 	$(HDIU) detach /Volumes/$(APPNAME) -quiet
 	$(HDIU) convert -format UDZO -o $(APPVDMG) -ov $(APPDMG) -quiet
 
-%.o: %.m
-	$(CC) -c $(CFLAGS) $< -o $@
+.PHONY:	$(FRAMEWORKS)

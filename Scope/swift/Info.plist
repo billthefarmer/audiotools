@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow Scope to use your Microphone?</string>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleDisplayName</key>
-	<string>Oscilloscope</string>
-	<key>CFBundleExecutable</key>
-	<string>Scope</string>
-	<key>CFBundleIconFile</key>
-	<string>Scope.icns</string>
-	<key>CFBundleIdentifier</key>
-	<string>org.billthefarmer.Scope</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>Scope</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.04</string>
-	<key>CFBundleSupportedPlatforms</key>
-	<array>
-		<string>MacOSX</string>
-	</array>
-	<key>CFBundleVersion</key>
-	<string>1.04</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>10.12</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2020 Bill Farmer. All rights reserved.</string>
-	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
-</dict>
+  <dict>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Allow Scope to use your Microphone?</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleDisplayName</key>
+    <string>Oscilloscope</string>
+    <key>CFBundleExecutable</key>
+    <string>Scope</string>
+    <key>CFBundleIconFile</key>
+    <string>Scope.icns</string>
+    <key>CFBundleIdentifier</key>
+    <string>org.billthefarmer.Scope</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>Scope</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.05</string>
+    <key>CFBundleSupportedPlatforms</key>
+    <array>
+      <string>MacOSX</string>
+    </array>
+    <key>CFBundleVersion</key>
+    <string>1.05</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.12</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright © 2020 Bill Farmer. All rights reserved.</string>
+    <key>NSMainNibFile</key>
+    <string>MainMenu</string>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+  </dict>
 </plist>
