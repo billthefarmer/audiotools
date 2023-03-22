@@ -19,15 +19,15 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.04</string>
+    <string>1.05</string>
     <key>CFBundleSupportedPlatforms</key>
     <array>
       <string>MacOSX</string>
     </array>
     <key>CFBundleVersion</key>
-    <string>1.04</string>
+    <string>1.05</string>
     <key>LSMinimumSystemVersion</key>
-    <string>10.10</string>
+    <string>10.12</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2020 Bill Farmer. All rights reserved.</string>
     <key>NSMainNibFile</key>
