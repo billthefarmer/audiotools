@@ -122,15 +122,15 @@ $(AUDIOARMOBJ):	$(AUDIO).m $(AUDIO).h Makefile
 $(APPNAME).icns: $(APPNAME).png
 	$(RM) -rf $(APPNAME).iconset
 	$(MD) $(APPNAME).iconset
-	sips -z 16 16   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16.png
-	sips -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16@2x.png
-	sips -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32.png
-	sips -z 64 64   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32@2x.png
-	sips -z 128 128 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128.png
-	sips -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128@2x.png
-	sips -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256.png
-	sips -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256@2x.png
-	sips -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_512x512.png
+	$(SIPS) -z 16 16   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16.png
+	$(SIPS) -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16@2x.png
+	$(SIPS) -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32.png
+	$(SIPS) -z 64 64   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32@2x.png
+	$(SIPS) -z 128 128 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128.png
+	$(SIPS) -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128@2x.png
+	$(SIPS) -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256.png
+	$(SIPS) -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256@2x.png
+	$(SIPS) -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_512x512.png
 	$(CP) $(APPNAME).png $(APPNAME).iconset/icon_512x512@2x.png
 	iconutil -c icns -o $(APPNAME).icns $(APPNAME).iconset
 	$(RM) -r $(APPNAME).iconset

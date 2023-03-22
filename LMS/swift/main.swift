@@ -1,6 +1,6 @@
 //
 //  main.swift
-//  Scope
+//  LMS
 //
 //  Created by Bill Farmer on 21/12/2022.
 //  Copyright © 2022 Bill Farmer. All rights reserved.

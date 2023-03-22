@@ -358,7 +358,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         // Insert code here to initialize your application
 
         window = NSWindow(contentRect: NSMakeRect(0, 0, kWidth, kHeight),
-                         styleMask: [.titled, .closable,
+                          styleMask: [.titled, .closable,
                                       .resizable, .miniaturizable],
                           backing: .buffered,
                           defer: true)

@@ -25,14 +25,25 @@ CP = cp
 LN = ln
 CC = gcc
 
+FOR = for
+IN = in
+DO = do
+DONE = done
+
 HDIU = hdiutil
 SWIFTC = swiftc
 PLB = /usr/libexec/PlistBuddy
+LIPO = lipo
+SIPS = sips
 
 AUDIO = Audio
-AUDIOOBJ = $(AUDIO).o
+AUDIOX86OBJ = $(AUDIO).x86.o
+AUDIOARMOBJ = $(AUDIO).arm.o
 
 APPNAME = LMS
+APPNAMEX86 = $(APPNAME)_x86
+APPNAMEARM = $(APPNAME)_arm
+
 APPVERSION = $(shell $(PLB) -c 'print :CFBundleShortVersionString' Info.plist)
 
 APPBUNDLE = $(APPNAME).app
@@ -48,14 +59,31 @@ HEADER = LMS-Bridging-Header.h
 SWIFTH = LMS-Swift.h
 
 SOURCES = AppDelegate.swift DisplayView.swift MeterView.swift \
-		SpectrumView.swift LMSView.swift Audio.o
+		SpectrumView.swift LMSView.swift main.swift
 
-SFLAGS = -target x86_64-apple-macosx10.10 \
+LIBRARIES = libswiftAccelerate.dylib libswiftCoreGraphics.dylib \
+	libswiftMetal.dylib libswiftAppKit.dylib libswiftCoreImage.dylib \
+	libswiftObjectiveC.dylib libswiftCore.dylib libswiftDarwin.dylib \
+	libswiftos.dylib libswiftCoreAudio.dylib libswiftDispatch.dylib \
+	libswiftQuartzCore.dylib libswiftCoreData.dylib \
+	libswiftFoundation.dylib libswiftSwiftOnoneSupport.dylib \
+	libswiftCoreFoundation.dylib libswiftIOKit.dylib libswiftXPC.dylib
+
+XCODELIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx/
+
+FRAMEWORKS = Frameworks
+
+SFLAGSX86 = -target x86_64-apple-macos10.12 \
 	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
-	-Xlinker -rpath -Xlinker @loader_path/../Frameworks -Xlinker -w
+	-Xlinker -rpath -Xlinker @loader_path/../Frameworks
 
-CFLAGS = -target x86_64-apple-macosx10.10
+SFLAGSARM = -target arm64-apple-macos11 \
+	-import-objc-header $(HEADER) -emit-objc-header-path $(SWIFTH) \
+	-Xlinker -rpath -Xlinker @loader_path/../Frameworks
 
+CFLAGSX86 = -target x86_64-apple-macos10.12
+
+CFLAGSARM = -target arm64-apple-macos11
 
 $(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist Frameworks
 	$(RM) -rf $(APPBUNDLE)
@@ -66,28 +94,42 @@ $(APPBUNDLE): $(APPNAME) $(APPNAME).icns Info.plist Frameworks
 	$(CP) Info.plist $(APPBUNDLECONTENTS)/
 	$(CP) PkgInfo $(APPBUNDLECONTENTS)/
 	$(CP) -r Frameworks $(APPBUNDLECONTENTS)/
-	$(CP) MainMenu.nib $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).icns $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME).entitlements $(APPBUNDLERESOURCES)/
 	$(CP) $(APPNAME) $(APPBUNDLEMACOS)/
 
+$(FRAMEWORKS): $(XCODELIB)
+	$(FOR) file $(IN) $(LIBRARIES); \
+	$(DO) $(CP) $(XCODELIB)$$file $(FRAMEWORKS); \
+	$(DONE);
+
 $(APPNAME): $(SOURCES)
 	$(SWIFTC) $(SOURCES) -o $(APPNAME) $(SFLAGS)
 
-$(AUDIOOBJ):	$(AUDIO).m Audio.h Makefile
+$(APPNAMEX86): $(SOURCES) $(AUDIOX86OBJ)
+	$(SWIFTC) $(SOURCES) $(AUDIOX86OBJ) -o $(APPNAMEX86) $(SFLAGSX86)
+
+$(APPNAMEARM): $(SOURCES) $(AUDIOARMOBJ)
+	$(SWIFTC) $(SOURCES) $(AUDIOARMOBJ) -o $(APPNAMEARM) $(SFLAGSARM)
+
+$(AUDIOX86OBJ):	$(AUDIO).m $(AUDIO).h Makefile
+	$(CC) -c $(CFLAGSX86) $(AUDIO).m -o $(AUDIOX86OBJ)
+
+$(AUDIOARMOBJ):	$(AUDIO).m $(AUDIO).h Makefile
+	$(CC) -c $(CFLAGSARM) $(AUDIO).m -o $(AUDIOARMOBJ)
 
 $(APPNAME).icns: $(APPNAME).png
 	$(RM) -rf $(APPNAME).iconset
 	$(MD) $(APPNAME).iconset
-	sips -z 16 16   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16.png
-	sips -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16@2x.png
-	sips -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32.png
-	sips -z 64 64   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32@2x.png
-	sips -z 128 128 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128.png
-	sips -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128@2x.png
-	sips -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256.png
-	sips -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256@2x.png
-	sips -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_512x512.png
+	$(SIPS) -z 16 16   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16.png
+	$(SIPS) -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_16x16@2x.png
+	$(SIPS) -z 32 32   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32.png
+	$(SIPS) -z 64 64   $(APPNAME).png --out $(APPNAME).iconset/icon_32x32@2x.png
+	$(SIPS) -z 128 128 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128.png
+	$(SIPS) -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_128x128@2x.png
+	$(SIPS) -z 256 256 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256.png
+	$(SIPS) -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_256x256@2x.png
+	$(SIPS) -z 512 512 $(APPNAME).png --out $(APPNAME).iconset/icon_512x512.png
 	$(CP) $(APPNAME).png $(APPNAME).iconset/icon_512x512@2x.png
 	iconutil -c icns -o $(APPNAME).icns $(APPNAME).iconset
 	$(RM) -r $(APPNAME).iconset
@@ -110,5 +152,4 @@ $(APPVDMG): $(APPBUNDLE)
 	$(HDIU) detach /Volumes/$(APPNAME) -quiet
 	$(HDIU) convert -format UDZO -o $(APPVDMG) -ov $(APPDMG) -quiet
 
-%.o: %.m
-	$(CC) -c $(CFLAGS) $< -o $@
+.PHONY:	$(FRAMEWORKS)

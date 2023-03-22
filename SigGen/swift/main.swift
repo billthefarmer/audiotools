@@ -1,9 +1,9 @@
 //
 //  main.swift
-//  Tuner
+//  SigGen
 //
 //  Created by Bill Farmer on 21/12/2022.
-//  Copyright © 2017 Bill Farmer. All rights reserved.
+//  Copyright © 2022 Bill Farmer. All rights reserved.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
