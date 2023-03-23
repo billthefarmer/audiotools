@@ -41,7 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     let kHeight = CGFloat(280)
 
     let kFineRef  = 0.5
-    let kLevelRef = 0.1
+    let kLevelRef = 0.75
 
     let kFreqVal = 1000.0
     let kLevelVal = -20.0
@@ -540,13 +540,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
         switch sender.tag
         {
         case kTagLevel:
-            var decibels = log10(value) * 20.0
+            // var decibels = log10(value) * 20.0
+            var decibels = (value - 1.0) * 80.0
             if (decibels < -80.0)
             {
                 decibels = -80.0
             }
             displayView.decibels = decibels
-            audio.level = value
+            audio.level = pow(10.0, decibels / 20.0)
 
         case kTagFine:
             if (knobView != nil)
