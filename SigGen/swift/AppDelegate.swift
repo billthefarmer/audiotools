@@ -402,7 +402,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
         fineSlider.target = self
         fineSlider.action = #selector(sliderChange)
         fineSlider.toolTip = "Fine frequency"
-        fineSlider.doubleValue = 0.5
+        fineSlider.doubleValue = kFineRef
         fineSlider.tag = kTagFine
         setVertical(fineSlider, true)
 
