@@ -48,6 +48,9 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // Register knob class
     RegisterKnobClass(hInstance);
 
+    // Get saved status
+    GetSavedStatus();
+
     // Create the main window.
     window.hwnd =
 	CreateWindow(WCLASS, "Selective Level Measuring Set",
@@ -312,10 +315,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	{
 	    // Quit
 	case QUIT_ID:
-            Gdiplus::GdiplusShutdown(token);
-	    waveInStop(audio.hwi);
-	    waveInClose(audio.hwi);
-	    PostQuitMessage(0);
+            DestroyWindow(hWnd);
 	    break;
 	}
 	break;
@@ -336,11 +336,15 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	}
 	break;
 
+        // Close
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        break;
+
         // Process other messages.
     case WM_DESTROY:
         Gdiplus::GdiplusShutdown(token);
-	waveInStop(audio.hwi);
-	waveInClose(audio.hwi);
+        audio.done = true;
 	PostQuitMessage(0);
 	break;
 
@@ -1152,7 +1156,7 @@ void MouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 // Update frequency
 void UpdateFrequency()
 {
-    static double fps = (double)SAMPLE_RATE / (double)STEP;
+    const double fps = (double)SAMPLE_RATE / (double)STEP;
 
     // Update frequency
     double frequency = pow(10.0, (double)scale.value /
@@ -1163,6 +1167,72 @@ void UpdateFrequency()
     InvalidateRgn(display.hwnd, NULL, true);
     InvalidateRgn(scale.hwnd, NULL, true);
     InvalidateRgn(knob.hwnd, NULL, true);
+
+    HKEY hkey;
+    LONG error;
+
+    // Save values
+    error = RegCreateKeyEx(HKEY_CURRENT_USER,
+                           "SOFTWARE\\Audiotools\\SLMS", 0,
+                           NULL, 0, KEY_WRITE, NULL, &hkey, NULL);
+
+    if (error == ERROR_SUCCESS)
+    {
+        int value = round(scale.value);
+        RegSetValueEx(hkey, FREQ, 0, REG_DWORD,
+                      (LPBYTE)&value, sizeof(value));
+        RegCloseKey(hkey);
+    }
+
+    else
+    {
+        static TCHAR s[64];
+
+        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, error,
+                      0, s, sizeof(s), NULL);
+        MessageBox(window.hwnd, s, "RegCreateKeyEx", MB_OK | MB_ICONERROR);
+    }
+}
+
+// GetSavedStatus
+VOID GetSavedStatus()
+{
+    HKEY hkey;
+    int value;
+    int size = sizeof(value);
+
+    // Initial values
+    scale.value = FREQ_SCALE * 2;
+    knob.value = FREQ_SCALE * 2;
+
+    // Open user key
+    LONG error = RegOpenKeyEx(HKEY_CURRENT_USER,
+                              "SOFTWARE\\Audiotools\\SLMS", 0,
+                              KEY_READ, &hkey);
+
+    if (error == ERROR_SUCCESS)
+    {
+        // Freq
+        error = RegQueryValueEx(hkey, FREQ, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+        {
+            knob.value = value;
+            scale.value = value;
+        }
+
+        const double fps = (double)SAMPLE_RATE / (double)STEP;
+
+        // Update frequency
+        double frequency = pow(10.0, (double)scale.value /
+                               (double)FREQ_SCALE) * 10.0;
+        display.f = frequency;
+        spectrum.f = frequency / fps;
+
+        // Close key
+        RegCloseKey(hkey);
+    }
 }
 
 // Tooltip show
@@ -1301,7 +1371,10 @@ DWORD WINAPI AudioThread(LPVOID lpParam)
 	}
     }
 
-    return msg.wParam;
+    waveInStop(audio.hwi);
+    waveInClose(audio.hwi);
+
+    return 0;
 }
 
 // Wave in data

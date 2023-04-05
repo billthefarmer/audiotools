@@ -37,7 +37,7 @@
 
 #define WCLASS   "MainWClass"
 #define KNOBCLASS "KnobClass"
-
+#define FREQ "Freq"
 #define MIN 0.5
 
 // Tool ids
@@ -203,6 +203,7 @@ typedef struct
     DWORD id;
     HWAVEIN hwi;
     HANDLE thread;
+    BOOL done;
 } AUDIO, *AUDIOP;
 
 AUDIO audio;
@@ -230,6 +231,7 @@ VOID WaveInData(WPARAM, LPARAM);
 VOID UpdateMeter(METERP);
 VOID CALLBACK MeterCallback(PVOID, BOOL);
 VOID UpdateFrequency(VOID);
+VOID GetSavedStatus(VOID);
 VOID fftr(complex *, int);
 
 #endif // SLMS_H

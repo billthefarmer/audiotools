@@ -49,14 +49,16 @@ int WINAPI WinMain(HINSTANCE hInstance,
     // Register knob class
     RegisterKnobClass(hInstance);
 
+    // Get saved status
+    GetSavedStatus();
+
     // Create the main window.
-    window.hwnd =
-	CreateWindow(WCLASS, "Audio Signal Generator",
-		     WS_OVERLAPPED | WS_MINIMIZEBOX |
-                     WS_SYSMENU | WS_CLIPCHILDREN,
-		     CW_USEDEFAULT, CW_USEDEFAULT,
-		     CW_USEDEFAULT, CW_USEDEFAULT,
-		     NULL, 0, hInst, NULL);
+    window.hwnd = CreateWindow(WCLASS, "Audio Signal Generator",
+                               WS_OVERLAPPED | WS_MINIMIZEBOX |
+                               WS_SYSMENU | WS_CLIPCHILDREN,
+                               CW_USEDEFAULT, CW_USEDEFAULT,
+                               CW_USEDEFAULT, CW_USEDEFAULT,
+                               NULL, 0, hInst, NULL);
 
     // If the main window cannot be created, terminate
     // the application.
@@ -222,7 +224,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                         MAKELONG(FINE_MIN, FINE_MAX));
             SendMessage(fine.hwnd, TBM_SETTICFREQ, FINE_STEP, 0);
             SendMessage(fine.hwnd, TBM_SETPAGESIZE, 0, FINE_STEP);
-            SendMessage(fine.hwnd, TBM_SETPOS, true, FINE_REF);
+            SendMessage(fine.hwnd, TBM_SETPOS, true, fine.value);
 
             // Add slider to tooltip
             tooltip.info.uId = (UINT_PTR)fine.hwnd;
@@ -247,7 +249,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
                         MAKELONG(LEVEL_MIN, LEVEL_MAX));
             SendMessage(level.hwnd, TBM_SETTICFREQ, FINE_STEP, 0);
             SendMessage(level.hwnd, TBM_SETPAGESIZE, 0, LEVEL_STEP);
-            SendMessage(level.hwnd, TBM_SETPOS, true, LEVEL_REF);
+            SendMessage(level.hwnd, TBM_SETPOS, true, level.value);
 
             // Add slider to tooltip
             tooltip.info.uId = (UINT_PTR)level.hwnd;
@@ -269,7 +271,8 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             GetWindowRect(buttons.sine.hwnd, &buttons.sine.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&buttons.sine.rect, 2);
 
-            SendMessage(buttons.sine.hwnd, BM_SETCHECK, BST_CHECKED, 0);
+            if (audio.wave == SINE)
+                SendMessage(buttons.sine.hwnd, BM_SETCHECK, BST_CHECKED, 0);
 
             // Create square button
             buttons.square.hwnd =
@@ -284,6 +287,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             GetWindowRect(buttons.square.hwnd, &buttons.square.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&buttons.square.rect, 2);
 
+            if (audio.wave == SQUARE)
+                SendMessage(buttons.square.hwnd, BM_SETCHECK, BST_CHECKED, 0);
+
             // Create sawtooth button
             buttons.sawtooth.hwnd =
                 CreateWindow(WC_BUTTON, "Sawtooth",
@@ -297,6 +303,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             GetWindowRect(buttons.sawtooth.hwnd, &buttons.sawtooth.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&buttons.sawtooth.rect, 2);
 
+            if (audio.wave == SAWTOOTH)
+                SendMessage(buttons.sawtooth.hwnd, BM_SETCHECK, BST_CHECKED, 0);
+
             // Create mute button
             buttons.mute.hwnd =
                 CreateWindow(WC_BUTTON, "Mute",
@@ -309,6 +318,9 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 
             GetWindowRect(buttons.mute.hwnd, &buttons.mute.rect);
             MapWindowPoints(NULL, hWnd, (POINT *)&buttons.mute.rect, 2);
+
+            if (audio.mute)
+                SendMessage(buttons.mute.hwnd, BM_SETCHECK, BST_CHECKED, 0);
 
             // Create exact button
             buttons.exact.hwnd =
@@ -387,17 +399,17 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	{
 	    // Sine
 	case SINE_ID:
-	    audio.waveform = SINE;
+	    audio.wave = SINE;
 	    break;
 
 	    // Square
 	case SQUARE_ID:
-	    audio.waveform = SQUARE;
+	    audio.wave = SQUARE;
 	    break;
 
 	    // Sawtooth
 	case SAWTOOTH_ID:
-	    audio.waveform = SAWTOOTH;
+	    audio.wave = SAWTOOTH;
 	    break;
 
 	    // Mute
@@ -415,6 +427,32 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
             DestroyWindow(hWnd);
 	    break;
 	}
+
+        HKEY hkey;
+        LONG error;
+
+        // Save values
+        error = RegCreateKeyEx(HKEY_CURRENT_USER,
+                               "SOFTWARE\\Audiotools\\SigGen", 0,
+                               NULL, 0, KEY_WRITE, NULL, &hkey, NULL);
+
+        if (error == ERROR_SUCCESS)
+        {
+            RegSetValueEx(hkey, WAVE, 0, REG_DWORD,
+                          (LPBYTE)&audio.wave, sizeof(audio.wave));
+            RegSetValueEx(hkey, MUTE, 0, REG_DWORD,
+                          (LPBYTE)&audio.mute, sizeof(audio.mute));
+            RegCloseKey(hkey);
+        }
+
+        else
+        {
+            static TCHAR s[64];
+
+            FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, error,
+                          0, s, sizeof(s), NULL);
+            MessageBox(window.hwnd, s, "RegCreateKeyEx", MB_OK | MB_ICONERROR);
+        }
 
 	// Set the focus back to the window
 	SetFocus(hWnd);
@@ -453,11 +491,14 @@ LRESULT CALLBACK MainWndProc(HWND hWnd, UINT uMsg,
 	}
 	break;
 
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        break;
+
         // Process other messages.
     case WM_DESTROY:
         Gdiplus::GdiplusShutdown(token);
-	waveOutReset(audio.hwo);
-	waveOutClose(audio.hwo);
+        audio.done = true;
 	PostQuitMessage(0);
 	break;
 
@@ -1101,6 +1142,10 @@ LRESULT CALLBACK ExactWndProc(HWND hWnd, UINT uMsg,
         }
         break;
 
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        break;
+
         // Process other messages.
     case WM_DESTROY:
         exact.hwnd = NULL;
@@ -1134,24 +1179,127 @@ VOID ExactFrequency(WPARAM wParam, LPARAM lParam)
 // Update values
 VOID UpdateValues()
 {
+    HKEY hkey;
+
     // Update frequency
     int value = SendMessage(fine.hwnd, TBM_GETPOS, 0, 0);
-    double fine = -(double)(value - FINE_REF) / 10000.0;
+    double df = -(double)(value - FINE_REF) / 10000.0;
 
     double frequency = pow(10.0, (double)scale.value / FREQ_SCALE) * 10.0;
-    display.frequency = frequency + (frequency * fine);
+    display.frequency = frequency + (frequency * df);
+
+    // Save values
+    LONG error = RegCreateKeyEx(HKEY_CURRENT_USER,
+                                "SOFTWARE\\Audiotools\\SigGen", 0,
+                                NULL, 0, KEY_WRITE, NULL, &hkey, NULL);
+
+    if (error == ERROR_SUCCESS)
+    {
+        RegSetValueEx(hkey, FINE, 0, REG_DWORD,
+                      (LPBYTE)&value, sizeof(value));
+        value = round(scale.value);
+        RegSetValueEx(hkey, FREQ, 0, REG_DWORD,
+                      (LPBYTE)&value, sizeof(value));
+    }
 
     // Update level
     value = SendMessage(level.hwnd, TBM_GETPOS, 0, 0);
-    audio.level = MAX_LEVEL * (LEVEL_MAX - value) / LEVEL_MAX;
-    display.decibels = log10((double)(LEVEL_MAX - value) / 200.0) * 20.0;
+    display.decibels = -80.0 * value / LEVEL_MAX;
+    audio.level = MAX_LEVEL * pow(10.0, display.decibels / 20.0);
 
-    if (display.decibels < -80.0)
-	display.decibels = -80.0;
+    if (error == ERROR_SUCCESS)
+    {
+        RegSetValueEx(hkey, LEVEL, 0, REG_DWORD,
+                      (LPBYTE)&value, sizeof(value));
+        RegCloseKey(hkey);
+    }
+
+    else
+    {
+        static TCHAR s[64];
+
+        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, error,
+                      0, s, sizeof(s), NULL);
+        MessageBox(window.hwnd, s, "RegCreateKeyEx", MB_OK | MB_ICONERROR);
+    }
 
     InvalidateRgn(display.hwnd, NULL, true);
     InvalidateRgn(scale.hwnd, NULL, true);
     InvalidateRgn(knob.hwnd, NULL, true);
+}
+
+// GetSavedStatus
+VOID GetSavedStatus()
+{
+    HKEY hkey;
+    int value;
+    int size = sizeof(value);
+
+    // Initial values
+    audio.mute = false;
+    audio.wave = SINE;
+    level.value = LEVEL_REF;
+    fine.value = FINE_REF;
+    scale.value = FREQ_SCALE * 2;
+    knob.value = FREQ_SCALE * 2;
+
+    // Open user key
+    LONG error = RegOpenKeyEx(HKEY_CURRENT_USER,
+                              "SOFTWARE\\Audiotools\\SigGen", 0,
+                              KEY_READ, &hkey);
+
+    if (error == ERROR_SUCCESS)
+    {
+        // Mute
+        error = RegQueryValueEx(hkey, MUTE, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            audio.mute = value;
+
+        // Waveform
+        error = RegQueryValueEx(hkey, WAVE, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            audio.wave = value;
+
+        // Freq
+        error = RegQueryValueEx(hkey, FREQ, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+        {
+            knob.value = value;
+            scale.value = value;
+        }
+
+        // Fine
+        error = RegQueryValueEx(hkey, FINE, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            fine.value = value;
+
+        // Update frequency
+        double df = -(double)(value - FINE_REF) / 10000.0;
+        double frequency = pow(10.0, (double)scale.value / FREQ_SCALE) * 10.0;
+        display.frequency = frequency + (frequency * df);
+
+        // Level
+        error = RegQueryValueEx(hkey, LEVEL, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            level.value = value;
+
+        // Update level
+        display.decibels = -80.0 * value / LEVEL_MAX;
+        audio.level = MAX_LEVEL * pow(10.0, display.decibels / 20.0);
+
+        // Close key
+        RegCloseKey(hkey);
+    }
 }
 
 // Tooltip show
@@ -1206,7 +1354,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
     // Open a waveform audio output device
     mmr = waveOutOpen(&audio.hwo, WAVE_MAPPER | WAVE_FORMAT_DIRECT, &wf,
-		     (DWORD_PTR)audio.id,  (DWORD_PTR)NULL, CALLBACK_THREAD);
+		     (DWORD_PTR)audio.id, (DWORD_PTR)NULL, CALLBACK_THREAD);
     if (mmr != MMSYSERR_NOERROR)
     {
 	char text[64];
@@ -1241,7 +1389,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
     MSG msg;
     BOOL flag;
 
-    while ((flag = GetMessage(&msg, (HWND)-1, 0, 0)) != 0)
+    while ((flag = GetMessage(&msg, (HWND)-1, 0, 0)) != 0 && !audio.done)
     {
 	static double K = 2.0 * M_PI / SAMPLE_RATE;
 	static double q = 0.0;
@@ -1261,7 +1409,6 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 	case MM_WOM_OPEN:
 
 	    f = display.frequency;
-	    audio.level = MAX_LEVEL * 20 / 100;
 
 	    // Fill the buffers
 	    for (int i = 0; i < Length(data); i++)
@@ -1306,7 +1453,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
 		q += (q < M_PI)? f * K: (f * K) - (2.0 * M_PI);
 
-		switch (audio.waveform)
+		switch (audio.wave)
 		{
 		case SINE:
 		    datap[i] = round(sin(q) * l);
@@ -1339,12 +1486,12 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 
 	    // Audio input closed
 	case MM_WOM_CLOSE:
-
-	    // Not used
+            // Not used
 	    break;
 	}
     }
 
-    return msg.wParam;
+    waveOutReset(audio.hwo);
+    waveOutClose(audio.hwo);
+    return 0;
 }
-

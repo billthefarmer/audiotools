@@ -540,7 +540,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         switch sender.tag
         {
         case kTagLevel:
-            // var decibels = log10(value) * 20.0
             var decibels = (value - 1.0) * 80.0
             if (decibels < -80.0)
             {

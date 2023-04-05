@@ -38,6 +38,12 @@
 #define KCLASS "KnobWClass"
 #define ECLASS "ExactWClass"
 
+#define FINE  "Fine"
+#define LEVEL "Level"
+#define MUTE  "Mute"
+#define FREQ  "Freq"
+#define WAVE  "Wave"
+
 // Global handle
 HINSTANCE hInst;
 
@@ -126,9 +132,9 @@ enum
 
 // Level slider
 enum
-    {LEVEL_MAX = 100,
+    {LEVEL_MAX = 160,
      LEVEL_MIN = 0,
-     LEVEL_REF = 80,
+     LEVEL_REF = 40,
      LEVEL_STEP = 10};
 
 // Waveform
@@ -152,11 +158,11 @@ typedef struct
 {
     HWND hwnd;
     RECT rect;
+    int value;
 } TOOL, *TOOLP;
 
 TOOL fine;
 TOOL level;
-TOOL group;
 TOOL status;
 
 typedef struct
@@ -223,9 +229,10 @@ typedef struct
 {
     HWAVEOUT hwo;
     HANDLE thread;
-    int waveform;
+    int wave;
     int level;
     BOOL mute;
+    BOOL done;
     DWORD id;
 } AUDIO, *AUDIOP;
 
@@ -250,6 +257,7 @@ VOID MouseMove(HWND, WPARAM, LPARAM);
 BOOL SliderChange(WPARAM, LPARAM);
 VOID ExactFrequency(WPARAM, LPARAM);
 VOID UpdateValues(VOID);
+VOID GetSavedStatus(VOID);
 VOID TooltipShow(WPARAM, LPARAM);
 VOID TooltipPop(WPARAM, LPARAM);
 DWORD WINAPI AudioThread(LPVOID);

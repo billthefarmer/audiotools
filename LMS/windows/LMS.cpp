@@ -259,11 +259,15 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	}
 	break;
 
+        // Close
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        break;
+
         // Process other messages.
     case WM_DESTROY:
         Gdiplus::GdiplusShutdown(token);
-	waveInStop(audio.hwi);
-	waveInClose(audio.hwi);
+        audio.done = true;
 	PostQuitMessage(0);
 	break;
 
@@ -793,7 +797,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
     MSG msg;
     BOOL flag;
 
-    while ((flag = GetMessage(&msg, (HWND)-1, 0, 0)) != 0)
+    while ((flag = GetMessage(&msg, (HWND)-1, 0, 0)) != 0 && !audio.done)
     {
 	if (flag == -1)
 	    break;
@@ -818,7 +822,10 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 	}
     }
 
-    return msg.wParam;
+    waveInStop(audio.hwi);
+    waveInClose(audio.hwi);
+
+    return 0;
 }
 
 // Wave in data

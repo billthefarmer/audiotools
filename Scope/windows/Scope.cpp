@@ -46,17 +46,15 @@ int WINAPI WinMain(HINSTANCE hInstance,
     GdiplusStartup(&token, &input, NULL);
 
     // Get saved status
-
-    // GetStatus();
+    GetSavedStatus();
 
     // Create the main window.
-    window.hwnd =
-	CreateWindow(WCLASS, "Audio Oscilloscope",
-		     WS_OVERLAPPED | WS_MINIMIZEBOX |
-		     WS_SIZEBOX | WS_SYSMENU,
-		     CW_USEDEFAULT, CW_USEDEFAULT,
-		     WIDTH, HEIGHT,
-		     NULL, 0, hInst, NULL);
+    window.hwnd = CreateWindow(WCLASS, "Audio Oscilloscope",
+                               WS_OVERLAPPED | WS_MINIMIZEBOX |
+                               WS_SIZEBOX | WS_SYSMENU,
+                               CW_USEDEFAULT, CW_USEDEFAULT,
+                               WIDTH, HEIGHT,
+                               NULL, 0, hInst, NULL);
 
     // If the main window cannot be created, terminate
     // the application.
@@ -180,7 +178,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
             // Add X scale to tooltip
             tooltip.info.uId = (UINT_PTR)xscale.hwnd;
-            tooltip.info.lpszText = (LPSTR)"X scale";
+            tooltip.info.lpszText = (LPSTR)"X scale,click to set cursor";
 
             SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
                         (LPARAM) &tooltip.info);
@@ -199,7 +197,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
             // Add Y scale to tooltip
             tooltip.info.uId = (UINT_PTR)yscale.hwnd;
-            tooltip.info.lpszText = (LPSTR)"Y scale";
+            tooltip.info.lpszText = (LPSTR)"Y scale, click to set trigger";
 
             SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
                         (LPARAM) &tooltip.info);
@@ -216,7 +214,7 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 
             // Add scope to tooltip
             tooltip.info.uId = (UINT_PTR)scope.hwnd;
-            tooltip.info.lpszText = (LPSTR)"Scope display";
+            tooltip.info.lpszText = (LPSTR)"Scope display, click to set cursor";
 
             SendMessage(tooltip.hwnd, TTM_ADDTOOL, 0,
                         (LPARAM) &tooltip.info);
@@ -367,6 +365,11 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	    ScopeClicked(wParam, lParam);
 	    break;
 
+	    // X scale
+	case XSCALE_ID:
+	    XScaleClicked(wParam, lParam);
+	    break;
+
 	    // Y scale
 	case YSCALE_ID:
 	    YScaleClicked(wParam, lParam);
@@ -414,16 +417,19 @@ LRESULT CALLBACK MainWndProc(HWND hWnd,
 	break;
 
 	// Key pressed
-
     case WM_KEYDOWN:
     	KeyDown(wParam, lParam);
     	break;
 
+        // Close
+    case WM_CLOSE:
+        DestroyWindow(hWnd);
+        break;
+
         // Process other messages.
     case WM_DESTROY:
         Gdiplus::GdiplusShutdown(token);
-	waveInStop(audio.hwi);
-	waveInClose(audio.hwi);
+        audio.done = true;
 	PostQuitMessage(0);
 	break;
 
@@ -523,7 +529,7 @@ BOOL AddToolbarBitmap(HWND control, LPCTSTR name)
     TBADDBITMAP bitmap =
 	{NULL, (UINT_PTR)hbm};
 
-    SendMessage(control, TB_ADDBITMAP, 14, (LPARAM)&bitmap);
+    SendMessage(control, TB_ADDBITMAP, (WPARAM)14, (LPARAM)&bitmap);
 
     return true;
 }
@@ -563,7 +569,15 @@ BOOL AddToolbarButtons(HWND control)
 
     // Add to toolbar
     SendMessage(control, TB_ADDBUTTONS,
-		Length(buttons), (LPARAM)&buttons);
+		(WPARAM)Length(buttons), (LPARAM)&buttons);
+
+    // Update buttons
+    SendMessage(control, TB_CHECKBUTTON,
+		(WPARAM)BRIGHT_ID, (LPARAM)scope.bright);
+    SendMessage(control, TB_CHECKBUTTON,
+		(WPARAM)SINGLE_ID, (LPARAM)scope.single);
+    SendMessage(control, TB_CHECKBUTTON,
+		(WPARAM)STORAGE_ID, (LPARAM)scope.storage);
 
     return true;
 }
@@ -632,6 +646,22 @@ BOOL ScopeClicked(WPARAM wParam, LPARAM lParam)
     MapWindowPoints(HWND_DESKTOP, (HWND)lParam, &point, 1);
 
     scope.index = point.x;
+
+    return true;
+}
+
+// X scale clicked
+BOOL XScaleClicked(WPARAM wParam, LPARAM lParam)
+{
+    POINT point;
+
+    GetCursorPos(&point);
+    MapWindowPoints(HWND_DESKTOP, (HWND)lParam, &point, 1);
+
+    scope.index = point.x - yscale.rect.right;
+
+    if (scope.index < 0)
+        scope.index = 0;
 
     return true;
 }
@@ -1088,11 +1118,9 @@ BOOL DrawScope(HDC hdc, RECT rect)
     }
 
     // Move the origin back
-
     SetViewportOrgEx(hbdc, 0, 0, NULL);
 
     // Copy the bitmap
-
     BitBlt(hdc, rect.left, rect.top, width, height,
 	   hbdc, 0, 0, SRCCOPY);
 
@@ -1183,7 +1211,7 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
     MSG msg;
     BOOL flag;
 
-    while ((flag = GetMessage(&msg, (HWND)-1, 0, 0)) != 0)
+    while ((flag = GetMessage(&msg, (HWND)-1, 0, 0)) != 0 && !audio.done)
     {
 	if (flag == -1)
 	    break;
@@ -1208,7 +1236,10 @@ DWORD WINAPI AudioThread(LPVOID lpParameter)
 	}
     }
 
-    return msg.wParam;
+    waveInStop(audio.hwi);
+    waveInClose(audio.hwi);
+
+    return 0;
 }
 
 // Wave in data
@@ -1233,7 +1264,6 @@ void WaveInData(WPARAM wParam, LPARAM lParam)
     short *data = (short *)((WAVEHDR *)lParam)->lpData;
 
     // State machine for sync and copying data to display buffer
-
     switch (state)
     {
 	// INIT: waiting for sync
@@ -1397,5 +1427,85 @@ BOOL UpdateStatus()
     // Update status
     SendMessage(status.hwnd, SB_SETTEXT, 0, (LPARAM)s);
 
+    HKEY hkey;
+    LONG error;
+
+    // Save values
+    error = RegCreateKeyEx(HKEY_CURRENT_USER,
+                           "SOFTWARE\\Audiotools\\Scope", 0,
+                           NULL, 0, KEY_WRITE, NULL, &hkey, NULL);
+
+    if (error == ERROR_SUCCESS)
+    {
+        RegSetValueEx(hkey, BRIGHT, 0, REG_DWORD,
+                      (LPBYTE)&scope.bright, sizeof(scope.bright));
+        RegSetValueEx(hkey, SINGLE, 0, REG_DWORD,
+                      (LPBYTE)&scope.single, sizeof(scope.single));
+        RegSetValueEx(hkey, STORAGE, 0, REG_DWORD,
+                      (LPBYTE)&scope.storage, sizeof(scope.storage));
+        RegSetValueEx(hkey, TIMEBAS, 0, REG_DWORD,
+                      (LPBYTE)&timebase.index, sizeof(timebase.index));
+        RegCloseKey(hkey);
+    }
+
+    else
+    {
+        static TCHAR s[64];
+
+        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, error,
+                      0, s, sizeof(s), NULL);
+        MessageBox(window.hwnd, s, "RegCreateKeyEx", MB_OK | MB_ICONERROR);
+    }
+
     return true;
+}
+
+// GetSavedStatus
+VOID GetSavedStatus()
+{
+    HKEY hkey;
+    int value;
+    int size = sizeof(value);
+
+    // Initial values
+    scope.bright = false;
+    scope.single = false;
+    scope.storage = false;
+    timebase.index = TIMEBASE_DEFAULT;
+
+    // Open user key
+    LONG error = RegOpenKeyEx(HKEY_CURRENT_USER,
+                              "SOFTWARE\\Audiotools\\Scope", 0,
+                              KEY_READ, &hkey);
+
+    if (error == ERROR_SUCCESS)
+    {
+        // Bright
+        error = RegQueryValueEx(hkey, BRIGHT, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            scope.bright = value;
+
+        // Single
+        error = RegQueryValueEx(hkey, SINGLE, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            scope.single = value;
+
+        // Storage
+        error = RegQueryValueEx(hkey, STORAGE, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            scope.storage = value;
+
+        // Timebase
+        error = RegQueryValueEx(hkey, TIMEBAS, NULL, NULL,
+                                (LPBYTE)&value, (LPDWORD)&size);
+        // Update value
+        if (error == ERROR_SUCCESS)
+            timebase.index = value;
+    }
 }
