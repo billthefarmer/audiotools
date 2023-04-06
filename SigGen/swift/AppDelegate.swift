@@ -505,7 +505,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         audio.frequency = kFreqVal
         audio.waveform = Int32(kSine)
-        audio.level = kLevelRef
+        audio.level = pow(10.0, kLevelVal / 20.0)
 
         let status = SetupAudio()
         if (status != noErr)
