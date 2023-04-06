@@ -505,7 +505,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         audio.frequency = kFreqVal
         audio.waveform = Int32(kSine)
-        audio.level = kLevelRef
+        audio.level = pow(10.0, kLevelVal / 20.0)
 
         let status = SetupAudio()
         if (status != noErr)
@@ -540,7 +540,6 @@ class AppDelegate: NSObject, NSApplicationDelegate
         switch sender.tag
         {
         case kTagLevel:
-            // var decibels = log10(value) * 20.0
             var decibels = (value - 1.0) * 80.0
             if (decibels < -80.0)
             {
