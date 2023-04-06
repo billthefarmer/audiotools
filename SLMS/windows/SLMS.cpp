@@ -1065,6 +1065,22 @@ void KeyDown(WPARAM wParam, LPARAM lParam)
         knob.value = scale.value;
 	break;
 
+	// Up, increase fine frequency
+    case VK_UP:
+        scale.value = scale.value + 0.1;
+	if (scale.value > FREQ_MAX)
+	    scale.value = FREQ_MAX;
+        knob.value = scale.value;
+	break;
+
+	// Down, decrease fine frequency
+    case VK_DOWN:
+        scale.value = scale.value - 0.1;
+	if (scale.value < FREQ_MIN)
+	    scale.value = FREQ_MIN;
+        knob.value = scale.value;
+	break;
+
     default:
 	return;
     }
