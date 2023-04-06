@@ -6,8 +6,8 @@ SigGen ICON "SigGen.ico"
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "SigGen.manifest"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION    	1,0,3,0
-PRODUCTVERSION 	1,0,3,0
+FILEVERSION    	1,0,5,0
+PRODUCTVERSION 	1,0,5,0
 FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
 FILEFLAGS      	0x0L
 FILEOS         	VOS__WINDOWS32
@@ -20,12 +20,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      "Bill Farmer"
             VALUE "FileDescription",  "Audio Signal Generator"
-            VALUE "FileVersion",      "1.03"
+            VALUE "FileVersion",      "1.05"
             VALUE "InternalName",     "SigGen"
             VALUE "LegalCopyright",   "Copyright (C) 2018 Bill Farmer"
             VALUE "OriginalFilename", "SigGen.exe"
             VALUE "ProductName",      "SigGen"
-            VALUE "ProductVersion",   "1.03"
+            VALUE "ProductVersion",   "1.05"
         END
     END
     BLOCK "VarFileInfo"

@@ -159,6 +159,7 @@ typedef struct
     DWORD id;
     HWAVEIN hwi;
     HANDLE thread;
+    BOOL done;
 } AUDIO, *AUDIOP;
 
 AUDIO audio;

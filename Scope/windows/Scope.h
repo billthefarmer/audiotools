@@ -36,6 +36,11 @@
 
 #define WCLASS "MainWClass"
 
+#define BRIGHT  "Bright"
+#define SINGLE  "Single"
+#define STORAGE "Storage"
+#define TIMEBAS "Timebase"
+
 // Tool ids
 enum
     {SCOPE_ID = 100,
@@ -98,6 +103,10 @@ enum
      FIRST,
      NEXT,
      LAST};
+
+// Timebase default
+enum
+    {TIMEBASE_DEFAULT = 3};
 
 // Global data
 HINSTANCE hInst;
@@ -167,18 +176,19 @@ typedef struct
     DWORD id;
     HWAVEIN hwi;
     HANDLE thread;
+    BOOL done;
 } AUDIO, *AUDIOP;
 AUDIO audio;
 
 typedef struct
 {
     int index;
-    float values[12];
-    char strings[12][8];
-    int counts[12];
+    const float values[12];
+    const char *strings[12];
+    const int counts[12];
 } TIMEBASE, *TIMEBASEP;
 TIMEBASE timebase =
-    {3,
+    {TIMEBASE_DEFAULT,
      {0.1, 0.2, 0.5, 1.0,
       2.0, 5.0, 10.0, 20.0,
       50.0, 100.0, 200.0, 500.0},
@@ -197,6 +207,7 @@ BOOL RegisterMainClass(HINSTANCE);
 BOOL DisplayTimebaseMenu(HWND, WPARAM, LPARAM);
 BOOL CALLBACK EnumChildProc(HWND, LPARAM);
 BOOL ScopeClicked(WPARAM, LPARAM);
+BOOL XScaleClicked(WPARAM, LPARAM);
 BOOL YScaleClicked(WPARAM, LPARAM);
 BOOL DrawItem(WPARAM, LPARAM);
 BOOL DrawXScale(HDC, RECT);
@@ -209,5 +220,6 @@ DWORD WINAPI AudioThread(LPVOID);
 VOID WaveInData(WPARAM, LPARAM);
 VOID KeyDown(WPARAM, LPARAM);
 BOOL UpdateStatus(VOID);
+VOID GetSavedStatus(VOID);
 
 #endif /* SCOPE_H */
