@@ -437,29 +437,32 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.makeFirstResponder(displayView)
         window.makeMain()
 
+        // Get preferences
+        getPreferences()
+
         // Audio
         let status = SetupAudio()
         if (status != noErr)
         {
             displayAlert("Tuner", "Audio initialisation failed", status)
         }
-
-        // Set frequency
-        displayView.frequency = kFreqRef
-        audio.frequency = kFreqRef
-        let fps = audio.sample / Float(kStep)
-        spectrumView.slot = kFreqRef / fps
     }
 
     // getPreferences
     func getPreferences()
     {
+        // Set frequency
+        displayView.frequency = kFreqRef
+        audio.frequency = kFreqRef
+        let fps = audio.sample / Float(kStep)
+        spectrumView.slot = kFreqRef / fps
+
         // Check defaults
         let defaults = UserDefaults.standard
         let freq = defaults.double(forKey: "Freq")
         if (freq != 0)
         {
-            audio.frequency = freq
+            audio.frequency = Float(freq)
         }
 
         knobView.value = log10(CGFloat(freq / 10)) * 2
@@ -517,6 +520,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
+        savePreferences()
         ShutdownAudio()
     }
 
