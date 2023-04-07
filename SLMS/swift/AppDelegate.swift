@@ -451,6 +451,27 @@ class AppDelegate: NSObject, NSApplicationDelegate
         spectrumView.slot = kFreqRef / fps
     }
 
+    // getPreferences
+    func getPreferences()
+    {
+        // Check defaults
+        let defaults = UserDefaults.standard
+        let freq = defaults.double(forKey: "Freq")
+        if (freq != 0)
+        {
+            audio.frequency = freq
+        }
+
+        knobView.value = log10(CGFloat(freq / 10)) * 2
+    }
+
+    // savePreferences
+    func savePreferences()
+    {
+        let defaults = UserDefaults.standard
+        defaults.set(audio.frequency, forKey: "Freq")
+    }
+
     // DisplayAlert
     func displayAlert(_ message: String, _ informativeText: String,
                       _ status: OSStatus)
