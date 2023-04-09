@@ -428,6 +428,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
         // Timebase
         updateTimebase(kDefaultTimebase)
+        getPreferences()
 
         // Audio
         let status = SetupAudio()
@@ -505,6 +506,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
+        savePreferences()
         ShutdownAudio()
     }
 

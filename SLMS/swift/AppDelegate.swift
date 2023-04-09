@@ -83,28 +83,33 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	populateApplicationMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "File", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "File", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("File", comment: "File menu"))
 	populateFileMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "Edit", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Edit", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Edit", comment: "Edit menu"))
 	populateEditMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "View", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "View", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("View", comment: "View menu"))
 	populateViewMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "Window", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Window", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Window", comment: "Window menu"))
 	populateWindowMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 	NSApp.windowsMenu = submenu
 
-	menuItem = mainMenu.addItem(withTitle: "Help", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Help", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Help", comment: "View menu"))
 	populateHelpMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
@@ -124,7 +129,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Services", comment: "Services menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let servicesMenu = NSMenu(title: "Services")
 	menu.setSubmenu(servicesMenu, for: menuItem)
 	NSApp.servicesMenu = servicesMenu

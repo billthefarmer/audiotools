@@ -204,13 +204,16 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Cut", comment: "Cut menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.cut(_: )), keyEquivalent: "x")
+	menu.addItem(withTitle: title, action: #selector(NSText.cut(_: )),
+                     keyEquivalent: "x")
 
 	title = NSLocalizedString("Copy", comment: "Copy menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.copy(_: )), keyEquivalent: "c")
+	menu.addItem(withTitle: title, action: #selector(NSText.copy(_: )),
+                     keyEquivalent: "c")
 
 	title = NSLocalizedString("Paste", comment: "Paste menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.paste(_: )), keyEquivalent: "v")
+	menu.addItem(withTitle: title, action: #selector(NSText.paste(_: )),
+                     keyEquivalent: "v")
 
 	title = NSLocalizedString("Paste and Match Style",
                                   comment: "Paste and Match Style menu item")
@@ -232,13 +235,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Find", comment: "Find menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let findMenu = NSMenu(title: "Find")
 	populateFindMenu(findMenu)
 	menu.setSubmenu(findMenu, for: menuItem)
 
 	title = NSLocalizedString("Spelling", comment: "Spelling menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let spellingMenu = NSMenu(title: "Spelling")
 	populateSpellingMenu(spellingMenu)
 	menu.setSubmenu(spellingMenu, for: menuItem)
@@ -630,6 +635,35 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.printWindow(sender)
     }
 
+    // getPreferences
+    func getPreferences()
+    {
+        // Set frequency
+        audio.frequency = kFreqVal
+        audio.waveform = Int32(kSine)
+        audio.level = pow(10.0, kLevelVal / 20.0)
+
+        // Check defaults
+        let defaults = UserDefaults.standard
+        if (defaults.object(forKey: "Freq") != nil)
+        {
+            audio.frequency = defaults.double(forKey: "Freq")
+            audio.level = defaults.double(forKey: "Level")
+            audio.mute = defaults.bool(forKey: "Mute")
+            audio.waveform = defaults.integer(forKey: "Wave")
+        }
+    }
+
+    // savePreferences
+    func savePreferences()
+    {
+        let defaults = UserDefaults.standard
+        defaults.set(audio.frequency, forKey: "Freq")
+        defaults.set(audio.level, forKey: "Level")
+        defaults.set(audio.mute, forKey: "Mute")
+        defaults.set(audio.waveform, forKey: "Wave")
+    }
+
     // DisplayAlert
     func displayAlert(_ message: String, _ informativeText: String,
                       _ status: OSStatus)
@@ -658,6 +692,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
+        savePreferences()
         ShutdownAudio()
     }
 
