@@ -650,7 +650,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
             audio.frequency = defaults.double(forKey: "Freq")
             audio.level = defaults.double(forKey: "Level")
             audio.mute = defaults.bool(forKey: "Mute")
-            audio.waveform = defaults.integer(forKey: "Wave")
+            audio.waveform = Int32(defaults.integer(forKey: "Wave"))
         }
     }
 
