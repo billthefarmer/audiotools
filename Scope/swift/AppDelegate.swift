@@ -112,28 +112,33 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	populateApplicationMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "File", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "File", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("File", comment: "File menu"))
 	populateFileMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "Edit", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Edit", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Edit", comment: "Edit menu"))
 	populateEditMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "View", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "View", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("View", comment: "View menu"))
 	populateViewMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "Window", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Window", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Window", comment: "Window menu"))
 	populateWindowMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 	NSApp.windowsMenu = submenu
 
-	menuItem = mainMenu.addItem(withTitle: "Help", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Help", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Help", comment: "View menu"))
 	populateHelpMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
@@ -144,7 +149,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // populateApplicationMenu
     func populateApplicationMenu(_ menu: NSMenu)
     {
-        var title = NSLocalizedString("About", comment: "About menu item") + " " + applicationName
+        var title = NSLocalizedString("About", comment: "About menu item") +
+          " " + applicationName
 	var menuItem = menu.addItem(withTitle: title,
                                     action: #selector(NSApplication.orderFrontStandardAboutPanel(_: )),
                                     keyEquivalent: "")
@@ -153,14 +159,16 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Services", comment: "Services menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let servicesMenu = NSMenu(title: "Services")
 	menu.setSubmenu(servicesMenu, for: menuItem)
 	NSApp.servicesMenu = servicesMenu
 
 	menu.addItem(NSMenuItem.separator())
 
-	title = NSLocalizedString("Hide", comment: "Hide menu item") + " " + applicationName
+	title = NSLocalizedString("Hide", comment: "Hide menu item") +
+          " " + applicationName
 	menuItem = menu.addItem(withTitle: title,
                                 action: #selector(NSApplication.hide(_: )),
                                 keyEquivalent: "h")
@@ -181,7 +189,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
 	menu.addItem(NSMenuItem.separator())
 
-	title = NSLocalizedString("Quit", comment: "Quit menu item") + " " + applicationName
+	title = NSLocalizedString("Quit", comment: "Quit menu item") + " "
+          + applicationName
 	menuItem = menu.addItem(withTitle: title,
                                 action: #selector(NSApplication.terminate(_: )),
                                 keyEquivalent: "q")
@@ -220,13 +229,16 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Cut", comment: "Cut menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.cut(_: )), keyEquivalent: "x")
+	menu.addItem(withTitle: title, action: #selector(NSText.cut(_: )),
+                     keyEquivalent: "x")
 
 	title = NSLocalizedString("Copy", comment: "Copy menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.copy(_: )), keyEquivalent: "c")
+	menu.addItem(withTitle: title, action: #selector(NSText.copy(_: )),
+                     keyEquivalent: "c")
 
 	title = NSLocalizedString("Paste", comment: "Paste menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.paste(_: )), keyEquivalent: "v")
+	menu.addItem(withTitle: title, action: #selector(NSText.paste(_: )),
+                     keyEquivalent: "v")
 
 	title = NSLocalizedString("Paste and Match Style",
                                   comment: "Paste and Match Style menu item")
@@ -248,13 +260,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Find", comment: "Find menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let findMenu = NSMenu(title: "Find")
 	populateFindMenu(findMenu)
 	menu.setSubmenu(findMenu, for: menuItem)
 
 	title = NSLocalizedString("Spelling", comment: "Spelling menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let spellingMenu = NSMenu(title: "Spelling")
 	populateSpellingMenu(spellingMenu)
 	menu.setSubmenu(spellingMenu, for: menuItem)
@@ -447,6 +461,30 @@ class AppDelegate: NSObject, NSApplicationDelegate
         scopeView.scale = timebase.values[index]
         xScaleView.scale = scopeView.scale
         xScaleView.step = xScaleView.scale * 500
+    }
+
+    // getPreferences
+    func getPreferences()
+    {
+        let defaults = UserDefaults.standard
+        if (defaults.object(forKey: "Bright") != nil)
+        {
+            scope.bright = defaults.bool(forKey: "Bright")
+            scope.single = defaults.bool(forKey: "Single")
+            scopeView.storage = defaults.bool(forKey: "Storage")
+            updateTimebase(defaults.integer(forKey: "Timebase"))
+            delegate.updateImages(toolbar)
+        }
+    }
+
+    // savePreferences
+    func savePreferences()
+    {
+        let defaults = UserDefaults.standard
+        defaults.set(scope.bright, forKey: "Bright")
+        defaults.set(scope.single, forKey: "Single")
+        defaults.set(scopeView.storage, forKey: "Storage")
+        defaults.set(timebase.index, forKey: "Timebase")
     }
 
     // print
@@ -794,6 +832,37 @@ class AppDelegate: NSObject, NSApplicationDelegate
         {
             let menu = sender.menu!
             app.updateTimebase(menu.index(of: sender))
+        }
+
+        // updateImages
+        func updateImages(_ toolbar: NSToolbar)
+        {
+            for item in toolbar.items
+            {
+                switch item.itemIdentifier
+                {
+                case bright:
+                    let image = getImage(scope.bright ? "ic_sub_blue_36dp" :
+                                           "ic_sub_black_36dp")
+                    item.image = image
+                    break
+
+                case single:
+                    let image = getImage(scope.single ? "ic_looks_one_blue_36dp" :
+                                           "ic_looks_one_black_36dp")
+                    item.image = image
+                    break
+
+                case storage:
+                    let image = getImage(scopeView.storage ? "ic_storage_blue_36dp" :
+                                           "ic_storage_black_36dp")
+                    item.image = image
+                    break
+
+                default:
+                    break
+                }
+            }
         }
     }
 }
