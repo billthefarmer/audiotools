@@ -721,6 +721,35 @@ class AppDelegate: NSObject, NSApplicationDelegate
         window.printWindow(sender)
     }
 
+    // getPreferences
+    func getPreferences()
+    {
+        // Set frequency
+        audio.frequency = kFreqVal
+        audio.waveform = Int32(kSine)
+        audio.level = pow(10.0, kLevelVal / 20.0)
+
+        // Check defaults
+        let defaults = UserDefaults.standard
+        if (defaults.object(forKey: "Freq") != nil)
+        {
+            audio.frequency = defaults.double(forKey: "Freq")
+            audio.level = defaults.double(forKey: "Level")
+            audio.mute = defaults.bool(forKey: "Mute")
+            audio.waveform = Int32(defaults.integer(forKey: "Wave"))
+        }
+    }
+
+    // savePreferences
+    func savePreferences()
+    {
+        let defaults = UserDefaults.standard
+        defaults.set(audio.frequency, forKey: "Freq")
+        defaults.set(audio.level, forKey: "Level")
+        defaults.set(audio.mute, forKey: "Mute")
+        defaults.set(audio.waveform, forKey: "Wave")
+    }
+
     // DisplayAlert
     func displayAlert(_ message: String, _ informativeText: String,
                       _ status: OSStatus)
