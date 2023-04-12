@@ -96,28 +96,34 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	populateApplicationMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "File", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "File", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("File", comment: "File menu"))
 	populateFileMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "Edit", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Edit", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Edit", comment: "Edit menu"))
 	populateEditMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "View", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "View", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("View", comment: "View menu"))
 	populateViewMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 
-	menuItem = mainMenu.addItem(withTitle: "Window", action: nil, keyEquivalent: "")
-	submenu = NSMenu(title: NSLocalizedString("Window", comment: "Window menu"))
+	menuItem = mainMenu.addItem(withTitle: "Window", action: nil,
+                                    keyEquivalent: "")
+	submenu = NSMenu(title: NSLocalizedString("Window",
+                                                  comment: "Window menu"))
 	populateWindowMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
 	NSApp.windowsMenu = submenu
 
-	menuItem = mainMenu.addItem(withTitle: "Help", action: nil, keyEquivalent: "")
+	menuItem = mainMenu.addItem(withTitle: "Help", action: nil,
+                                    keyEquivalent: "")
 	submenu = NSMenu(title: NSLocalizedString("Help", comment: "View menu"))
 	populateHelpMenu(submenu)
 	mainMenu.setSubmenu(submenu, for: menuItem)
@@ -128,44 +134,53 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // populateApplicationMenu
     func populateApplicationMenu(_ menu: NSMenu)
     {
-        var title = NSLocalizedString("About", comment: "About menu item") + " " + applicationName
-	var menuItem = menu.addItem(withTitle: title,
-                                    action: #selector(NSApplication.orderFrontStandardAboutPanel(_: )),
-                                    keyEquivalent: "")
+        var title = NSLocalizedString("About", comment: "About menu item") +
+          " " + applicationName
+	var menuItem =
+          menu.addItem(withTitle: title,
+                       action: #selector(NSApplication
+                                           .orderFrontStandardAboutPanel(_: )),
+                       keyEquivalent: "")
 	menuItem.target = NSApp
 
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Services", comment: "Services menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let servicesMenu = NSMenu(title: "Services")
 	menu.setSubmenu(servicesMenu, for: menuItem)
 	NSApp.servicesMenu = servicesMenu
 
 	menu.addItem(NSMenuItem.separator())
 
-	title = NSLocalizedString("Hide", comment: "Hide menu item") + " " + applicationName
+	title = NSLocalizedString("Hide", comment: "Hide menu item") +
+          " " + applicationName
 	menuItem = menu.addItem(withTitle: title,
                                 action: #selector(NSApplication.hide(_: )),
                                 keyEquivalent: "h")
 	menuItem.target = NSApp
 
-	title = NSLocalizedString("Hide Others", comment: "Hide Others menu item")
+	title = NSLocalizedString("Hide Others",
+                                  comment: "Hide Others menu item")
 	menuItem = menu.addItem(withTitle: title,
-                                action: #selector(NSApplication.hideOtherApplications(_: )),
+                                action: #selector(NSApplication
+                                                    .hideOtherApplications(_: )),
                                 keyEquivalent: "h")
 	menuItem.keyEquivalentModifierMask = [.command, .option]
 	menuItem.target = NSApp
 
 	title = NSLocalizedString("Show All", comment: "Show All menu item")
 	menuItem = menu.addItem(withTitle: title,
-                                action: #selector(NSApplication.unhideAllApplications(_: )),
+                                action: #selector(NSApplication
+                                                    .unhideAllApplications(_: )),
                                 keyEquivalent: "")
 	menuItem.target = NSApp
 
 	menu.addItem(NSMenuItem.separator())
 
-	title = NSLocalizedString("Quit", comment: "Quit menu item") + " " + applicationName
+	title = NSLocalizedString("Quit", comment: "Quit menu item") + " "
+          + applicationName
 	menuItem = menu.addItem(withTitle: title,
                                 action: #selector(NSApplication.terminate(_: )),
                                 keyEquivalent: "q")
@@ -182,7 +197,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
 	menu.addItem(NSMenuItem.separator())
 
-        title = NSLocalizedString("Close Window", comment: "Close Window menu item")
+        title = NSLocalizedString("Close Window",
+                                  comment: "Close Window menu item")
 	menu.addItem(withTitle: title,
                      action: #selector(NSWindow.performClose(_: )),
                      keyEquivalent: "w")
@@ -204,19 +220,23 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Cut", comment: "Cut menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.cut(_: )), keyEquivalent: "x")
+	menu.addItem(withTitle: title, action: #selector(NSText.cut(_: )),
+                     keyEquivalent: "x")
 
 	title = NSLocalizedString("Copy", comment: "Copy menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.copy(_: )), keyEquivalent: "c")
+	menu.addItem(withTitle: title, action: #selector(NSText.copy(_: )),
+                     keyEquivalent: "c")
 
 	title = NSLocalizedString("Paste", comment: "Paste menu item")
-	menu.addItem(withTitle: title, action: #selector(NSText.paste(_: )), keyEquivalent: "v")
+	menu.addItem(withTitle: title, action: #selector(NSText.paste(_: )),
+                     keyEquivalent: "v")
 
 	title = NSLocalizedString("Paste and Match Style",
                                   comment: "Paste and Match Style menu item")
-	var menuItem = menu.addItem(withTitle: title,
-                                    action: #selector(NSTextView.pasteAsPlainText(_: )),
-                                    keyEquivalent: "V")
+	var menuItem =
+          menu.addItem(withTitle: title,
+                       action: #selector(NSTextView.pasteAsPlainText(_: )),
+                       keyEquivalent: "V")
 	menuItem.keyEquivalentModifierMask = [.command, .option]
 
 	title = NSLocalizedString("Delete", comment: "Delete menu item")
@@ -232,13 +252,15 @@ class AppDelegate: NSObject, NSApplicationDelegate
 	menu.addItem(NSMenuItem.separator())
 
 	title = NSLocalizedString("Find", comment: "Find menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let findMenu = NSMenu(title: "Find")
 	populateFindMenu(findMenu)
 	menu.setSubmenu(findMenu, for: menuItem)
 
 	title = NSLocalizedString("Spelling", comment: "Spelling menu item")
-	menuItem = menu.addItem(withTitle: title, action: nil, keyEquivalent: "")
+	menuItem = menu.addItem(withTitle: title, action: nil,
+                                keyEquivalent: "")
 	let spellingMenu = NSMenu(title: "Spelling")
 	populateSpellingMenu(spellingMenu)
 	menu.setSubmenu(spellingMenu, for: menuItem)
@@ -248,31 +270,37 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func populateFindMenu(_ menu: NSMenu)
     {
         var title = NSLocalizedString("Find…", comment: "Find… menu item")
-	var menuItem = menu.addItem(withTitle: title,
-                                    action: #selector(NSResponder.performTextFinderAction(_: )),
-                                    keyEquivalent: "f")
+	var menuItem =
+          menu.addItem(withTitle: title,
+                       action: #selector(NSResponder.performTextFinderAction(_: )),
+                       keyEquivalent: "f")
 	menuItem.tag = NSTextFinder.Action.showFindInterface.rawValue
 
 	title = NSLocalizedString("Find Next", comment: "Find Next menu item")
-	menuItem = menu.addItem(withTitle: title,
-                                action: #selector(NSResponder.performTextFinderAction(_: )),
-                                keyEquivalent: "g")
+	menuItem =
+          menu.addItem(withTitle: title,
+                       action: #selector(NSResponder.performTextFinderAction(_: )),
+                       keyEquivalent: "g")
 	menuItem.tag = NSTextFinder.Action.nextMatch.rawValue
 
-	title = NSLocalizedString("Find Previous", comment: "Find Previous menu item")
-	menuItem = menu.addItem(withTitle: title,
-                                action: #selector(NSResponder.performTextFinderAction(_: )),
-                                keyEquivalent: "G")
+	title = NSLocalizedString("Find Previous",
+                                  comment: "Find Previous menu item")
+	menuItem =
+          menu.addItem(withTitle: title,
+                       action: #selector(NSResponder.performTextFinderAction(_: )),
+                       keyEquivalent: "G")
 	menuItem.tag = NSTextFinder.Action.previousMatch.rawValue
 
 	title = NSLocalizedString("Use Selection for Find",
                                   comment: "Use Selection for Find menu item")
-	menuItem = menu.addItem(withTitle: title,
-                                action: #selector(NSResponder.performTextFinderAction(_: )),
-                                keyEquivalent: "e")
+	menuItem =
+          menu.addItem(withTitle: title,
+                       action: #selector(NSResponder.performTextFinderAction(_: )),
+                       keyEquivalent: "e")
 	menuItem.tag = NSTextFinder.Action.setSearchString.rawValue
 
-	title = NSLocalizedString("Jump to Selection", comment: "Jump to Selection menu item")
+	title = NSLocalizedString("Jump to Selection",
+                                  comment: "Jump to Selection menu item")
 	menu.addItem(withTitle: title,
                      action: #selector(NSResponder.centerSelectionInVisibleArea(_: )),
                      keyEquivalent: "j")
@@ -281,12 +309,14 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // populateSpellingMenu
     func populateSpellingMenu(_ menu: NSMenu)
     {
-        var title = NSLocalizedString("Spelling…", comment: "Spelling… menu item")
+        var title = NSLocalizedString("Spelling…",
+                                      comment: "Spelling… menu item")
 	menu.addItem(withTitle: title,
                      action: #selector(NSText.showGuessPanel(_: )),
                      keyEquivalent: ": ")
 
-	title = NSLocalizedString("Check Spelling", comment: "Check Spelling menu item")
+	title = NSLocalizedString("Check Spelling",
+                                  comment: "Check Spelling menu item")
 	menu.addItem(withTitle: title,
                      action: #selector(NSText.checkSpelling(_: )),
                      keyEquivalent: ";")
@@ -301,20 +331,23 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // populateViewMenu
     func populateViewMenu(_ menu: NSMenu)
     {
-        var title = NSLocalizedString("Show Toolbar", comment: "Show Toolbar menu item")
+        var title = NSLocalizedString("Show Toolbar",
+                                      comment: "Show Toolbar menu item")
 	var menuItem = menu.addItem(withTitle: title,
                                     action: #selector(NSWindow.toggleToolbarShown(_: )),
                                     keyEquivalent: "t")
 	menuItem.keyEquivalentModifierMask = [.command, .option]
 
-	title = NSLocalizedString("Customize Toolbar…", comment: "Customize Toolbar… menu item")
+	title = NSLocalizedString("Customize Toolbar…",
+                                  comment: "Customize Toolbar… menu item")
 	menu.addItem(withTitle: title,
                      action: #selector(NSWindow.runToolbarCustomizationPalette(_: )),
                      keyEquivalent: "")
 
 	menu.addItem(NSMenuItem.separator())
 
-	title = NSLocalizedString("Enter Full Screen", comment: "Enter Full Screen menu item")
+	title = NSLocalizedString("Enter Full Screen",
+                                  comment: "Enter Full Screen menu item")
 	menuItem = menu.addItem(withTitle: title,
                                 action: #selector(NSWindow.toggleFullScreen(_: )),
                                 keyEquivalent: "f")
@@ -335,7 +368,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
 
 	menu.addItem(NSMenuItem.separator())
 
-	title = NSLocalizedString("Bring All to Front", comment: "Bring All to Front menu item")
+	title = NSLocalizedString("Bring All to Front",
+                                  comment: "Bring All to Front menu item")
 	let menuItem = menu.addItem(withTitle: title,
                                     action: #selector(NSApplication.arrangeInFront(_: )),
                                     keyEquivalent: "")
@@ -345,7 +379,8 @@ class AppDelegate: NSObject, NSApplicationDelegate
     // populateHelpMenu
     func populateHelpMenu(_ menu: NSMenu)
     {
-        let title = applicationName + " " + NSLocalizedString("Help", comment: "Help menu item") 
+        let title = applicationName + " " +
+          NSLocalizedString("Help", comment: "Help menu item") 
 	let menuItem = menu.addItem(withTitle: title,
                                     action: #selector(NSApplication.showHelp(_: )),
                                     keyEquivalent: "?")
@@ -507,6 +542,9 @@ class AppDelegate: NSObject, NSApplicationDelegate
         audio.waveform = Int32(kSine)
         audio.level = pow(10.0, kLevelVal / 20.0)
 
+        // getPreferences
+        getPreferences()
+
         let status = SetupAudio()
         if (status != noErr)
         {
@@ -577,24 +615,31 @@ class AppDelegate: NSObject, NSApplicationDelegate
         knobView.value = log10(CGFloat(value / 10)) * 2
     }
 
+    // setLevel
+    func setLevel(_ value: Double)
+    {
+        displayView.decibels = value;
+        levelSlider.doubleValue = 1.0 + (value / 80.0)
+    }
+
     // buttonClicked
     @objc func buttonClicked(sender: NSButton)
     {
         switch sender.tag
         {
-        case kTagSine :
+        case kTagSine:
             audio.waveform = Int32(kSine)
 
-        case kTagSquare :
+        case kTagSquare:
             audio.waveform = Int32(kSquare)
 
-        case kTagSaw :
+        case kTagSaw:
             audio.waveform = Int32(kSawtooth)
 
-        case kTagMute :
+        case kTagMute:
             audio.mute = !audio.mute
 
-        default :
+        default:
             break
         }
     }
@@ -622,6 +667,52 @@ class AppDelegate: NSObject, NSApplicationDelegate
                 setFrequency(value!)
             }
         }
+    }
+
+    // setButtonStates
+    func setButtonStates()
+    {
+        let rStack = stack.views[1] as! NSStackView
+        let hStack = rStack.views[1] as! NSStackView
+        let vStack = hStack.views[2] as! NSStackView
+        let buttons = vStack.views as! [NSButton]
+        switch Int(audio.waveform)
+        {
+        case kSine:
+            buttons[0].state = .on
+        case kSquare:
+            buttons[1].state = .on
+        case kSawtooth:
+            buttons[2].state = .on
+        default:
+            break
+        }
+        // Mute
+        buttons[3].state = audio.mute ? .on: .off
+    }
+
+    // getPreferences
+    func getPreferences()
+    {
+        let defaults = UserDefaults.standard
+        if (defaults.object(forKey: "Freq") != nil)
+        {
+            setFrequency(defaults.double(forKey: "Freq"))
+            setLevel(defaults.double(forKey: "Level"))
+            audio.mute = defaults.bool(forKey: "Mute")
+            audio.waveform = Int32(defaults.integer(forKey: "Wave"))
+            setButtonStates()
+        }
+    }
+
+    // savePreferences
+    func savePreferences()
+    {
+        let defaults = UserDefaults.standard
+        defaults.set(audio.frequency, forKey: "Freq")
+        defaults.set(displayView.decibels, forKey: "Level")
+        defaults.set(audio.mute, forKey: "Mute")
+        defaults.set(audio.waveform, forKey: "Wave")
     }
 
     // print
@@ -658,6 +749,7 @@ class AppDelegate: NSObject, NSApplicationDelegate
     func applicationWillTerminate(_ aNotification: Notification)
     {
         // Insert code here to tear down your application
+        savePreferences()
         ShutdownAudio()
     }
 
